@@ -150,6 +150,7 @@
       body{overflow:auto}.app{min-height:100vh;height:auto;overflow:auto}.screen{position:relative;min-height:100vh;overflow:auto}.home-shell,.detail-grid,.result-shell{grid-template-columns:1fr}.home-card{min-height:auto}.home-card img{height:300px}.scene{min-height:100vh;position:relative}.hud{grid-template-columns:1fr;gap:8px}.hud-left,.hud-right{justify-content:center}.target-card{width:100%}.scene-main{grid-template-columns:1fr}.guide-card{min-height:auto}.play-zone{min-height:330px}.car{flex-basis:104px;height:90px}.engine-css{flex-basis:112px;transform:scale(.9);transform-origin:bottom left}.candidate-btn{min-width:120px}.cover-shell{position:relative;min-height:100vh;justify-content:center;padding:24px}.cover-panel{margin-top:90px}.top-toggle{position:fixed}.result-badge img{width:220px}.stat-grid{grid-template-columns:1fr}.title-xl{font-size:46px}
     }
   </style>
+  <link rel="stylesheet" href="../shared/unified.css">
 </head>
 <body>
   <div id="app" class="app" aria-live="polite"></div>
@@ -855,5 +856,6 @@
     window.addEventListener("beforeunload", clearTimers);
     render();
   </script>
+  <script src="../shared/unified.js"></script>
 </body>
 </html>

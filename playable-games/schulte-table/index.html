@@ -15,6 +15,7 @@
 .adapt-box strong{display:block;font-size:21px;margin-bottom:6px;color:var(--text)}
 .adapt-box p{font-size:18px;line-height:1.55}.adapt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 22px}.adapt-cell{border-radius:22px;background:rgba(255,255,255,.74);border:1px solid var(--line);padding:14px;text-align:left}.adapt-cell strong{display:block;font-size:20px;margin-bottom:6px}.adapt-cell span{font-size:18px;color:var(--muted);line-height:1.5}.mini-label{display:inline-flex;border-radius:999px;background:rgba(255,226,138,.56);padding:7px 12px;font-weight:950;margin:8px 0;font-size:16px}@media(max-width:860px){.adapt-grid{grid-template-columns:1fr}}
 </style>
+  <link rel="stylesheet" href="../shared/unified.css">
 </head>
 <body>
 <div id="app" class="app"></div>
@@ -91,5 +92,6 @@ function toggle(k){S[k]=!S[k];save();render()}
 document.addEventListener('keydown',e=>{if(S.screen!=='play'||S.paused)return;const tiles=[...document.querySelectorAll('.board .tile')];const i=tiles.indexOf(document.activeElement);if(i<0)return;const g=S.cfg.grid;let n=i;if(e.key==='ArrowRight')n=Math.min(i+1,tiles.length-1);if(e.key==='ArrowLeft')n=Math.max(i-1,0);if(e.key==='ArrowDown')n=Math.min(i+g,tiles.length-1);if(e.key==='ArrowUp')n=Math.max(i-g,0);if(n!==i){e.preventDefault();tiles[n].focus()}});
 render();
 </script>
+  <script src="../shared/unified.js"></script>
 </body>
 </html>
