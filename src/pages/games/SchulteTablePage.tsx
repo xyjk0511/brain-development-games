@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
 import SchulteTable from '../../games/SchulteTable'
 
 export default function SchulteTablePage(): JSX.Element {
@@ -12,16 +11,8 @@ export default function SchulteTablePage(): JSX.Element {
   const instructions = GAME_INSTRUCTIONS['schulte-table']
 
   return (
-    <div className="space-y-4">
-      <LevelSelector />
-      <HowToPlay 
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="schulte-table" level={level} instructions={instructions}>
       <SchulteTable level={level} />
-    </div>
+    </GamePageShell>
   )
 }
-
-// Made with Bob

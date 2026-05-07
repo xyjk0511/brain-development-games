@@ -10,6 +10,8 @@ export interface GameMetadata {
   name: string
   description: string
   artPath: string
+  scenePath: string
+  characterPath: string
   category: CognitiveDomain
   maxLevel: number
   taskFamily: TaskFamily
@@ -45,6 +47,8 @@ export const GAME_REGISTRY: GameMetadata[] = CANONICAL_GAME_DESIGNS.map(game => 
   name: game.redesignedTitle,
   description: DESCRIPTIONS[game.id],
   artPath: `${ART_BASE}game-art/${game.id}.png`,
+  scenePath: `${ART_BASE}game-scenes/${game.id}-scene.png`,
+  characterPath: `${ART_BASE}game-scenes/${game.id}-character.png`,
   category: game.domain,
   maxLevel: 10,
   taskFamily: game.taskFamily,

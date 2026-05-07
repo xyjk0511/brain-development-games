@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
 import CardMatching from '../../games/CardMatching'
 
 export default function CardMatchingPage(): JSX.Element {
@@ -12,14 +11,8 @@ export default function CardMatchingPage(): JSX.Element {
   const instructions = GAME_INSTRUCTIONS['card-matching']
 
   return (
-    <div className="space-y-4">
-      <LevelSelector />
-      <HowToPlay 
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="card-matching" level={level} instructions={instructions}>
       <CardMatching level={level} />
-    </div>
+    </GamePageShell>
   )
 }

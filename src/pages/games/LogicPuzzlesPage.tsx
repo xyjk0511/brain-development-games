@@ -1,28 +1,18 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import LogicPuzzles from '../../games/LogicPuzzles'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
+import LogicPuzzles from '../../games/LogicPuzzles'
 
-const LogicPuzzlesPage = (): JSX.Element => {
-  const [searchParams] = useSearchParams()
-  const level = Number(searchParams.get('level')) || 1
+export default function LogicPuzzlesPage(): JSX.Element {
+  const [search] = useSearchParams()
+  const lvl = Number(search.get('level') ?? '1')
+  const level = Math.min(Math.max(1, lvl), 10)
   const instructions = GAME_INSTRUCTIONS['logic-puzzles']
 
   return (
-    <div className="space-y-6">
-      <LevelSelector />
-      <HowToPlay
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="logic-puzzles" level={level} instructions={instructions}>
       <LogicPuzzles level={level} />
-    </div>
+    </GamePageShell>
   )
 }
-
-export default LogicPuzzlesPage
-
-// Made with Bob

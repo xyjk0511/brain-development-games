@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
 import ReactionTime from '../../games/ReactionTime'
 
 export default function ReactionTimePage(): JSX.Element {
@@ -12,14 +11,8 @@ export default function ReactionTimePage(): JSX.Element {
   const instructions = GAME_INSTRUCTIONS['reaction-time']
 
   return (
-    <div className="space-y-4">
-      <LevelSelector />
-      <HowToPlay 
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="reaction-time" level={level} instructions={instructions}>
       <ReactionTime level={level} />
-    </div>
+    </GamePageShell>
   )
 }

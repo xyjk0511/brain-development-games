@@ -1,8 +1,7 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
 import MentalRotation from '../../games/MentalRotation'
 
 export default function MentalRotationPage(): JSX.Element {
@@ -12,16 +11,8 @@ export default function MentalRotationPage(): JSX.Element {
   const instructions = GAME_INSTRUCTIONS['mental-rotation']
 
   return (
-    <div className="space-y-4">
-      <LevelSelector />
-      <HowToPlay 
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="mental-rotation" level={level} instructions={instructions}>
       <MentalRotation level={level} />
-    </div>
+    </GamePageShell>
   )
 }
-
-// Made with Bob

@@ -1,9 +1,8 @@
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import WaterJugs from '../../games/WaterJugs'
-import LevelSelector from '../../components/LevelSelector'
-import HowToPlay from '../../components/HowToPlay'
 import { GAME_INSTRUCTIONS } from '../../lib/gameInstructions'
+import GamePageShell from '../../components/GamePageShell'
+import WaterJugs from '../../games/WaterJugs'
 
 export default function WaterJugsPage(): JSX.Element {
   const [search] = useSearchParams()
@@ -12,14 +11,8 @@ export default function WaterJugsPage(): JSX.Element {
   const instructions = GAME_INSTRUCTIONS['water-jugs']
 
   return (
-    <div className="space-y-4">
-      <LevelSelector />
-      <HowToPlay
-        title={instructions.title}
-        instructions={instructions.instructions}
-        tips={instructions.tips}
-      />
+    <GamePageShell gameId="water-jugs" level={level} instructions={instructions}>
       <WaterJugs level={level} />
-    </div>
+    </GamePageShell>
   )
 }
