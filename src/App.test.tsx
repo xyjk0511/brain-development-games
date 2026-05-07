@@ -32,4 +32,16 @@ describe('canonical game routes', () => {
     expect(screen.getByText(/16 个可爱认知训练游戏/i)).toBeInTheDocument()
     expect(screen.queryByText(/彩球分类/i)).not.toBeInTheDocument()
   })
+
+  test('canonical game urls load the playable prototype frame', () => {
+    render(
+      <MemoryRouter initialEntries={['/games/card-matching']}>
+        <App />
+      </MemoryRouter>
+    )
+
+    const frame = screen.getByTitle(/小动物找朋友 可玩游戏/i)
+    expect(frame).toHaveAttribute('src', '/playable-games/card-matching/index.html')
+    expect(screen.getByRole('link', { name: /返回首页/i })).toBeInTheDocument()
+  })
 })

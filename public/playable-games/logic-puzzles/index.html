@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>森林小侦探｜简单逻辑谜题</title>
+  <style>
+    :root{
+      --cream:#fff7e8;
+      --cream-2:#fffdf5;
+      --sky:#cfeeff;
+      --mint:#cdeedc;
+      --mint-strong:#75bd68;
+      --warm:#ffd986;
+      --coral:#ff9f8a;
+      --lav:#d9ccff;
+      --wood:#8a5a2b;
+      --text:#3a3128;
+      --soft:#675d52;
+      --card:rgba(255,255,246,.94);
+      --line:#9ed37a;
+      --shadow:0 18px 50px rgba(77,58,28,.18);
+      --shadow-soft:0 8px 22px rgba(77,58,28,.12);
+      --radius:28px;
+      --radius-lg:36px;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;color:var(--text);background:linear-gradient(135deg,#fff8e8,#e8f7df 50%,#dff5ff);}
+    button,input{font:inherit}
+    button{border:0;cursor:pointer}
+    button:focus-visible,.item-btn:focus-visible,.basket:focus-visible{outline:4px solid #4b92ff;outline-offset:4px}
+    #app{min-height:100vh;}
+    .screen{min-height:100vh;padding:24px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .screen-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(.92);opacity:.5;transform:scale(1.04);}
+    .screen-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,247,232,.88),rgba(255,255,255,.68),rgba(229,248,229,.82));}
+    .low .screen-bg{filter:saturate(.55) brightness(1.1);opacity:.36}
+    .wrap{width:min(var(--max),100%);position:relative;z-index:2;}
+    .home-grid{display:grid;grid-template-columns:1fr .92fr;gap:28px;align-items:stretch;}
+    .hero-card,.panel,.modal-card{background:var(--card);border:3px solid rgba(117,189,104,.38);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;}
+    .hero-card{min-height:610px;display:flex;flex-direction:column;}
+    .cover-img{width:100%;height:310px;object-fit:cover;display:block;}
+    .hero-body{padding:26px 28px 30px;display:flex;flex-direction:column;gap:16px;flex:1;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#eaf8d8;border:2px solid #8bd074;color:#366431;border-radius:999px;padding:8px 14px;font-weight:800;font-size:16px;align-self:flex-start;}
+    h1,h2,h3,p{margin:0}
+    h1{font-size:clamp(36px,5vw,64px);line-height:1.05;color:#683e1e;letter-spacing:.02em;}
+    h2{font-size:clamp(28px,4vw,42px);line-height:1.16;color:#5a3c25;}
+    h3{font-size:24px;color:#5a3c25;}
+    p{font-size:20px;line-height:1.65;color:var(--soft);}
+    .large-text{font-size:22px;line-height:1.68}
+    .small{font-size:16px;color:#746b61;line-height:1.5}
+    .tag-row{display:flex;flex-wrap:wrap;gap:10px;}
+    .tag{background:#fff;border:2px solid #d8ebc3;border-radius:999px;padding:8px 12px;font-weight:800;color:#48663d;}
+    .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:auto;align-items:center;}
+    .btn{min-height:60px;border-radius:22px;padding:0 24px;font-weight:900;font-size:20px;box-shadow:var(--shadow-soft);display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .16s ease, filter .16s ease;}
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{background:linear-gradient(180deg,#ffe28f,#ffc567);color:#5d390e;border:3px solid #f2b750;}
+    .btn.secondary{background:#e2f4ff;color:#1c5c7d;border:3px solid #aedff5;}
+    .btn.green{background:#dff4c7;color:#335f2d;border:3px solid #9bd57f;}
+    .btn.ghost{background:#fffdf7;color:#5a4936;border:3px solid #ead8b2;}
+    .btn.dangerless{background:#f2eaff;color:#54427d;border:3px solid #d2c0ff;}
+    .side-panel{padding:28px;display:flex;flex-direction:column;gap:18px;}
+    .info-box{background:#fffdf8;border:3px solid #cfe9b7;border-radius:24px;padding:20px;box-shadow:var(--shadow-soft);}
+    .info-box h3{display:inline-flex;background:#72bd63;color:#fff;border-radius:18px;padding:8px 14px;margin-bottom:12px;}
+    .info-box.coral{border-color:#ffc3b9}.info-box.coral h3{background:#ff9285}
+    .list{display:grid;gap:12px;margin-top:8px}
+    .list div{font-size:19px;line-height:1.45;padding-left:36px;position:relative;}
+    .list div::before{content:"";width:20px;height:20px;border-radius:50%;background:#ffd986;border:3px solid #d9a14d;position:absolute;left:2px;top:5px;}
+    .detail-layout{display:grid;grid-template-columns:.82fr 1.1fr;gap:26px;align-items:stretch;}
+    .detail-img{width:100%;height:100%;min-height:520px;object-fit:cover;border-radius:32px;box-shadow:var(--shadow-soft);}
+    .detail-content{padding:30px;display:flex;flex-direction:column;gap:18px;}
+    .cover-page{min-height:720px;border-radius:42px;box-shadow:var(--shadow);overflow:hidden;position:relative;background:#fff;display:flex;align-items:flex-end;}
+    .cover-page img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+    .cover-overlay{position:relative;z-index:2;width:100%;padding:40px;background:linear-gradient(0deg,rgba(255,247,232,.96),rgba(255,247,232,.72),rgba(255,247,232,0));display:grid;gap:14px;}
+    .cover-title{font-size:clamp(42px,7vw,76px);color:#663b1d;text-shadow:0 2px 0 #fff;}
+    .tutorial-card{position:relative;width:min(1180px,100%);min-height:720px;border-radius:42px;box-shadow:var(--shadow);overflow:hidden;background:#fff;}
+    .tutorial-card .t-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.92);}
+    .tutorial-layer{position:relative;z-index:2;min-height:720px;padding:24px;display:grid;grid-template-columns:310px 1fr;gap:18px;align-items:stretch;background:linear-gradient(90deg,rgba(255,247,232,.92),rgba(255,247,232,.55) 55%,rgba(255,247,232,.18));}
+    .speech{background:rgba(255,255,248,.94);border:3px solid #a8d77f;border-radius:28px;padding:20px;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;gap:14px;align-self:start;}
+    .stage-demo{position:relative;min-height:640px;border-radius:32px;border:3px solid rgba(255,255,255,.7);background:rgba(255,255,255,.18);overflow:hidden;}
+    .floating-card{position:absolute;left:22px;top:22px;width:280px;background:rgba(255,253,246,.96);border:3px solid #90c76c;border-radius:24px;padding:16px;box-shadow:var(--shadow-soft);}
+    .floating-card strong{font-size:21px;display:block;margin-bottom:8px;color:#5f3a21}
+    .stickers{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .sticker{display:inline-flex;align-items:center;justify-content:center;min-height:38px;border-radius:14px;background:#fff;border:2px solid #d8e9c6;padding:5px 10px;font-weight:900;color:#4d5f3b;box-shadow:0 4px 10px rgba(0,0,0,.06);}
+    .sticker.red{background:#ffe6e2;border-color:#ffaaa0;color:#8c372c}.sticker.blue{background:#e1f3ff;border-color:#95d7f5;color:#225f7a}.sticker.yellow{background:#fff1be;border-color:#f0ce67;color:#73551a}.sticker.green{background:#e4f7d2;border-color:#9bd57f;color:#346034}.sticker.purple{background:#efe7ff;border-color:#c9b5ff;color:#54427d}.sticker.orange{background:#ffe8cf;border-color:#ffbd7b;color:#7b431c}
+    .demo-shelf,.shelf{background:rgba(115,70,30,.82);border:5px solid #a56e35;border-radius:28px;padding:20px;box-shadow:var(--shadow);display:grid;gap:16px;align-content:center;}
+    .demo-shelf{position:absolute;right:35px;bottom:70px;width:min(570px,55%);grid-template-columns:repeat(3,1fr);}
+    .shelf{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));min-height:340px;}
+    .item-btn{background:linear-gradient(180deg,#fff9e9,#ffeec6);border:4px solid transparent;border-radius:24px;min-height:138px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 7px 0 rgba(122,75,31,.28),0 14px 24px rgba(76,45,20,.13);position:relative;transition:transform .15s ease,border-color .15s ease,filter .15s ease;}
+    .item-btn:hover{transform:translateY(-3px)}
+    .item-btn img{width:74px;height:74px;object-fit:cover;border-radius:18px;}
+    .item-btn .name{font-size:18px;font-weight:900;color:#51351e;text-align:center;}
+    .item-btn .mini{font-size:13px;color:#776a5d;font-weight:700;}
+    .item-btn.correct-glow{border-color:#8bd074;box-shadow:0 0 0 6px rgba(139,208,116,.25),0 7px 0 rgba(122,75,31,.25)}
+    .item-btn.selected{border-color:#4b92ff;box-shadow:0 0 0 6px rgba(75,146,255,.2),0 7px 0 rgba(122,75,31,.25)}
+    .item-btn.used{opacity:.5;filter:saturate(.7)}
+    .hand{position:absolute;width:86px;height:86px;border-radius:24px;box-shadow:var(--shadow-soft);animation:tap 1.1s ease-in-out infinite;z-index:4;}
+    .success-pop{position:absolute;right:36px;top:48px;width:118px;height:118px;border-radius:28px;animation:pop .55s ease both;z-index:5;box-shadow:var(--shadow-soft);}
+    .plus-one{position:absolute;right:50px;top:168px;font-size:42px;font-weight:1000;color:#7b5b16;background:#fff8d6;border:3px solid #ffd86c;border-radius:999px;padding:8px 18px;box-shadow:var(--shadow-soft);animation:pop .55s ease both;}
+    .ready-modal{width:min(620px,100%);background:rgba(255,253,246,.97);border:4px solid #a9d982;border-radius:38px;padding:32px;box-shadow:var(--shadow);display:grid;gap:18px;text-align:center;}
+    .game-shell{position:relative;width:min(1180px,100%);min-height:720px;border-radius:42px;box-shadow:var(--shadow);overflow:hidden;background:#eaf7da;}
+    .game-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.9);}
+    .game-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,247,232,.8),rgba(255,247,232,.32));}
+    .hud{position:relative;z-index:3;padding:16px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;}
+    .hud-left,.hud-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .pill{background:rgba(255,255,248,.95);border:3px solid #b8dc96;border-radius:999px;min-height:48px;padding:8px 15px;font-size:18px;font-weight:900;color:#4e3b23;box-shadow:var(--shadow-soft);display:flex;align-items:center;gap:8px;}
+    .pause-btn{width:54px;height:54px;border-radius:18px;background:#dff4ff;border:3px solid #9fd8f1;color:#185a76;font-weight:1000;font-size:22px;box-shadow:var(--shadow-soft);}
+    .training-main{position:relative;z-index:2;padding:0 22px 24px;display:grid;grid-template-columns:310px 1fr;gap:20px;min-height:610px;}
+    .target-panel{background:rgba(255,253,246,.96);border:4px solid #9dd278;border-radius:30px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-height:240px;align-self:start;position:sticky;top:16px;}
+    .target-title{font-size:22px;font-weight:1000;color:#5c3c20;}
+    .target-text{font-size:24px;font-weight:1000;line-height:1.35;color:#4b3926;}
+    .target-note{font-size:17px;color:#685f55;line-height:1.5;}
+    .character-row{display:flex;align-items:flex-end;gap:8px;margin-top:auto;}
+    .character-row img{width:108px;height:108px;object-fit:cover;border-radius:24px;box-shadow:var(--shadow-soft);}
+    .play-area{background:rgba(255,253,246,.70);border:3px solid rgba(255,255,255,.75);border-radius:34px;padding:20px;display:flex;flex-direction:column;gap:16px;position:relative;}
+    .round-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .round-title h3{font-size:24px;color:#4c321b;}
+    .feedback{min-height:58px;background:rgba(255,255,248,.92);border:3px solid #e7d6b4;border-radius:22px;padding:12px 16px;font-size:20px;font-weight:900;color:#5d4427;display:flex;align-items:center;gap:12px;}
+    .feedback.good{border-color:#a7d87f;background:#f0ffe6}.feedback.hint{border-color:#ffd58e;background:#fff8e5}
+    .feedback img{width:48px;height:48px;object-fit:cover;border-radius:14px;}
+    .bottom-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:auto;}
+    .basket-row{display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:14px;}
+    .basket{min-height:120px;border-radius:28px;border:4px solid #bfdc9b;background:linear-gradient(180deg,#fffdf6,#e9f8d8);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:24px;font-weight:1000;color:#55381e;box-shadow:var(--shadow-soft);}
+    .basket.red-basket{border-color:#ffaaa0;background:#ffe8e3}.basket.blue-basket{border-color:#9bd7f4;background:#e2f4ff}
+    .order-strip{min-height:110px;border-radius:28px;background:#fffdf7;border:4px dashed #c7a679;display:flex;gap:12px;padding:14px;align-items:center;}
+    .order-chip{min-width:80px;min-height:76px;border-radius:20px;background:#eaf8d8;border:3px solid #a7d87f;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;text-align:center;}
+    .countdown{font-size:110px;font-weight:1000;color:#70431f;text-shadow:0 5px 0 #fff;}
+    .result-grid{display:grid;grid-template-columns:.75fr 1fr;gap:24px;align-items:stretch;}
+    .result-card{padding:30px;display:grid;gap:18px;}
+    .badge-img{width:180px;height:180px;object-fit:cover;border-radius:42px;box-shadow:var(--shadow-soft);justify-self:center;}
+    .metric-grid{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:14px;}
+    .metric{background:#fffdf8;border:3px solid #e3d7b8;border-radius:22px;padding:14px;}
+    .metric b{display:block;font-size:30px;color:#603b1d}.metric span{font-size:16px;color:#685f55;font-weight:800}
+    .preload{display:none!important;width:0;height:0;overflow:hidden;}
+    .toast-note{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:6;background:#fffdf6;border:3px solid #acd984;border-radius:999px;padding:12px 18px;font-size:18px;font-weight:900;box-shadow:var(--shadow-soft);}
+    @keyframes pop{0%{transform:scale(.65);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+    @keyframes tap{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(10px) scale(.92)}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.btn:hover,.item-btn:hover{transform:none}}
+    .low *{animation:none!important;transition:none!important}.low .success-pop,.low .hand{animation:none!important}
+    @media (max-width:860px){.screen{padding:14px}.home-grid,.detail-layout,.tutorial-layer,.training-main,.result-grid{grid-template-columns:1fr}.hero-card{min-height:auto}.cover-img{height:240px}.detail-img{min-height:260px}.tutorial-card,.tutorial-layer,.game-shell{min-height:auto}.stage-demo{min-height:430px}.demo-shelf{width:calc(100% - 40px);left:20px;right:20px;bottom:30px}.training-main{padding:0 14px 18px}.hud{grid-template-columns:1fr}.hud-right{justify-content:flex-start}.target-panel{position:relative;top:auto}.metric-grid{grid-template-columns:1fr}h1{font-size:42px}.cover-title{font-size:46px}}
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const ASSETS = {
+      lobby:"assets/lobby-card-cover.png",
+      detail:"assets/detail-modal-cover.png",
+      cover:"assets/game-cover-poster.png",
+      t1:"assets/tutorial-scene-1.png",
+      t2:"assets/tutorial-scene-2.png",
+      t3:"assets/tutorial-scene-3.png",
+      t4:"assets/tutorial-scene-4.png",
+      t5:"assets/tutorial-scene-5.png",
+      t6:"assets/tutorial-scene-6.png",
+      scene:"assets/scene-background.png",
+      lowScene:"assets/low-stimulation-background.png",
+      squirrel:"assets/main-character-squirrel.png",
+      bear:"assets/shelf-bear.png",
+      targetCard:"assets/target-card.png",
+      success:"assets/success-sticker.png",
+      hint:"assets/gentle-hint-sticker.png",
+      badge:"assets/result-badge.png",
+      hand:"assets/tutorial-hand.png",
+      icons:"assets/button-icons.png",
+      master:"assets/gptimage2-master.png"
+    };
+    const ITEM_IMAGES = {
+      apple:"assets/item-red-apple.png",
+      carrot:"assets/item-orange-carrot.png",
+      milk:"assets/item-blue-milk.png",
+      ball:"assets/item-rainbow-ball.png",
+      yarn:"assets/item-purple-yarn.png",
+      gift:"assets/item-gift-box.png",
+      cheese:"assets/item-yellow-cheese.png",
+      cookie:"assets/item-red-cookie.png",
+      box:"assets/item-blue-box.png",
+      token:"assets/item-green-token.png"
+    };
+    const PRELOAD = [...Object.values(ASSETS), ...Object.values(ITEM_IMAGES)];
+    const app = document.getElementById("app");
+    const KEY_NEXT = "forestDetective.nextLevel";
+    const KEY_LAST = "forestDetective.lastResult";
+    const KEY_HISTORY = "forestDetective.history";
+    const KEY_LOW = "forestDetective.lowStim";
+    const colorLabel = {red:"红色",blue:"蓝色",yellow:"黄色",green:"绿色",purple:"紫色",orange:"橙色"};
+    const shapeLabel = {circle:"圆形",square:"方形",triangle:"三角形",long:"长条形"};
+    const categoryLabel = {fruit:"水果",snack:"点心",box:"盒子",toy:"玩具",drink:"饮品",veg:"蔬果"};
+    const items = [
+      {id:"apple",name:"红苹果",color:"red",shape:"circle",category:"fruit",size:2,img:ITEM_IMAGES.apple},
+      {id:"carrot",name:"橙胡萝卜",color:"orange",shape:"long",category:"veg",size:3,img:ITEM_IMAGES.carrot},
+      {id:"milk",name:"蓝牛奶",color:"blue",shape:"square",category:"drink",size:4,img:ITEM_IMAGES.milk},
+      {id:"ball",name:"彩圆球",color:"blue",shape:"circle",category:"toy",size:5,img:ITEM_IMAGES.ball},
+      {id:"yarn",name:"紫线团",color:"purple",shape:"circle",category:"toy",size:2,img:ITEM_IMAGES.yarn},
+      {id:"gift",name:"紫礼盒",color:"purple",shape:"square",category:"box",size:3,img:ITEM_IMAGES.gift},
+      {id:"cheese",name:"黄奶酪",color:"yellow",shape:"triangle",category:"snack",size:2,img:ITEM_IMAGES.cheese},
+      {id:"cookie",name:"红圆饼",color:"red",shape:"circle",category:"snack",size:1,img:ITEM_IMAGES.cookie},
+      {id:"box",name:"蓝方盒",color:"blue",shape:"square",category:"box",size:1,img:ITEM_IMAGES.box},
+      {id:"token",name:"绿叶牌",color:"green",shape:"circle",category:"snack",size:1,img:ITEM_IMAGES.token}
+    ];
+    const levels = {
+      1:{seconds:90,rounds:6,pass:3,candidates:2,autoHint:4,mode:"pick",rule:"color",points:10},
+      2:{seconds:90,rounds:7,pass:4,candidates:2,autoHint:4,mode:"pick",rule:"shape",points:10},
+      3:{seconds:100,rounds:8,pass:5,candidates:3,autoHint:5,mode:"pick",rule:"category",points:10},
+      4:{seconds:90,rounds:8,pass:5,candidates:3,autoHint:6,mode:"pick",rule:"colorShape",points:12},
+      5:{seconds:90,rounds:9,pass:6,candidates:4,autoHint:7,mode:"pick",rule:"colorCategory",points:12},
+      6:{seconds:100,rounds:8,pass:5,candidates:3,autoHint:7,mode:"order",rule:"sizeOrder",points:14},
+      7:{seconds:90,rounds:10,pass:7,candidates:4,autoHint:8,mode:"pick",rule:"exclude",points:14},
+      8:{seconds:85,rounds:10,pass:7,candidates:5,autoHint:8,mode:"basket",rule:"basket",points:15},
+      9:{seconds:85,rounds:10,pass:7,candidates:4,autoHint:9,mode:"order",rule:"sizeOrder",points:16},
+      10:{seconds:80,rounds:12,pass:8,candidates:5,autoHint:10,mode:"mixed",rule:"mixed",points:18}
+    };
+    const state = {
+      screen:"home",
+      tutorialStep:1,
+      lowStim: localStorage.getItem(KEY_LOW)==="1",
+      hasPracticed:false,
+      readyMode:"practice",
+      level: clampLevel(Number(localStorage.getItem(KEY_NEXT)) || 1),
+      feedback:null,
+      hintActive:false,
+      selectedItem:null,
+      selectedOrder:[],
+      countdown:3,
+      session:null,
+      currentPuzzle:null,
+      practice:{index:0,correct:0,miss:0},
+      lastRecommendation: clampLevel(Number(localStorage.getItem(KEY_NEXT)) || 1)
+    };
+    let gameTimer=null, countTimer=null, autoHintTimer=null, feedbackTimer=null;
+    function clampLevel(n){return Math.max(1,Math.min(10,Number.isFinite(n)?Math.round(n):1));}
+    function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+    function choice(arr){return arr[Math.floor(Math.random()*arr.length)];}
+    function formatLevel(n){return n>=7?`进阶挑战 第 ${n} 级`:`第 ${n} 级`}
+    function preloadHtml(){return `<div class="preload" aria-hidden="true">${PRELOAD.map((src,i)=>`<img src="${src}" alt="本地素材${i+1}">`).join("")}</div>`}
+    function stopAllTimers(){[gameTimer,countTimer,autoHintTimer,feedbackTimer].forEach(t=>{if(t)clearInterval(t),clearTimeout(t)});gameTimer=countTimer=autoHintTimer=feedbackTimer=null;}
+    function stopRoundTimers(){if(autoHintTimer)clearTimeout(autoHintTimer);autoHintTimer=null;if(feedbackTimer)clearTimeout(feedbackTimer);feedbackTimer=null;}
+    function rootClass(){return state.lowStim?"screen low":"screen";}
+    function background(src){return `<div class="screen-bg" style="background-image:url('${src}')"></div>`}
+    function render(){
+      const map={home:renderHome,detail:renderDetail,cover:renderCover,tutorial:renderTutorial,ready:renderReady,practice:renderPractice,countdown:renderCountdown,training:renderTraining,paused:renderPaused,result:renderResult,recommendation:renderRecommendation};
+      app.innerHTML = (map[state.screen] || renderHome)() + preloadHtml();
+    }
+    function renderHome(){
+      const last = readJson(KEY_LAST,null);
+      return `<main class="${rootClass()}">${background(ASSETS.lobby)}<section class="wrap home-grid">
+        <article class="hero-card" aria-label="森林小侦探首页卡片">
+          <img class="cover-img" src="${ASSETS.lobby}" alt="森林小侦探森林小店封面">
+          <div class="hero-body">
+            <span class="eyebrow">简单逻辑谜题 · 规则推理</span>
+            <h1>森林小侦探</h1>
+            <p class="large-text">看线索贴纸，帮侦探小松鼠和货架小熊整理森林小店订单。目标卡会一直显示，不用记在心里。</p>
+            <div class="tag-row"><span class="tag">1-3 级非常容易</span><span class="tag">全中文</span><span class="tag">离线可玩</span><span class="tag">目标常驻</span></div>
+            <div class="actions"><button class="btn primary" onclick="Game.gotoDetail()">查看说明</button><button class="btn secondary" onclick="Game.toggleLow()">低刺激模式：${state.lowStim?"开":"关"}</button></div>
+          </div>
+        </article>
+        <aside class="panel side-panel">
+          <div class="info-box"><h3>怎么玩</h3><div class="list"><div>先看目标卡，了解本轮线索。</div><div>在货架上点击符合线索的商品，或按要求整理顺序。</div><div>每完成一个小订单，星星会增加。</div></div></div>
+          <div class="info-box coral"><h3>目标是什么</h3><p>用可视化线索帮小动物分物品、排顺序、找唯一答案。你是在帮小店整理订单，不是在做测验。</p></div>
+          <div class="info-box"><h3>下轮难度</h3><p>当前推荐：<b>${formatLevel(state.level)}</b></p><p class="small">系统会根据本轮正确率、用时和提示次数记录到本机，并在结算页推荐下轮难度。</p>${last?`<p class="small">上次表现：正确率 ${last.accuracyText}，平均用时 ${last.avgText}。</p>`:""}</div>
+        </aside>
+      </section></main>`;
+    }
+    function renderDetail(){
+      return `<main class="${rootClass()}">${background(ASSETS.detail)}<section class="wrap detail-layout modal-card">
+        <img class="detail-img" src="${ASSETS.detail}" alt="森林小店说明图">
+        <div class="detail-content">
+          <span class="eyebrow">进入前先看一眼</span><h2>详情 / 说明</h2>
+          <div class="info-box"><h3>怎么玩</h3><div class="list"><div>看上方目标卡，不用背规则。</div><div>线索贴纸会告诉你颜色、形状、类别或顺序。</div><div>点击、放入篮子或按顺序排列，找到唯一合适答案。</div></div></div>
+          <div class="info-box coral"><h3>目标是什么</h3><p>帮侦探小松鼠确认小动物订单，帮货架小熊把商品整理到正确位置。正式训练中，左上有暂停和难度，右上有倒计时和星星。</p></div>
+          <p class="small">第 1-3 级只用一条规则，候选很少，很容易上手。第 7 级以后会标为“进阶挑战”。</p>
+          <div class="actions"><button class="btn primary" onclick="Game.gotoCover()">进入封面页</button><button class="btn ghost" onclick="Game.gotoHome()">返回首页</button></div>
+        </div>
+      </section></main>`;
+    }
+    function renderCover(){
+      return `<main class="${rootClass()}">${background(ASSETS.cover)}<section class="wrap cover-page">
+        <img src="${ASSETS.cover}" alt="森林小侦探封面页">
+        <div class="cover-overlay"><span class="eyebrow">森林小店 · 侦探任务</span><h1 class="cover-title">森林小侦探</h1><p class="large-text">今天的小店订单需要你帮忙。先看场景演示，再进入训练。</p><div class="tag-row"><span class="tag">目标卡一直可见</span><span class="tag">轻量反馈</span><span class="tag">自适应难度</span></div><div class="actions"><button class="btn primary" onclick="Game.startTutorial()">开始场景演示</button><button class="btn secondary" onclick="Game.gotoDetail()">再看说明</button></div></div>
+      </section></main>`;
+    }
+    function tutorialData(step){
+      return [
+        null,
+        {img:ASSETS.t1,title:"欢迎来到森林小店",text:"侦探小松鼠想请你当小助手。等一下，我们会帮小动物找商品。",target:"先认识场景",stickers:["小店","小熊","小松鼠"],demo:"welcome"},
+        {img:ASSETS.t2,title:"目标卡出现",text:"先看目标卡。这里会告诉你这次要找什么。",target:"目标：找红色的商品",stickers:["红色"],demo:"target"},
+        {img:ASSETS.t3,title:"点击一次，星星加一",text:"每发现一个目标，就点击一次。找到后会出现轻轻的贴纸反馈。",target:"目标：找红色的商品",stickers:["红色"],demo:"tap"},
+        {img:ASSETS.t4,title:"两个贴纸都要看",text:"有时会出现两个线索。颜色和形状都合适，才是这次的商品。",target:"目标：红色 + 圆形",stickers:["红色","圆形"],demo:"twoRules"},
+        {img:ASSETS.t5,title:"也会整理顺序",text:"有时候不是找一个商品，而是按线索从左到右排好。",target:"目标：从小到大排好",stickers:["从小","到大"],demo:"order"},
+        {img:ASSETS.t6,title:"准备进入训练",text:"训练时，目标卡会一直显示。你可以暂停，也可以随时要一点提示。",target:"目标卡会一直在这里",stickers:["暂停","倒计时","星星"],demo:"ready"}
+      ][step];
+    }
+    function renderTutorial(){
+      const d=tutorialData(state.tutorialStep);
+      const isLast=state.tutorialStep===6;
+      return `<main class="${rootClass()}"><section class="tutorial-card">
+        <img class="t-bg" src="${d.img}" alt="教学场景第${state.tutorialStep}屏">
+        <div class="tutorial-layer"><aside class="speech"><span class="eyebrow">场景演示 ${state.tutorialStep}/6</span><h2>${d.title}</h2><p>${d.text}</p>${state.tutorialStep>1?targetMini(d.target,d.stickers):""}<div class="actions"><button class="btn ghost" onclick="Game.gotoCover()">返回封面</button><button class="btn primary" onclick="Game.nextTutorial()">${isLast?"准备开始":"下一步"}</button></div></aside><div class="stage-demo">${tutorialDemo(d.demo,d.target,d.stickers)}</div></div>
+      </section></main>`;
+    }
+    function targetMini(text,stickers){return `<div class="info-box"><h3>目标卡</h3><p class="target-text">${text}</p><div class="stickers">${stickers.map(s=>`<span class="sticker ${stickerClass(s)}">${s}</span>`).join("")}</div></div>`}
+    function tutorialDemo(kind,target,stickers){
+      const targetCard = `<div class="floating-card"><strong>${target||"看场景"}</strong><div class="stickers">${(stickers||[]).map(s=>`<span class="sticker ${stickerClass(s)}">${s}</span>`).join("")}</div></div>`;
+      if(kind==="welcome") return `<img class="success-pop" style="left:36px;top:38px;width:120px;height:120px" src="${ASSETS.squirrel}" alt="侦探小松鼠"><div class="toast-note">欢迎来到森林小店</div>`;
+      if(kind==="target") return `${targetCard}<div class="demo-shelf"><button class="item-btn correct-glow"><img src="${ITEM_IMAGES.apple}" alt="红苹果"><span class="name">红苹果</span></button><button class="item-btn"><img src="${ITEM_IMAGES.milk}" alt="蓝牛奶"><span class="name">蓝牛奶</span></button></div><img class="hand" style="right:310px;bottom:130px" src="${ASSETS.hand}" alt="手势指向目标">`;
+      if(kind==="tap") return `${targetCard}<div class="demo-shelf"><button class="item-btn correct-glow"><img src="${ITEM_IMAGES.apple}" alt="红苹果"><span class="name">红苹果</span></button><button class="item-btn"><img src="${ITEM_IMAGES.box}" alt="蓝方盒"><span class="name">蓝方盒</span></button></div><img class="hand" style="right:330px;bottom:132px" src="${ASSETS.hand}" alt="点击手势"><img class="success-pop" src="${ASSETS.success}" alt="找到啦"><div class="plus-one">+1</div>`;
+      if(kind==="twoRules") return `${targetCard}<div class="demo-shelf"><button class="item-btn correct-glow"><img src="${ITEM_IMAGES.cookie}" alt="红圆饼"><span class="name">红圆饼</span></button><button class="item-btn"><img src="${ITEM_IMAGES.gift}" alt="紫礼盒"><span class="name">紫礼盒</span></button><button class="item-btn"><img src="${ITEM_IMAGES.ball}" alt="彩圆球"><span class="name">彩圆球</span></button></div><img class="hand" style="right:320px;bottom:130px" src="${ASSETS.hand}" alt="点击手势">`;
+      if(kind==="order") return `${targetCard}<div class="demo-shelf"><button class="item-btn correct-glow"><img style="width:55px;height:55px" src="${ITEM_IMAGES.token}" alt="小绿叶牌"><span class="name">小</span></button><button class="item-btn correct-glow"><img style="width:70px;height:70px" src="${ITEM_IMAGES.apple}" alt="中红苹果"><span class="name">中</span></button><button class="item-btn correct-glow"><img style="width:90px;height:90px" src="${ITEM_IMAGES.ball}" alt="大圆球"><span class="name">大</span></button></div><div class="plus-one" style="right:44px;top:92px">排好啦</div>`;
+      return `${targetCard}<div class="toast-note">准备开始训练吧！</div><img class="success-pop" style="right:42px;top:90px" src="${ASSETS.success}" alt="准备完成">`;
+    }
+    function renderReady(){
+      return `<main class="${rootClass()}">${background(state.lowStim?ASSETS.lowScene:ASSETS.scene)}<section class="ready-modal"><span class="eyebrow" style="justify-self:center">森林小店准备好了</span><h2>准备开始训练吧！</h2><p>目标卡会一直在上方。看线索贴纸，选商品，星星会慢慢增加。</p><p class="small">${state.readyMode==="practice"?"进入训练前，会先做 3 个不计成绩的低压练习。":"接下来进入正式训练，左上可暂停，右上会显示倒计时和星星。"}</p><div class="actions" style="justify-content:center"><button class="btn secondary" onclick="Game.startTutorial()">重新演示</button><button class="btn primary" onclick="Game.enterReady()">进入训练</button></div></section></main>`;
+    }
+    function practicePuzzles(){
+      const apple=items.find(i=>i.id==="apple"), milk=items.find(i=>i.id==="milk"), ball=items.find(i=>i.id==="ball"), gift=items.find(i=>i.id==="gift"), cheese=items.find(i=>i.id==="cheese");
+      return [
+        {mode:"pick",level:1,targetText:"练习：找红色的商品",stickers:["红色"],candidates:[apple,milk],correctIds:["apple"],hintText:"找红色的商品，红苹果正合适。",started:Date.now()},
+        {mode:"pick",level:2,targetText:"练习：找圆形的商品",stickers:["圆形"],candidates:[ball,gift],correctIds:["ball"],hintText:"找圆圆的商品，彩圆球正合适。",started:Date.now()},
+        {mode:"pick",level:3,targetText:"练习：找水果商品",stickers:["水果"],candidates:[apple,gift,cheese],correctIds:["apple"],hintText:"水果商品是红苹果。",started:Date.now()}
+      ];
+    }
+    function renderPractice(){
+      const p=state.currentPuzzle;
+      return `<main class="${rootClass()}"><section class="game-shell"><img class="game-bg" src="${state.lowStim?ASSETS.lowScene:ASSETS.scene}" alt="低压练习背景"><div class="game-overlay"></div><div class="hud"><div class="hud-left"><button class="pause-btn" onclick="Game.startTutorial()" aria-label="重新演示">↺</button><span class="pill">低压练习 ${state.practice.index+1}/3</span></div><div class="hud-right"><span class="pill">不计成绩</span><span class="pill">星星 ${state.practice.correct}</span></div></div><div class="training-main">${targetPanel(p,true)}<div class="play-area"><div class="round-title"><h3>先试一试</h3><button class="btn secondary" onclick="Game.useHint()">给我一点提示</button></div>${renderPuzzle(p)}${renderFeedback()}<div class="bottom-actions"><button class="btn ghost" onclick="Game.gotoReadyFromPractice()">跳到准备页</button><span class="small">点到不合适的商品也没关系，线索会更清楚。</span></div></div></div></section></main>`;
+    }
+    function renderCountdown(){
+      return `<main class="${rootClass()}">${background(state.lowStim?ASSETS.lowScene:ASSETS.scene)}<section class="ready-modal"><span class="eyebrow" style="justify-self:center">${formatLevel(state.level)}</span><h2>正式训练马上开始</h2><div class="countdown">${state.countdown}</div><p>目标卡会一直显示在左侧。</p></section></main>`;
+    }
+    function renderTraining(){
+      const s=state.session,p=state.currentPuzzle, cfg=levels[state.level];
+      return `<main class="${rootClass()}"><section class="game-shell"><img class="game-bg" src="${state.lowStim?ASSETS.lowScene:ASSETS.scene}" alt="正式训练背景"><div class="game-overlay"></div><div class="hud"><div class="hud-left"><button class="pause-btn" onclick="Game.pause()" aria-label="暂停">Ⅱ</button><span class="pill">${formatLevel(state.level)}</span><span class="pill">订单 ${Math.min(s.roundIndex+1,cfg.rounds)}/${cfg.rounds}</span></div><div class="hud-right"><span class="pill">倒计时 ${formatTime(s.remaining)}</span><span class="pill">星星 ${s.correct}</span><span class="pill">分数 ${s.score}</span></div></div><div class="training-main">${targetPanel(p,false)}<div class="play-area"><div class="round-title"><h3>${p.mode==="order"?"按顺序整理货架":p.mode==="basket"?"帮小熊分物品":"在货架上找商品"}</h3><button class="btn secondary" onclick="Game.useHint()">给我一点提示</button></div>${renderPuzzle(p)}${renderFeedback()}<div class="bottom-actions"><span class="small">当前目标一直在左侧。难内容会标为“进阶挑战”。</span></div></div></div></section></main>`;
+    }
+    function renderPaused(){
+      return `<main class="${rootClass()}">${background(state.lowStim?ASSETS.lowScene:ASSETS.scene)}<section class="ready-modal"><span class="eyebrow" style="justify-self:center">暂停</span><h2>先歇一小会儿</h2><p>倒计时已经暂停。继续后会回到当前订单。</p><div class="actions" style="justify-content:center"><button class="btn primary" onclick="Game.resume()">继续训练</button><button class="btn secondary" onclick="Game.startTutorial()">重新演示</button><button class="btn ghost" onclick="Game.gotoHome()">回到首页</button></div></section></main>`;
+    }
+    function renderResult(){
+      const r=state.session.result;
+      return `<main class="${rootClass()}">${background(ASSETS.detail)}<section class="wrap result-grid"><article class="modal-card result-card"><img class="badge-img" src="${ASSETS.badge}" alt="结算星星徽章"><span class="eyebrow" style="justify-self:center">结算页</span><h2>${r.passed?"小店整理得很顺利":"这一轮先整理到这里"}</h2><p>${r.message}</p><div class="actions"><button class="btn primary" onclick="Game.playRecommended()">按推荐再玩一轮</button><button class="btn secondary" onclick="Game.gotoRecommendation()">看看下一步</button><button class="btn ghost" onclick="Game.gotoHome()">回到首页</button></div></article><article class="modal-card result-card"><h2>本轮表现</h2><div class="metric-grid"><div class="metric"><b>${formatLevel(r.level)}</b><span>本轮难度</span></div><div class="metric"><b>${r.correct}/${r.rounds}</b><span>完成订单</span></div><div class="metric"><b>${r.accuracyText}</b><span>正确率</span></div><div class="metric"><b>${r.avgText}</b><span>平均用时</span></div><div class="metric"><b>${r.hints}</b><span>提示次数</span></div><div class="metric"><b>${r.score}</b><span>本轮分数</span></div></div><div class="info-box"><h3>下轮推荐难度</h3><p class="target-text">${formatLevel(r.nextLevel)}</p><p class="small">推荐依据：正确率、平均用时、提示次数和是否开启低刺激模式。记录已保存到本机 localStorage。</p></div></article></section></main>`;
+    }
+    function renderRecommendation(){
+      const r=state.session?.result || readJson(KEY_LAST,null);
+      return `<main class="${rootClass()}">${background(ASSETS.cover)}<section class="ready-modal"><span class="eyebrow" style="justify-self:center">下一步推荐</span><h2>继续帮小熊整理小店</h2><p>推荐从 <b>${formatLevel(r?.nextLevel || state.level)}</b> 开始。第 1-3 级仍然是轻松关卡，第 7 级以后会显示“进阶挑战”。</p><div class="actions" style="justify-content:center"><button class="btn primary" onclick="Game.playRecommended()">按推荐开始</button><button class="btn secondary" onclick="Game.startTutorial()">重新演示</button><button class="btn ghost" onclick="Game.gotoHome()">回首页</button></div></section></main>`;
+    }
+    function targetPanel(p,isPractice){
+      return `<aside class="target-panel" aria-live="polite"><div class="target-title">目标卡</div><div class="target-text">${p.targetText}</div><div class="stickers">${p.stickers.map(s=>`<span class="sticker ${stickerClass(s)}">${s}</span>`).join("")}</div><p class="target-note">目标会一直显示。${isPractice?"这是低压练习，不计入正式表现。":"照着线索找唯一答案。"}</p><div class="character-row"><img src="${ASSETS.squirrel}" alt="侦探小松鼠"><img src="${ASSETS.bear}" alt="货架小熊"></div></aside>`;
+    }
+    function renderPuzzle(p){
+      if(p.mode==="basket") return renderBasketPuzzle(p);
+      if(p.mode==="order") return renderOrderPuzzle(p);
+      return `<div class="shelf" role="group" aria-label="商品货架">${p.candidates.map(it=>itemButton(it,p)).join("")}</div>`;
+    }
+    function itemButton(it,p){
+      const glow = state.hintActive && p.correctIds.includes(it.id) ? " correct-glow" : "";
+      const selected = state.selectedItem===it.id ? " selected" : "";
+      const used = state.selectedOrder.includes(it.id) ? " used" : "";
+      const scale = p.mode==="order" ? `style="transform:scale(${0.78+it.size*0.07})"` : "";
+      return `<button class="item-btn${glow}${selected}${used}" ${used?"disabled":""} onclick="Game.handleItem('${it.id}')" aria-label="${it.name}，${colorLabel[it.color]}，${shapeLabel[it.shape]}，${categoryLabel[it.category]}"><img ${scale} src="${it.img}" alt="${it.name}"><span class="name">${it.name}</span><span class="mini">${colorLabel[it.color]} · ${shapeLabel[it.shape]}</span></button>`;
+    }
+    function renderBasketPuzzle(p){
+      return `<div class="shelf" role="group" aria-label="待分类商品">${p.candidates.map(it=>itemButton(it,p)).join("")}</div><div class="basket-row"><button class="basket red-basket" onclick="Game.handleBasket('red')">红篮<span class="small">放合适商品</span></button><button class="basket blue-basket" onclick="Game.handleBasket('blue')">蓝篮<span class="small">不是这次目标</span></button></div>`;
+    }
+    function renderOrderPuzzle(p){
+      return `<div class="shelf" role="group" aria-label="排序商品">${p.candidates.map(it=>itemButton(it,p)).join("")}</div><div class="order-strip" aria-label="已选择顺序">${state.selectedOrder.length?state.selectedOrder.map((id,i)=>`<div class="order-chip">${i+1}. ${items.find(x=>x.id===id)?.name||"商品"}</div>`).join(""):`<div class="order-chip">先点最小的</div><div class="order-chip">再点中间的</div><div class="order-chip">最后点最大的</div>`}</div><button class="btn ghost" onclick="Game.resetOrder()">重新排一次</button>`;
+    }
+    function renderFeedback(){
+      if(!state.feedback) return `<div class="feedback">看目标卡，慢慢找。</div>`;
+      const cls=state.feedback.kind==="good"?"good":"hint";
+      const img=state.feedback.kind==="good"?ASSETS.success:ASSETS.hint;
+      return `<div class="feedback ${cls}"><img src="${img}" alt="反馈贴纸"><span>${state.feedback.text}</span></div>`;
+    }
+    function stickerClass(s){if(s.includes("红"))return"red";if(s.includes("蓝"))return"blue";if(s.includes("黄"))return"yellow";if(s.includes("绿")||s.includes("水果")||s.includes("小店"))return"green";if(s.includes("紫"))return"purple";if(s.includes("橙"))return"orange";return"";}
+    function matches(it,rule){
+      if(rule.kind==="color")return it.color===rule.value;
+      if(rule.kind==="shape")return it.shape===rule.value;
+      if(rule.kind==="category")return it.category===rule.value;
+      if(rule.kind==="excludeColor")return it.color!==rule.value;
+      return true;
+    }
+    function matchesAll(it,rules){return rules.every(r=>matches(it,r));}
+    function makePickPuzzle(level,ruleType,candidateCount,overrideText){
+      let target=choice(items), rules=[], stickers=[], targetText="";
+      if(ruleType==="color"){target=choice(items);rules=[{kind:"color",value:target.color}];stickers=[colorLabel[target.color]];targetText=overrideText||`目标：找${colorLabel[target.color]}的商品`;}
+      if(ruleType==="shape"){target=choice(items);rules=[{kind:"shape",value:target.shape}];stickers=[shapeLabel[target.shape]];targetText=overrideText||`目标：找${shapeLabel[target.shape]}的商品`;}
+      if(ruleType==="category"){target=choice(items.filter(i=>["fruit","snack","box","toy","drink","veg"].includes(i.category)));rules=[{kind:"category",value:target.category}];stickers=[categoryLabel[target.category]];targetText=overrideText||`目标：找${categoryLabel[target.category]}商品`;}
+      if(ruleType==="colorShape"){target=choice(items);rules=[{kind:"color",value:target.color},{kind:"shape",value:target.shape}];stickers=[colorLabel[target.color],shapeLabel[target.shape]];targetText=`目标：找${colorLabel[target.color]} + ${shapeLabel[target.shape]}的商品`;}
+      if(ruleType==="colorCategory"){target=choice(items);rules=[{kind:"color",value:target.color},{kind:"category",value:target.category}];stickers=[colorLabel[target.color],categoryLabel[target.category]];targetText=`目标：找${colorLabel[target.color]} + ${categoryLabel[target.category]}商品`;}
+      if(ruleType==="exclude"){
+        target=choice(items); const excludeColor=choice(Object.keys(colorLabel).filter(c=>c!==target.color));
+        rules=[{kind:"shape",value:target.shape},{kind:"excludeColor",value:excludeColor}];stickers=[shapeLabel[target.shape],`不要${colorLabel[excludeColor]}`];targetText=`目标：找${shapeLabel[target.shape]}，但不要${colorLabel[excludeColor]}`;
+      }
+      const possibleCorrect = items.filter(it=>matchesAll(it,rules));
+      target = possibleCorrect.includes(target)?target:possibleCorrect[0];
+      const distractors = shuffle(items.filter(it=>it.id!==target.id && !matchesAll(it,rules))).slice(0,Math.max(1,candidateCount-1));
+      let candidates = shuffle([target,...distractors]);
+      const correctIds = candidates.filter(it=>matchesAll(it,rules)).map(it=>it.id);
+      if(correctIds.length!==1){return makePickPuzzle(level, ruleType==="exclude"?"colorShape":ruleType, candidateCount, overrideText);}
+      return {mode:"pick",level,targetText,stickers,candidates,correctIds,hintText:hintForRules(stickers)};
+    }
+    function makeBasketPuzzle(level){
+      const target=choice(items.filter(i=>i.category==="fruit"||i.category==="snack"||i.category==="veg"));
+      const distractors=shuffle(items.filter(i=>i.id!==target.id && i.category!==target.category)).slice(0,3);
+      return {mode:"basket",level,targetText:`目标：把${categoryLabel[target.category]}放进红篮`,stickers:[categoryLabel[target.category],"红篮"],candidates:shuffle([target,...distractors]),correctIds:[target.id],correctBasket:"red",hintText:`先找${categoryLabel[target.category]}，再点红篮。`};
+    }
+    function makeOrderPuzzle(level,count){
+      const base=shuffle(items).slice(0,count);
+      const ordered=[...base].sort((a,b)=>a.size-b.size || a.name.localeCompare(b.name,"zh-CN"));
+      return {mode:"order",level,targetText:"目标：从小到大排好",stickers:["从小","到大"],candidates:shuffle(base),correctIds:ordered.map(i=>i.id),hintText:"先点看起来最小的，再点更大的。"};
+    }
+    function makePuzzle(level){
+      const cfg=levels[level];
+      if(cfg.mode==="mixed"){
+        const pick=choice(["colorShape","colorCategory","exclude","basket","order"]);
+        if(pick==="basket")return makeBasketPuzzle(level);
+        if(pick==="order")return makeOrderPuzzle(level,5);
+        return makePickPuzzle(level,pick,5);
+      }
+      if(cfg.mode==="basket")return makeBasketPuzzle(level);
+      if(cfg.mode==="order")return makeOrderPuzzle(level,cfg.candidates);
+      return makePickPuzzle(level,cfg.rule,cfg.candidates);
+    }
+    function hintForRules(stickers){return stickers.length>1?`可以先看“${stickers[0]}”，再看“${stickers[1]}”。`:`先找和“${stickers[0]}”一样的商品。`;}
+    function newRound(){
+      stopRoundTimers(); state.feedback=null; state.hintActive=false; state.selectedItem=null; state.selectedOrder=[]; state.currentPuzzle=makePuzzle(state.level); state.currentPuzzle.started=Date.now(); scheduleAutoHint();
+    }
+    function scheduleAutoHint(){
+      if(autoHintTimer)clearTimeout(autoHintTimer); const cfg=levels[state.level]||levels[1];
+      autoHintTimer=setTimeout(()=>{ if(["training","practice"].includes(state.screen) && state.currentPuzzle){ state.hintActive=true; state.feedback={kind:"hint",text:"目标卡还在这里，可以照着贴纸慢慢看。"}; render(); } }, (cfg.autoHint||5)*1000);
+    }
+    function startPractice(){stopAllTimers(); state.screen="practice"; state.practice={index:0,correct:0,miss:0}; state.hasPracticed=true; state.readyMode="training"; state.currentPuzzle=practicePuzzles()[0]; state.currentPuzzle.started=Date.now(); state.feedback=null; state.hintActive=false; scheduleAutoHint(); render();}
+    function startTrainingCountdown(){stopAllTimers(); state.level=clampLevel(Number(localStorage.getItem(KEY_NEXT)) || state.level || 1); state.countdown=3; state.screen="countdown"; render(); countTimer=setInterval(()=>{state.countdown--; if(state.countdown<=0){clearInterval(countTimer);countTimer=null; beginTraining();}else render();},1000);}
+    function beginTraining(){
+      const cfg=levels[state.level]; state.session={level:state.level,roundIndex:0,correct:0,miss:0,hints:0,score:0,totalResponse:0,remaining:cfg.seconds,result:null}; state.screen="training"; newRound(); render(); gameTimer=setInterval(()=>{ if(state.screen!=="training")return; state.session.remaining--; if(state.session.remaining<=0){finishSession("time");} else render();},1000);
+    }
+    function finishSession(reason){
+      if(gameTimer)clearInterval(gameTimer); if(autoHintTimer)clearTimeout(autoHintTimer); gameTimer=autoHintTimer=null;
+      const s=state.session,cfg=levels[s.level]; const accuracy = s.correct / Math.max(1,s.correct+s.miss); const avg = s.correct ? s.totalResponse/s.correct : 0; const nextLevel=decideNextLevel({level:s.level,correct:s.correct,miss:s.miss,hints:s.hints,rounds:cfg.rounds,avg,low:state.lowStim});
+      const result={level:s.level,rounds:cfg.rounds,correct:s.correct,miss:s.miss,hints:s.hints,score:s.score,avg,avgText:s.correct?`${(avg/1000).toFixed(1)} 秒`:"还没有记录",accuracy,accuracyText:`${Math.round(accuracy*100)}%`,nextLevel,passed:s.correct>=cfg.pass,message:s.correct>=cfg.pass?"侦探小松鼠和货架小熊都收到了清楚的线索。":"下一轮会把线索放大一点，继续用轻松节奏整理。"};
+      s.result=result; state.lastRecommendation=nextLevel; localStorage.setItem(KEY_NEXT,String(nextLevel)); localStorage.setItem(KEY_LAST,JSON.stringify(result)); const hist=readJson(KEY_HISTORY,[]); hist.push({...result,at:new Date().toISOString(),reason}); localStorage.setItem(KEY_HISTORY,JSON.stringify(hist.slice(-12))); state.screen="result"; render();
+    }
+    function decideNextLevel(m){
+      const target={1:9000,2:8500,3:8000,4:7500,5:7000,6:7500,7:6500,8:6500,9:7000,10:6000}[m.level]||8000;
+      const accuracy=m.correct/Math.max(1,m.correct+m.miss), hintRate=m.hints/Math.max(1,m.rounds); let next=m.level;
+      const strong=accuracy>=.85 && hintRate<=.25 && (m.avg===0 || m.avg<=target) && m.correct>=Math.min(5,m.rounds);
+      const support=accuracy<.60 || hintRate>.50 || (m.avg>0 && m.avg>target*1.8);
+      if(m.level<=3){ next=strong?m.level+1:m.level; }
+      else if(strong){ next=m.level+1; }
+      else if(support){ next=m.level-1; }
+      if(m.low && next>7) next=7;
+      return clampLevel(next);
+    }
+    function handleCorrect(){
+      const p=state.currentPuzzle; const response=Date.now()-(p.started||Date.now()); state.feedback={kind:"good",text:"找到啦，星星 +1"}; state.hintActive=false; stopRoundTimers();
+      if(state.screen==="practice"){
+        state.practice.correct++; render(); feedbackTimer=setTimeout(()=>{ state.practice.index++; if(state.practice.index>=3){ state.readyMode="training"; state.screen="ready"; render(); } else { state.currentPuzzle=practicePuzzles()[state.practice.index]; state.currentPuzzle.started=Date.now(); state.feedback=null; state.hintActive=false; scheduleAutoHint(); render(); }},650); return;
+      }
+      const s=state.session,cfg=levels[state.level]; s.correct++; s.score+=cfg.points; s.totalResponse+=response; render(); feedbackTimer=setTimeout(()=>{s.roundIndex++; if(s.roundIndex>=cfg.rounds) finishSession("rounds"); else {newRound(); render();}},650);
+    }
+    function handleSoftMiss(text){
+      if(state.screen==="practice") state.practice.miss++; else if(state.session){state.session.miss++; if(state.level>3) state.session.score=Math.max(0,state.session.score-1);} state.feedback={kind:"hint",text:text||"这件还没有和贴纸对上，再看看目标卡。"}; render();
+    }
+    function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||"") || fallback}catch(e){return fallback}}
+    function formatTime(sec){const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;}
+    window.Game = {
+      gotoHome(){stopAllTimers(); state.screen="home"; render();},
+      gotoDetail(){stopAllTimers(); state.screen="detail"; render();},
+      gotoCover(){stopAllTimers(); state.screen="cover"; render();},
+      startTutorial(){stopAllTimers(); state.screen="tutorial"; state.tutorialStep=1; state.feedback=null; render();},
+      nextTutorial(){ if(state.tutorialStep<6){state.tutorialStep++; render();} else {state.readyMode=state.hasPracticed?"training":"practice"; state.screen="ready"; render();}},
+      enterReady(){ if(state.readyMode==="practice") startPractice(); else startTrainingCountdown();},
+      gotoReadyFromPractice(){state.readyMode="training"; state.screen="ready"; render();},
+      toggleLow(){state.lowStim=!state.lowStim; localStorage.setItem(KEY_LOW,state.lowStim?"1":"0"); render();},
+      pause(){ if(state.screen==="training"){ if(gameTimer)clearInterval(gameTimer); if(autoHintTimer)clearTimeout(autoHintTimer); state.screen="paused"; render();}},
+      resume(){ if(state.screen==="paused"){ state.screen="training"; scheduleAutoHint(); gameTimer=setInterval(()=>{ if(state.screen!=="training")return; state.session.remaining--; if(state.session.remaining<=0){finishSession("time");} else render();},1000); render();}},
+      useHint(){ if(state.session)state.session.hints++; state.hintActive=true; state.feedback={kind:"hint",text:state.currentPuzzle?.hintText||"先看目标卡，再看商品。"}; render();},
+      handleItem(id){
+        const p=state.currentPuzzle; if(!p)return;
+        if(p.mode==="basket"){ state.selectedItem=id; state.feedback={kind:"hint",text:"现在点一个篮子。"}; render(); return; }
+        if(p.mode==="order"){
+          if(state.selectedOrder.includes(id))return; state.selectedOrder.push(id);
+          if(state.selectedOrder.length===p.correctIds.length){ const ok=state.selectedOrder.every((v,i)=>v===p.correctIds[i]); if(ok)handleCorrect(); else {state.selectedOrder=[]; handleSoftMiss("顺序还可以再调整一次。先从最小的开始。")}; } else render(); return;
+        }
+        if(p.correctIds.includes(id)) handleCorrect(); else handleSoftMiss();
+      },
+      handleBasket(bid){ const p=state.currentPuzzle; if(!p || p.mode!=="basket")return; if(!state.selectedItem){handleSoftMiss("先点一个商品，再点篮子。"); return;} const ok=p.correctIds.includes(state.selectedItem) && bid===p.correctBasket; if(ok)handleCorrect(); else handleSoftMiss("再看看：这次要把符合线索的商品放进红篮。")},
+      resetOrder(){state.selectedOrder=[]; state.feedback={kind:"hint",text:"重新从第一个位置开始排。"}; render();},
+      playRecommended(){stopAllTimers(); state.level=clampLevel(Number(localStorage.getItem(KEY_NEXT))||state.lastRecommendation||1); state.readyMode="training"; startTrainingCountdown();},
+      gotoRecommendation(){state.screen="recommendation"; render();}
+    };
+    render();
+  </script>
+</body>
+</html>

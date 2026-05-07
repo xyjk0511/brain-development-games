@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>甜甜圈收纳架</title>
+  <style>
+    :root{
+      --cream:#fff8ec;
+      --cream-2:#fffdf7;
+      --sky:#ddf1ff;
+      --mint:#bfead2;
+      --yellow:#ffd978;
+      --orange:#ff9a7a;
+      --purple:#dccbff;
+      --brown:#5b4636;
+      --brown-2:#8a684c;
+      --line:#d8b889;
+      --shadow:0 18px 38px rgba(91,70,54,.18);
+      --soft-shadow:0 10px 22px rgba(91,70,54,.13);
+      --radius:26px;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body,#app{width:100%;min-height:100%;margin:0}
+    body{font-family:var(--font);background:var(--cream);color:var(--brown);overflow-x:hidden}
+    button{font-family:inherit;color:inherit}
+    .app{min-height:100vh;position:relative;background:linear-gradient(180deg,#fff8ec,#fff2db);padding:22px}
+    .hidden{display:none!important}
+    .kitchen-bg{position:fixed;inset:0;background:url('assets/scene-background.png') center/cover no-repeat;z-index:-2}
+    .kitchen-bg.low{background-image:url('assets/low-stim-background.png')}
+    .wash{position:fixed;inset:0;background:rgba(255,248,236,.25);z-index:-1}
+    .page{max-width:1180px;margin:0 auto;min-height:calc(100vh - 44px)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:clamp(24px,3vw,36px)}
+    .brand-dot{width:48px;height:48px;border-radius:18px;background:radial-gradient(circle at 50% 50%,#fff 0 18%,transparent 19%),linear-gradient(135deg,#ff9a7a,#ffd978);box-shadow:var(--soft-shadow)}
+    .small-note{font-size:16px;color:#7a604a;line-height:1.55}
+    .pill{display:inline-flex;align-items:center;justify-content:center;padding:7px 13px;border-radius:999px;background:#fff;border:2px solid #ead6b6;font-weight:800;color:#7a604a;white-space:nowrap}
+    .pill.easy{background:#effbec;border-color:#bfead2;color:#4d8061}
+    .pill.advanced{background:#fff0f0;border-color:#ffb2a0;color:#b85e48}
+    .btn{appearance:none;border:0;border-radius:20px;padding:15px 22px;font-size:20px;font-weight:900;cursor:pointer;background:linear-gradient(180deg,#ffd978,#ffc34d);box-shadow:0 8px 0 #d4942d, var(--soft-shadow);transition:transform .12s ease, box-shadow .12s ease;min-height:56px}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(4px);box-shadow:0 4px 0 #d4942d,var(--soft-shadow)}
+    .btn.secondary{background:linear-gradient(180deg,#fff,#f7ead4);box-shadow:0 7px 0 #d8b889,var(--soft-shadow)}
+    .btn.blue{background:linear-gradient(180deg,#ddf1ff,#b8e2ff);box-shadow:0 7px 0 #7cb5db,var(--soft-shadow)}
+    .btn.green{background:linear-gradient(180deg,#d7f5df,#aee5c0);box-shadow:0 7px 0 #77b88c,var(--soft-shadow)}
+    .btn.dangerless{background:linear-gradient(180deg,#ffe5df,#ffc3b4);box-shadow:0 7px 0 #df8b75,var(--soft-shadow)}
+    .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+    .icon-btn{width:58px;height:58px;border:0;border-radius:20px;background:#fff;box-shadow:var(--soft-shadow);font-size:24px;font-weight:900;cursor:pointer;border:2px solid #ead6b6}
+    .card{background:rgba(255,253,247,.93);border:2px solid #ead6b6;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .home-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
+    .home-card img{width:100%;height:330px;object-fit:cover;display:block}
+    .home-card-body{padding:24px}
+    .home-card h1,.cover-panel h1{font-size:clamp(34px,5vw,64px);line-height:1.05;margin:0 0 12px;color:#8a4c29;text-shadow:0 3px 0 #ffe3b8}
+    .home-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .info-panel{padding:24px;display:flex;flex-direction:column;gap:16px}
+    .section-title{font-size:26px;font-weight:950;color:#8a4c29;margin:0 0 8px}
+    .rule-list{margin:0;padding-left:22px;font-size:20px;line-height:1.65}
+    .rule-list li{margin:4px 0}
+    .level-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+    .level-chip{border:2px solid #ead6b6;border-radius:16px;padding:10px;background:#fff;font-weight:900;text-align:center;font-size:15px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(91,70,54,.22);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+    .modal{width:min(980px,100%);max-height:92vh;overflow:auto;background:#fffdf7;border:3px solid #ead6b6;border-radius:30px;box-shadow:0 24px 80px rgba(91,70,54,.28);padding:22px}
+    .detail-layout{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+    .detail-layout img{width:100%;border-radius:24px;border:2px solid #ead6b6}
+    .modal-actions{display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .cover{min-height:calc(100vh - 44px);display:flex;align-items:center;justify-content:center;background:url('assets/game-cover-poster.png') center/cover no-repeat;border-radius:30px;box-shadow:var(--shadow);padding:28px;position:relative;overflow:hidden}
+    .cover:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,248,236,.80),rgba(255,248,236,.35));}
+    .cover-panel{position:relative;z-index:1;width:min(620px,100%);background:rgba(255,253,247,.93);border:3px solid #ead6b6;border-radius:32px;padding:28px;box-shadow:var(--shadow)}
+    .cover-panel p{font-size:21px;line-height:1.6;margin:12px 0}
+    .cover-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .tutorial-wrap,.play-wrap{min-height:calc(100vh - 44px);display:flex;flex-direction:column;gap:14px}
+    .tutorial-stage{position:relative;flex:1;min-height:620px;border-radius:32px;overflow:hidden;box-shadow:var(--shadow);border:3px solid #ead6b6;background:#fff8ec center/cover no-repeat}
+    .tutorial-stage:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,236,.28),rgba(255,248,236,.50));}
+    .coach{position:absolute;left:24px;bottom:22px;width:180px;border-radius:26px;box-shadow:var(--soft-shadow);border:3px solid rgba(255,255,255,.8);z-index:2}
+    .speech{position:absolute;left:210px;bottom:34px;right:24px;z-index:3;background:rgba(255,253,247,.96);border:3px solid #ead6b6;border-radius:28px;padding:20px;box-shadow:var(--soft-shadow)}
+    .speech h2{margin:0 0 8px;font-size:30px;color:#8a4c29}
+    .speech p{margin:0;font-size:22px;line-height:1.55}
+    .tutorial-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .progress-dots{display:flex;gap:8px;align-items:center}
+    .dot{width:15px;height:15px;border-radius:50%;background:#ead6b6}
+    .dot.on{background:#ff9a7a;box-shadow:0 0 0 5px rgba(255,154,122,.20)}
+    .hud{display:grid;grid-template-columns:1fr minmax(320px,480px) 1fr;gap:12px;align-items:start;position:relative;z-index:5}
+    .hud-box{background:rgba(255,253,247,.94);border:2px solid #ead6b6;border-radius:24px;box-shadow:var(--soft-shadow);padding:12px 14px;min-height:74px}
+    .hud-left,.hud-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .hud-right{justify-content:flex-end;text-align:right}
+    .big-stat{font-size:24px;font-weight:950;color:#8a4c29}
+    .target-card{position:relative;background:rgba(255,253,247,.96);border:3px solid #d8b889;border-radius:28px;padding:10px 12px 14px;box-shadow:var(--soft-shadow)}
+    .target-card h3{margin:0 0 6px;text-align:center;color:#8a4c29;font-size:20px}
+    .target-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:120px}
+    .mini-rack{position:relative;border-radius:18px;background:rgba(221,241,255,.55);border:2px dashed #d8b889;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;overflow:hidden}
+    .mini-rack:before{content:"";position:absolute;bottom:8px;width:8px;height:76px;border-radius:8px;background:#b9854f;opacity:.65}
+    .mini-stack{display:flex;flex-direction:column-reverse;align-items:center;gap:2px;z-index:1;width:100%;height:82px;justify-content:flex-start}
+    .mini-donut{height:16px;border-radius:50px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12);border:1px solid rgba(90,70,54,.2)}
+    .play-stage{position:relative;flex:1;min-height:640px;border-radius:32px;overflow:hidden;box-shadow:var(--shadow);border:3px solid #ead6b6;background:url('assets/scene-background.png') center/cover no-repeat;padding:14px;display:flex;flex-direction:column;gap:14px}
+    .play-stage.low{background-image:url('assets/low-stim-background.png')}
+    .board-shell{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:12px 16px 80px}
+    .rack-area{width:min(900px,100%);height:420px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:end;position:relative}
+    .rack{height:400px;position:relative;border-radius:26px;background:rgba(255,253,247,.58);border:3px solid rgba(234,214,182,.8);cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding:0 12px 42px;transition:box-shadow .15s ease, transform .15s ease}
+    .rack:hover{box-shadow:0 0 0 5px rgba(255,217,120,.28)}
+    .rack.hint-from{box-shadow:0 0 0 6px rgba(255,154,122,.35)}
+    .rack.hint-to{box-shadow:0 0 0 6px rgba(191,234,210,.55)}
+    .rack:before{content:"";position:absolute;bottom:50px;width:18px;height:275px;border-radius:18px;background:linear-gradient(90deg,#c88b53,#f0be78,#b87944);box-shadow:inset 0 -4px 0 rgba(91,70,54,.22)}
+    .rack:after{content:attr(data-label);position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-weight:950;color:#8a684c;background:#fff8ec;border:2px solid #ead6b6;border-radius:999px;padding:4px 10px}
+    .donut-stack{position:relative;z-index:2;width:100%;display:flex;flex-direction:column-reverse;align-items:center;gap:8px;min-height:220px}
+    .donut{height:46px;border-radius:999px;border:3px solid rgba(91,70,54,.20);box-shadow:inset 0 -6px 0 rgba(91,70,54,.16),0 8px 12px rgba(91,70,54,.13);position:relative;cursor:default;transition:transform .15s ease, filter .15s ease;display:block;appearance:none;padding:0}
+    .donut:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:28px;height:18px;border-radius:50%;background:rgba(255,248,236,.95);border:2px solid rgba(91,70,54,.16)}
+    .donut:after{content:"";position:absolute;left:18%;right:18%;top:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.36)}
+    .donut[disabled]{pointer-events:none;opacity:.98}
+    .donut.top{cursor:pointer}
+    .donut.top:hover{transform:translateY(-5px)}
+    .donut.selected{outline:5px solid rgba(255,217,120,.95);transform:translateY(-8px) scale(1.03)}
+    .donut.blocked{animation:wiggle .32s ease-in-out 2}
+    @keyframes wiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+    .donut-red{background:linear-gradient(180deg,#ffb3a7,#ff766e)}
+    .donut-yellow{background:linear-gradient(180deg,#ffe69b,#ffc74f)}
+    .donut-mint{background:linear-gradient(180deg,#d4f5df,#8fd9ad)}
+    .donut-blue{background:linear-gradient(180deg,#c9edff,#7fc6ee)}
+    .donut-purple{background:linear-gradient(180deg,#e7d9ff,#bda7f1)}
+    .donut-coral{background:linear-gradient(180deg,#ffc0a5,#ff8b68)}
+    .floating-hand{position:absolute;width:86px;height:86px;background:url('assets/tutorial-hand.png') center/contain no-repeat;z-index:6;filter:drop-shadow(0 8px 12px rgba(91,70,54,.25));animation:handMove 2.4s ease-in-out infinite;opacity:.95}
+    @keyframes handMove{0%{transform:translate(0,0) scale(1)}45%{transform:translate(170px,65px) scale(1.08)}70%{transform:translate(170px,65px) scale(.96)}100%{transform:translate(0,0) scale(1)}}
+    .side-coach{position:absolute;left:18px;bottom:16px;width:120px;border-radius:22px;border:3px solid rgba(255,255,255,.85);box-shadow:var(--soft-shadow);z-index:3}
+    .coach-line{position:absolute;left:140px;bottom:20px;right:18px;min-height:62px;background:rgba(255,253,247,.95);border:2px solid #ead6b6;border-radius:22px;padding:11px 16px;font-size:20px;font-weight:800;line-height:1.35;z-index:3;box-shadow:var(--soft-shadow)}
+    .feedback-sticker{position:absolute;right:28px;bottom:95px;width:130px;height:130px;background:url('assets/success-sticker.png') center/contain no-repeat;z-index:8;animation:pop .7s ease both}
+    .hint-sticker{position:absolute;right:28px;bottom:95px;width:110px;height:110px;background:url('assets/hint-sticker.png') center/contain no-repeat;z-index:8;animation:pop .7s ease both}
+    @keyframes pop{0%{opacity:0;transform:scale(.5) rotate(-8deg)}65%{opacity:1;transform:scale(1.08) rotate(3deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+    .play-controls{position:absolute;right:18px;bottom:18px;display:flex;gap:10px;z-index:4;flex-wrap:wrap;justify-content:flex-end}
+    .round-label{position:absolute;left:18px;top:95px;background:rgba(255,253,247,.95);border:2px solid #ead6b6;border-radius:22px;padding:12px 16px;font-weight:950;font-size:20px;box-shadow:var(--soft-shadow);z-index:3}
+    .ready-card,.result-card{width:min(900px,100%);margin:0 auto;background:rgba(255,253,247,.96);border:3px solid #ead6b6;border-radius:34px;padding:28px;box-shadow:var(--shadow);display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center}
+    .ready-card img,.result-card img{width:100%;border-radius:26px}
+    .ready-card h1,.result-card h1{font-size:42px;margin:0 0 10px;color:#8a4c29}
+    .ready-card p,.result-card p{font-size:22px;line-height:1.6;margin:0 0 12px}
+    .result-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+    .metric{background:#fff;border:2px solid #ead6b6;border-radius:20px;padding:14px;font-size:20px;font-weight:850}
+    .metric strong{display:block;color:#8a4c29;font-size:26px;margin-top:4px}
+    .adaptive-box{background:rgba(255,253,247,.95);border:3px solid rgba(191,234,210,.85);border-radius:24px;padding:16px;margin:16px 0;box-shadow:var(--soft-shadow)}
+    .adaptive-box h3{margin:0 0 10px;font-size:24px;color:#8a4c29}
+    .adaptive-box p{font-size:19px;line-height:1.5;margin:8px 0}
+    .adaptive-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .adaptive-cell{background:#fff;border:2px solid #ead6b6;border-radius:18px;padding:10px;font-size:18px;font-weight:850}
+    .adaptive-cell strong{display:block;margin-top:4px;font-size:22px;color:#8a4c29}
+    .pause-overlay{position:absolute;inset:0;background:rgba(255,248,236,.82);z-index:30;display:flex;align-items:center;justify-content:center;padding:20px}
+    .pause-panel{background:#fffdf7;border:3px solid #ead6b6;border-radius:28px;box-shadow:var(--shadow);padding:26px;max-width:520px;width:100%;text-align:center}
+    .pause-panel h2{font-size:36px;margin:0 0 8px;color:#8a4c29}
+    .preload{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+    .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media (max-width:900px){
+      .app{padding:12px}.home-grid,.detail-layout,.ready-card,.result-card{grid-template-columns:1fr}.home-card img{height:240px}.hud{grid-template-columns:1fr}.hud-right{justify-content:flex-start;text-align:left}.target-mini{height:104px}.play-stage{min-height:760px}.rack-area{height:390px;gap:8px}.rack{height:380px;padding-left:5px;padding-right:5px}.donut{height:40px}.speech{left:18px;bottom:160px}.coach{width:140px}.coach-line{left:18px;bottom:140px}.side-coach{width:100px;bottom:130px}.play-controls{left:18px;right:18px;justify-content:center}.round-label{top:205px}.level-strip{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+  (() => {
+    "use strict";
+
+    const ASSET_BASE = "assets/";
+    const ASSET_FILES = [
+      "lobby-card-cover.png","detail-modal-cover.png","game-cover-poster.png",
+      "tutorial-scene-1.png","tutorial-scene-2.png","tutorial-scene-3.png",
+      "scene-background.png","low-stim-background.png","main-character.png",
+      "tutorial-hand.png","target-card-frame.png","rack-set.png","donut-stack.png",
+      "kitchen-props.png","success-sticker.png","hint-sticker.png","result-badge.png",
+      "button-icons.png","gptimage2-source.png"
+    ];
+
+    const DONUTS = {
+      red:    { id:"red",    size:1, name:"红色", colorClass:"donut-red",    w:88 },
+      yellow: { id:"yellow", size:2, name:"黄色", colorClass:"donut-yellow", w:116 },
+      mint:   { id:"mint",   size:3, name:"薄荷绿", colorClass:"donut-mint", w:144 },
+      blue:   { id:"blue",   size:4, name:"浅蓝", colorClass:"donut-blue",   w:172 },
+      purple: { id:"purple", size:5, name:"薰衣草紫", colorClass:"donut-purple", w:200 },
+      coral:  { id:"coral",  size:6, name:"珊瑚橙", colorClass:"donut-coral",  w:228 }
+    };
+    const DONUT_ORDER = ["red","yellow","mint","blue","purple","coral"];
+    const RACK_NAMES = ["左架","中架","右架"];
+    const STORAGE_KEY = "planningHanoiSweetDonut_v2_adaptive";
+
+    const LEVELS = {
+      1:{level:1,label:"轻松整理",donuts:1,tasks:4,time:90,autoHint:4,fastAvg:10},
+      2:{level:2,label:"轻松整理",donuts:2,tasks:4,time:110,autoHint:5,fastAvg:18},
+      3:{level:3,label:"轻松整理",donuts:2,tasks:4,time:130,autoHint:5,fastAvg:22},
+      4:{level:4,label:"小小挑战",donuts:3,tasks:4,time:140,autoHint:8,fastAvg:35},
+      5:{level:5,label:"小小挑战",donuts:3,tasks:5,time:155,autoHint:9,fastAvg:35},
+      6:{level:6,label:"小小挑战",donuts:4,tasks:4,time:190,autoHint:10,fastAvg:55},
+      7:{level:7,label:"进阶挑战",donuts:4,tasks:4,time:210,autoHint:null,fastAvg:55},
+      8:{level:8,label:"进阶挑战",donuts:4,tasks:5,time:240,autoHint:null,fastAvg:58},
+      9:{level:9,label:"进阶挑战",donuts:5,tasks:3,time:260,autoHint:null,fastAvg:95},
+      10:{level:10,label:"进阶挑战",donuts:5,tasks:4,time:300,autoHint:null,fastAvg:95}
+    };
+
+    const tutorialTexts = [
+      {title:"欢迎来到甜甜圈小厨房", text:"厨师小熊要把彩色甜甜圈收好。这里不是测验，只要照着目标图样慢慢整理。", bg:"tutorial-scene-1.png"},
+      {title:"目标是什么", text:"画面上方的目标卡会一直显示。它告诉你最后要摆成什么样。", bg:"tutorial-scene-2.png"},
+      {title:"怎么玩", text:"点一下最上面的甜甜圈，再点要放的收纳架。每移动一次，移动次数会加一。", bg:"tutorial-scene-2.png", interactive:true},
+      {title:"先挪开上面的圈", text:"如果大的甜甜圈被小的挡住，要先把上面的小甜甜圈挪到空架。", bg:"tutorial-scene-3.png"},
+      {title:"可以借用空架", text:"三根收纳架都能帮忙。先借用空架，再把甜甜圈摆回目标位置。", bg:"tutorial-scene-3.png"},
+      {title:"练习没有倒计时", text:"低压练习不要求最少步数。你可以试一试、撤回、再试一次。", bg:"tutorial-scene-1.png"}
+    ];
+
+    const practiceTasks = [
+      makeTaskFromBoard("练习 1/3：红圈回家", [[],["red"],[]], [["red"],[],[]], 1),
+      makeTaskFromBoard("练习 2/3：整理两层甜甜圈", [["yellow","red"],[],[]], [[],[],["yellow","red"]], 3),
+      makeTaskFromBoard("练习 3/3：借用空架试试看", [[],["yellow","red"],[]], [["yellow","red"],[],[]], 3)
+    ];
+
+    const state = {
+      screen:"home",
+      detailOpen:false,
+      lowStim: localStorage.getItem("donutLowStim") === "1",
+      tutorialStep:0,
+      tutorialBoard:[[],["red"],[]],
+      tutorialTarget:[["red"],[],[]],
+      tutorialMoveDone:false,
+      tutorialMoveCount:0,
+      selectedRack:null,
+      board:[[],[],[]],
+      target:[[],[],[]],
+      title:"",
+      optimal:0,
+      history:[],
+      moveCount:0,
+      softMsg:"目标会一直显示，慢慢摆就好。",
+      showSuccess:false,
+      showHintSticker:false,
+      hintMove:null,
+      practiceIndex:0,
+      practiceComplete:false,
+      mode:"idle",
+      timerId:null,
+      remaining:0,
+      level:getStoredLevel(),
+      adaptive:getAdaptiveSettings(getStoredLevel()),
+      training:{taskIndex:0,taskTotal:0,completed:0,validMoves:0,softMistakes:0,hints:0,totalMoves:0,totalOptimal:0,startAt:0,elapsed:0,level:1,roundEnded:false,adaptive:null},
+      paused:false,
+      lastResult:null
+    };
+
+    function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+    function deepBoard(board){return board.map(r => [...r]);}
+    function boardKey(board){return board.map(r=>r.join(",")).join("|");}
+    function top(rack){return rack[rack.length-1];}
+    function donutSize(id){return DONUTS[id].size;}
+    function canMove(board,from,to){
+      if(from===to) return false;
+      const moving = top(board[from]);
+      if(!moving) return false;
+      const destTop = top(board[to]);
+      if(!destTop) return true;
+      return donutSize(moving) < donutSize(destTop);
+    }
+    function applyMove(board,from,to){
+      const next = deepBoard(board);
+      const item = next[from].pop();
+      next[to].push(item);
+      return next;
+    }
+    function isSolved(board,target){return boardKey(board) === boardKey(target);}
+    function makeTaskFromBoard(title,start,target,optimal){return {title,start,target,optimal};}
+    function stackForN(n){
+      const ids = DONUT_ORDER.slice(0,n);
+      return ids.slice().reverse();
+    }
+    function makeHanoiTask(level, index){
+      const cfg = LEVELS[level];
+      const adaptive = (state.training && state.training.adaptive) || getAdaptiveSettings(level);
+      const n = clamp(Number(adaptive.donutCount || cfg.donuts),1,6);
+      const from = (index + level) % 3;
+      let to = (from + 1 + (index % 2)) % 3;
+      if(to === from) to = (to + 1) % 3;
+      const start = [[],[],[]];
+      const target = [[],[],[]];
+      start[from] = stackForN(n);
+      target[to] = stackForN(n);
+      let prefix = level <= 3 ? "轻松整理" : (level >= 7 ? "进阶挑战" : "小小挑战");
+      return makeTaskFromBoard(`${prefix}：把${n}层甜甜圈整理到${RACK_NAMES[to]}`, start, target, Math.pow(2,n)-1);
+    }
+    function getLegalMoves(board){
+      const out=[];
+      for(let from=0;from<3;from++) for(let to=0;to<3;to++) if(canMove(board,from,to)) out.push({from,to});
+      return out;
+    }
+    function solveBFS(start,target,maxDepth=80){
+      const q=[{board:deepBoard(start),path:[]}];
+      const seen=new Set([boardKey(start)]);
+      while(q.length){
+        const cur=q.shift();
+        if(isSolved(cur.board,target)) return cur.path;
+        if(cur.path.length>=maxDepth) continue;
+        for(const m of getLegalMoves(cur.board)){
+          const nb=applyMove(cur.board,m.from,m.to);
+          const key=boardKey(nb);
+          if(!seen.has(key)){
+            seen.add(key);
+            q.push({board:nb,path:cur.path.concat([m])});
+          }
+        }
+      }
+      return [];
+    }
+    function getStoredData(){
+      try{return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");}catch(e){return {};}
+    }
+    function getStoredLevel(){
+      const data = getStoredData();
+      return clamp(Number(data.recommendedLevel || 1),1,10);
+    }
+    function defaultHintStrength(level){
+      if(level <= 3) return "强";
+      if(level <= 6) return "中";
+      return "弱";
+    }
+    function getAdaptiveSettings(level){
+      const data = getStoredData();
+      const stored = data.nextRoundSettings;
+      if(stored && Number(stored.level) === Number(level)){
+        return {
+          level,
+          donutCount: clamp(Number(stored.donutCount || LEVELS[level].donuts),1,6),
+          minMoveTarget: Math.max(1, Number(stored.minMoveTarget || 1)),
+          hintStrength: stored.hintStrength || defaultHintStrength(level),
+          adjustment: stored.adjustment || "保持"
+        };
+      }
+      const n = LEVELS[level].donuts;
+      return {level, donutCount:n, minMoveTarget:Math.pow(2,n)-1, hintStrength:defaultHintStrength(level), adjustment:"首次默认"};
+    }
+    function makeNextRoundSettings(nextLevel, direction){
+      const base = LEVELS[nextLevel];
+      let donutCount = base.donuts;
+      let hintStrength = defaultHintStrength(nextLevel);
+      if(direction === "变简单"){
+        donutCount = Math.max(1, Math.min(base.donuts, base.donuts - 1));
+        hintStrength = "强";
+      }
+      if(direction === "变难"){
+        donutCount = Math.min(6, base.donuts);
+        hintStrength = nextLevel >= 7 ? "弱" : "中";
+      }
+      const minMoveTarget = Math.pow(2, donutCount) - 1;
+      return {level:nextLevel, donutCount, minMoveTarget, hintStrength, adjustment:direction};
+    }
+    function renderAdaptiveSummary(){
+      const data = getStoredData();
+      const last = data.lastRound;
+      const settings = data.nextRoundSettings || getAdaptiveSettings(state.level);
+      const performance = last
+        ? `完成 ${last.completed}/${last.taskTotal} 组，正确率 ${Math.round((last.accuracy || 0)*100)}%，本轮用时 ${formatTime(last.elapsed || 0)}，步数 ${last.totalMoves || 0}`
+        : "还没有正式训练记录，第一轮会从轻松难度开始。";
+      const nextLevel = Number((settings && settings.level) || state.level || 1);
+      return `<div class="adaptive-box" aria-label="自动调节难度面板">
+        <h3>自动调节难度</h3>
+        <p><strong>本轮表现：</strong>${performance}</p>
+        <p><strong>下轮推荐难度：</strong>${levelText(nextLevel)}</p>
+        <div class="adaptive-row">
+          <div class="adaptive-cell">甜甜圈数量<strong>${settings.donutCount || LEVELS[nextLevel].donuts} 个</strong></div>
+          <div class="adaptive-cell">最少步目标<strong>${settings.minMoveTarget || Math.pow(2,LEVELS[nextLevel].donuts)-1} 步</strong></div>
+          <div class="adaptive-cell">提示强度<strong>${settings.hintStrength || defaultHintStrength(nextLevel)}</strong></div>
+        </div>
+        <p class="small-note">localStorage 会保存本轮用时、步数、成功/失败，并据此自动调节下一轮。</p>
+      </div>`;
+    }
+    function saveRound(result){
+      const data = getStoredData();
+      const history = Array.isArray(data.history) ? data.history.slice(-8) : [];
+      history.push(result);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        recommendedLevel: result.nextLevel,
+        nextRoundSettings: result.nextRoundSettings,
+        lastRound: result,
+        history
+      }));
+    }
+    function formatTime(sec){
+      sec = Math.max(0,Math.floor(sec));
+      const m = String(Math.floor(sec/60)).padStart(2,"0");
+      const s = String(sec%60).padStart(2,"0");
+      return `${m}:${s}`;
+    }
+    function levelText(level){const cfg=LEVELS[level];return `第 ${level} 级 · ${cfg.label}`;}
+
+    function setScreen(screen){
+      clearTimer();
+      state.screen = screen;
+      state.selectedRack = null;
+      state.hintMove = null;
+      state.showHintSticker = false;
+      state.showSuccess = false;
+      render();
+    }
+    function clearTimer(){ if(state.timerId){ clearInterval(state.timerId); state.timerId=null; } }
+    function preloadHTML(){
+      return `<div class="preload" aria-hidden="true">${ASSET_FILES.map(f=>`<img src="${ASSET_BASE}${f}" alt="" />`).join("")}</div>`;
+    }
+
+    function render(){
+      const app = document.getElementById("app");
+      const bgClass = state.lowStim ? "kitchen-bg low" : "kitchen-bg";
+      app.innerHTML = `<div class="${bgClass}"></div><div class="wash"></div>${preloadHTML()}${renderScreen()}`;
+      bindCommon();
+      bindScreen();
+    }
+
+    function renderScreen(){
+      if(state.screen === "home") return renderHome();
+      if(state.screen === "cover") return renderCover();
+      if(state.screen === "tutorial") return renderTutorial();
+      if(state.screen === "practice") return renderPractice();
+      if(state.screen === "ready") return renderReady();
+      if(state.screen === "training") return renderTraining();
+      if(state.screen === "result") return renderResult();
+      return renderHome();
+    }
+
+    function renderHome(){
+      const detail = state.detailOpen ? renderDetailModal() : "";
+      return `<main class="app"><div class="page">
+        <div class="topbar">
+          <div class="brand"><span class="brand-dot"></span><span>甜甜圈收纳架</span></div>
+          <button class="btn secondary" data-action="toggleLow">${state.lowStim ? "关闭低刺激" : "低刺激模式"}</button>
+        </div>
+        <section class="home-grid">
+          <article class="card home-card">
+            <img src="assets/lobby-card-cover.png" alt="甜甜圈小厨房封面图">
+            <div class="home-card-body">
+              <h1>甜甜圈收纳架</h1>
+              <p class="small-note" style="font-size:21px">帮厨师小熊把彩色甜甜圈移动到目标图样。前 1-3 级非常容易，可以慢慢试，不要求最少步数。自动调节难度会显示本轮表现和下轮推荐难度。</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+                <span class="pill easy">规划能力</span><span class="pill easy">三架整理</span><span class="pill">全中文</span><span class="pill advanced">进阶挑战已标注</span>
+              </div>
+              <div class="home-actions">
+                <button class="btn" data-action="openDetail">查看详情</button>
+                <button class="btn green" data-action="toCover">进入游戏</button>
+              </div>
+            </div>
+          </article>
+          <aside class="card info-panel">
+            <div>
+              <h2 class="section-title">怎么玩</h2>
+              <ul class="rule-list">
+                <li>先看目标卡。</li>
+                <li>点击最上面的甜甜圈。</li>
+                <li>再点击要放的收纳架。</li>
+                <li>大甜甜圈不能放在小甜甜圈上。</li>
+              </ul>
+            </div>
+            <div>
+              <h2 class="section-title">目标是什么</h2>
+              <p class="small-note" style="font-size:20px">把三根收纳架上的甜甜圈摆成目标卡里的样子。目标卡在练习和训练中都会一直显示。</p>
+            </div>
+            ${renderAdaptiveSummary()}
+            <div>
+              <h2 class="section-title">难度</h2>
+              <div class="level-strip">${Array.from({length:10},(_,i)=>{
+                const l=i+1, cfg=LEVELS[l];
+                return `<div class="level-chip ${l<=3?'easy':''}">${l}<br>${cfg.label}</div>`;
+              }).join("")}</div>
+            </div>
+          </aside>
+        </section>
+      </div>${detail}</main>`;
+    }
+
+    function renderDetailModal(){
+      return `<div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="游戏说明">
+        <div class="modal">
+          <div class="detail-layout">
+            <img src="assets/detail-modal-cover.png" alt="厨师小熊和甜甜圈收纳架说明图">
+            <div>
+              <h2 class="section-title" style="font-size:34px">游戏说明</h2>
+              <h3 class="section-title">怎么玩</h3>
+              <p class="small-note" style="font-size:21px">点一个收纳架最上面的甜甜圈，再点另一个收纳架，就能移动。只能移动最上层。大的甜甜圈不能压在小的甜甜圈上。</p>
+              <h3 class="section-title">目标是什么</h3>
+              <p class="small-note" style="font-size:21px">目标卡会显示最后要摆成的样子。照着目标卡整理，摆好一组就获得一颗星。</p>
+              <p class="small-note" style="font-size:19px"><strong>自动调节难度：</strong>结算页会记录本轮表现，并给出下轮推荐难度。做得顺会变难一点，卡住时会自动变简单。</p>
+              <div class="modal-actions">
+                <button class="btn secondary" data-action="closeDetail">关闭</button>
+                <button class="btn green" data-action="toCover">进入游戏</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function renderCover(){
+      return `<main class="app"><div class="page cover">
+        <section class="cover-panel">
+          <h1>甜甜圈收纳架</h1>
+          <p><strong>怎么玩：</strong>点击甜甜圈，再点击收纳架，把甜甜圈一步一步移动过去。</p>
+          <p><strong>目标是什么：</strong>把三根收纳架整理成目标卡里的图样。目标卡会一直显示。</p>
+          <p class="small-note">从第 ${state.level} 级开始：${LEVELS[state.level].label}。1-3 级非常容易，7 级以上会标为“进阶挑战”。</p>
+          ${renderAdaptiveSummary()}
+          <div class="cover-actions">
+            <button class="btn" data-action="startTutorial">开始教学</button>
+            <button class="btn green" data-action="startPractice">直接低压练习</button>
+            <button class="btn secondary" data-action="home">返回首页</button>
+          </div>
+        </section>
+      </div></main>`;
+    }
+
+    function renderTutorial(){
+      const t = tutorialTexts[state.tutorialStep];
+      let boardHtml = "";
+      let target = state.tutorialStep === 2 ? state.tutorialTarget : (state.tutorialStep >= 3 && state.tutorialStep <= 4 ? [[],[],["yellow","red"]] : [["red"],[],[]]);
+      if(state.tutorialStep === 2){
+        boardHtml = `<div style="position:absolute;inset:110px 20px 180px 20px;z-index:2">${renderBoard(state.tutorialBoard,{interactive:true,compact:false})}</div><div class="floating-hand" style="left:38%;top:38%"></div>`;
+      } else if(state.tutorialStep >= 3 && state.tutorialStep <= 4){
+        boardHtml = `<div style="position:absolute;inset:110px 20px 180px 20px;z-index:2">${renderBoard([["yellow","red"],[],[]],{interactive:false,compact:false})}</div>`;
+      } else {
+        boardHtml = `<div style="position:absolute;inset:110px 20px 180px 20px;z-index:2">${renderBoard([[],["red"],[]],{interactive:false,compact:false})}</div>`;
+      }
+      return `<main class="app"><div class="page tutorial-wrap">
+        <div class="hud" aria-label="教学目标区">
+          <div class="hud-box hud-left"><button class="icon-btn" data-action="home" aria-label="返回首页">‹</button><span class="pill easy">教学 ${state.tutorialStep+1}/6</span></div>
+          ${renderTargetCard(target)}
+          <div class="hud-box hud-right"><span class="big-stat">移动次数 ${state.tutorialMoveCount}</span></div>
+        </div>
+        <section class="tutorial-stage" style="background-image:url('assets/${t.bg}')">
+          ${boardHtml}
+          <img class="coach" src="assets/main-character.png" alt="厨师小熊">
+          <div class="speech"><h2>${t.title}</h2><p>${t.text}</p>${state.tutorialStep===2 && !state.tutorialMoveDone ? '<p style="margin-top:8px;color:#8a4c29;font-weight:950">请跟着试一次：点红色甜甜圈，再点左架。</p>' : ''}</div>
+        </section>
+        <div class="tutorial-controls">
+          <div class="progress-dots">${tutorialTexts.map((_,i)=>`<span class="dot ${i===state.tutorialStep?'on':''}"></span>`).join("")}</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            ${state.tutorialStep>0?'<button class="btn secondary" data-action="tutorialPrev">上一步</button>':''}
+            <button class="btn" data-action="tutorialNext" ${state.tutorialStep===2 && !state.tutorialMoveDone ? 'disabled' : ''}>${state.tutorialStep===5?'开始低压练习':'下一步'}</button>
+          </div>
+        </div>
+      </div></main>`;
+    }
+
+    function renderReady(){
+      return `<main class="app"><div class="page" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 44px)">
+        <section class="ready-card">
+          <img src="assets/main-character.png" alt="厨师小熊">
+          <div>
+            <h1>准备开始训练吧！</h1>
+            <p>接下来会有倒计时和星星。目标卡会一直在这里，照着图样慢慢整理就好。</p>
+            <p class="small-note"><strong>自动调节难度：</strong>已开启。训练结束后会保存本轮用时、步数、成功/失败。</p>
+            <p class="small-note"><strong>本轮表现：</strong>进入训练后开始记录，结算页会显示。</p>
+            <p class="small-note"><strong>下轮推荐难度：</strong>${levelText(state.level)}。做得顺会自动变难一点；卡住时会自动变简单。</p>
+            ${renderAdaptiveSummary()}
+            <div class="modal-actions" style="justify-content:flex-start">
+              <button class="btn secondary" data-action="restartTutorial">重新演示</button>
+              <button class="btn green" data-action="enterTraining">进入训练</button>
+            </div>
+          </div>
+        </section>
+      </div></main>`;
+    }
+
+    function renderPractice(){
+      return renderPlayShell({practice:true});
+    }
+    function renderTraining(){
+      return renderPlayShell({practice:false});
+    }
+
+    function renderPlayShell({practice}){
+      const modeLabel = practice ? `低压练习 ${state.practiceIndex+1}/3` : levelText(state.training.level);
+      const currentAdaptive = state.training.adaptive || getAdaptiveSettings(state.training.level || state.level);
+      const rightStat = practice ? `已移动 ${state.moveCount} 次` : `剩余 ${formatTime(state.remaining)}　星星 ${state.training.completed}`;
+      const coach = state.softMsg || "目标卡一直在上方。";
+      const stageClass = state.lowStim ? "play-stage low" : "play-stage";
+      return `<main class="app"><div class="page play-wrap">
+        <div class="hud">
+          <div class="hud-box hud-left">
+            ${practice ? '<button class="icon-btn" data-action="cover" aria-label="返回封面">‹</button>' : '<button class="icon-btn" data-action="pause" aria-label="暂停">Ⅱ</button>'}
+            <span class="pill ${state.training.level>=7?'advanced':'easy'}">${modeLabel}</span>
+          </div>
+          ${renderTargetCard(state.target)}
+          <div class="hud-box hud-right"><span class="big-stat">${rightStat}</span></div>
+        </div>
+        <section class="${stageClass}">
+          <div class="round-label">${escapeHTML(state.title)}${practice ? '' : `<br><span style="font-size:15px;color:#7a604a">自动调节难度：甜甜圈 ${currentAdaptive.donutCount} 个 · 最少步目标 ${currentAdaptive.minMoveTarget} 步 · 提示强度 ${currentAdaptive.hintStrength}</span>`}</div>
+          <div class="board-shell">${renderBoard(state.board,{interactive:true,compact:false})}</div>
+          <img class="side-coach" src="assets/main-character.png" alt="厨师小熊">
+          <div class="coach-line">${escapeHTML(coach)}</div>
+          ${state.showSuccess ? '<div class="feedback-sticker" aria-hidden="true"></div>' : ''}
+          ${state.showHintSticker ? '<div class="hint-sticker" aria-hidden="true"></div>' : ''}
+          <div class="play-controls">
+            <button class="btn secondary" data-action="undo">撤销</button>
+            <button class="btn blue" data-action="hint">提示</button>
+            ${practice && state.practiceComplete ? `<button class="btn green" data-action="practiceNext">${state.practiceIndex===2?'准备开始':'下一题'}</button>` : ''}
+            ${!practice ? '<button class="btn secondary" data-action="toggleLow">低刺激</button>' : ''}
+          </div>
+          ${state.paused ? renderPauseOverlay() : ''}
+        </section>
+      </div></main>`;
+    }
+
+    function renderPauseOverlay(){
+      return `<div class="pause-overlay"><section class="pause-panel">
+        <h2>已暂停</h2>
+        <p class="small-note" style="font-size:20px">目标卡还在这里，回来后可以继续整理。</p>
+        <div class="modal-actions" style="justify-content:center">
+          <button class="btn green" data-action="resume">继续</button>
+          <button class="btn secondary" data-action="toCoverStop">回到封面</button>
+        </div>
+      </section></div>`;
+    }
+
+    function renderResult(){
+      const r = state.lastResult || {};
+      const nextText = levelText(r.nextLevel || state.level);
+      const currentText = levelText(r.level || state.level);
+      return `<main class="app"><div class="page" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 44px)">
+        <section class="result-card">
+          <img src="assets/result-badge.png" alt="甜甜圈结算徽章">
+          <div>
+            <h1>本轮整理完成</h1>
+            <p><strong>自动调节难度：</strong>已根据本轮表现完成计算，并写入 localStorage。</p>
+            <p><strong>本轮表现：</strong>${currentText}，完成 ${r.completed || 0}/${r.taskTotal || 0} 组，正确率 ${Math.round((r.accuracy || 0)*100)}%，本轮用时 ${formatTime(r.elapsed || 0)}，步数 ${r.totalMoves || 0}。</p>
+            <div class="result-metrics">
+              <div class="metric">完成组数<strong>${r.completed || 0}</strong></div>
+              <div class="metric">本轮用时<strong>${formatTime(r.elapsed || 0)}</strong></div>
+              <div class="metric">步数<strong>${r.totalMoves || 0}</strong></div>
+              <div class="metric">正确率<strong>${Math.round((r.accuracy || 0)*100)}%</strong></div>
+              <div class="metric">提示次数<strong>${r.hints || 0}</strong></div>
+              <div class="metric">温和提醒<strong>${r.softMistakes || 0}</strong></div>
+            </div>
+            <p><strong>下轮推荐难度：</strong>${nextText}${(r.nextLevel||1)>=7 ? '（进阶挑战）' : ''}</p>
+            <div class="adaptive-box">
+              <h3>下轮自动调节参数</h3>
+              <div class="adaptive-row">
+                <div class="adaptive-cell">甜甜圈数量<strong>${(r.nextRoundSettings && r.nextRoundSettings.donutCount) || LEVELS[r.nextLevel || state.level].donuts} 个</strong></div>
+                <div class="adaptive-cell">最少步目标<strong>${(r.nextRoundSettings && r.nextRoundSettings.minMoveTarget) || '—'} 步</strong></div>
+                <div class="adaptive-cell">提示强度<strong>${(r.nextRoundSettings && r.nextRoundSettings.hintStrength) || '中'}</strong></div>
+              </div>
+            </div>
+            <p class="small-note">localStorage 已保存：本轮用时、步数、成功/失败、正确率和下轮推荐难度。下次进入训练会自动使用这个推荐。</p>
+            <div class="modal-actions" style="justify-content:flex-start">
+              <button class="btn green" data-action="enterTraining">按推荐再来一轮</button>
+              <button class="btn secondary" data-action="toCoverStop">返回封面</button>
+              <button class="btn blue" data-action="home">返回首页</button>
+            </div>
+          </div>
+        </section>
+      </div></main>`;
+    }
+
+    function renderBoard(board, opts={}){
+      const hint = state.hintMove;
+      return `<div class="rack-area" role="application" aria-label="三根甜甜圈收纳架">
+        ${board.map((rack,ri)=>{
+          const fromHint = hint && hint.from === ri ? 'hint-from' : '';
+          const toHint = hint && hint.to === ri ? 'hint-to' : '';
+          return `<div class="rack ${fromHint} ${toHint}" data-rack="${ri}" data-label="${RACK_NAMES[ri]}">
+            <div class="donut-stack">
+              ${rack.map((id,di)=>{
+                const d = DONUTS[id];
+                const isTop = di === rack.length-1;
+                const selected = state.selectedRack === ri && isTop ? 'selected' : '';
+                const topClass = isTop ? 'top' : '';
+                const disabled = opts.interactive && isTop ? '' : 'disabled aria-disabled="true"';
+                return `<button class="donut ${d.colorClass} ${topClass} ${selected}" style="width:${d.w}px;max-width:88%" data-from="${ri}" data-donut="${id}" ${disabled} aria-label="${d.name}甜甜圈，${RACK_NAMES[ri]}最上层"></button>`;
+              }).join("")}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    }
+
+    function renderTargetCard(target){
+      return `<div class="target-card" aria-label="目标卡，目标是什么"><h3>目标是什么</h3><div class="target-mini">
+        ${target.map((rack,ri)=>`<div class="mini-rack" title="${RACK_NAMES[ri]}"><div class="mini-stack">${rack.map(id=>{
+          const d = DONUTS[id];
+          return `<span class="mini-donut ${d.colorClass}" style="width:${Math.max(34,d.w*0.38)}px"></span>`;
+        }).join("")}</div></div>`).join("")}
+      </div></div>`;
+    }
+
+    function escapeHTML(s){return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));}
+
+    function bindCommon(){
+      document.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const action = btn.getAttribute('data-action');
+          handleAction(action);
+        });
+      });
+      window.onkeydown = onKeyDown;
+    }
+
+    function bindScreen(){
+      if(["practice","training"].includes(state.screen) || state.screen === "tutorial"){
+        document.querySelectorAll('.donut.top').forEach(btn => btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const from = Number(btn.getAttribute('data-from'));
+          selectRack(from);
+        }));
+        document.querySelectorAll('.rack').forEach(rack => rack.addEventListener('click', e => {
+          const to = Number(rack.getAttribute('data-rack'));
+          if(state.selectedRack !== null) attemptMove(state.selectedRack,to);
+        }));
+      }
+    }
+
+    function handleAction(action){
+      if(!action) return;
+      if(action === 'openDetail'){state.detailOpen=true;render();return;}
+      if(action === 'closeDetail'){state.detailOpen=false;render();return;}
+      if(action === 'toCover'){state.detailOpen=false;setScreen('cover');return;}
+      if(action === 'cover'){setScreen('cover');return;}
+      if(action === 'home'){state.detailOpen=false;setScreen('home');return;}
+      if(action === 'toggleLow'){state.lowStim=!state.lowStim;localStorage.setItem('donutLowStim',state.lowStim?'1':'0');render();return;}
+      if(action === 'startTutorial'){startTutorial();return;}
+      if(action === 'restartTutorial'){startTutorial();return;}
+      if(action === 'tutorialPrev'){state.tutorialStep=clamp(state.tutorialStep-1,0,5);resetTutorialStep();render();return;}
+      if(action === 'tutorialNext'){nextTutorial();return;}
+      if(action === 'startPractice'){startPractice();return;}
+      if(action === 'practiceNext'){nextPractice();return;}
+      if(action === 'enterTraining'){startTraining();return;}
+      if(action === 'pause'){pauseTraining();return;}
+      if(action === 'resume'){resumeTraining();return;}
+      if(action === 'toCoverStop'){clearTimer();state.paused=false;setScreen('cover');return;}
+      if(action === 'undo'){undoMove();return;}
+      if(action === 'hint'){showHint();return;}
+    }
+
+    function startTutorial(){
+      state.tutorialStep=0;resetTutorialStep();setScreen('tutorial');
+    }
+    function resetTutorialStep(){
+      state.tutorialBoard=[[],["red"],[]];
+      state.tutorialTarget=[["red"],[],[]];
+      state.tutorialMoveDone=false;
+      state.tutorialMoveCount=0;
+      state.selectedRack=null;
+    }
+    function nextTutorial(){
+      if(state.tutorialStep < 5){
+        state.tutorialStep++;
+        resetTutorialStep();
+        render();
+      } else startPractice();
+    }
+
+    function startPractice(){
+      state.practiceIndex = 0;
+      loadPracticeTask();
+      setScreen('practice');
+    }
+    function loadPracticeTask(){
+      const t = practiceTasks[state.practiceIndex];
+      state.mode='practice';
+      state.title=t.title;
+      state.board=deepBoard(t.start);
+      state.target=deepBoard(t.target);
+      state.optimal=t.optimal;
+      state.moveCount=0;
+      state.history=[];
+      state.selectedRack=null;
+      state.practiceComplete=false;
+      state.softMsg="低压练习没有倒计时。目标卡一直显示，慢慢摆就好。";
+      state.hintMove=null;
+    }
+    function nextPractice(){
+      if(state.practiceIndex >= 2){
+        state.level=getStoredLevel();
+        state.adaptive=getAdaptiveSettings(state.level);
+        setScreen('ready');
+      } else {
+        state.practiceIndex++;
+        loadPracticeTask();
+        render();
+      }
+    }
+
+    function startTraining(){
+      clearTimer();
+      state.level = getStoredLevel();
+      const level = state.level;
+      const cfg = LEVELS[level];
+      state.adaptive = getAdaptiveSettings(level);
+      state.training = {taskIndex:0,taskTotal:cfg.tasks,completed:0,validMoves:0,softMistakes:0,hints:0,totalMoves:0,totalOptimal:0,startAt:Date.now(),elapsed:0,level,roundEnded:false,adaptive:state.adaptive};
+      state.remaining = cfg.time;
+      state.paused=false;
+      loadTrainingTask();
+      state.screen='training';
+      state.timerId = setInterval(() => {
+        if(state.screen !== 'training' || state.paused) return;
+        state.remaining -= 1;
+        if(state.remaining <= 0){finishRound();return;}
+        render();
+      }, 1000);
+      render();
+    }
+    function loadTrainingTask(){
+      const t = makeHanoiTask(state.training.level, state.training.taskIndex);
+      state.mode='training';
+      state.title=t.title;
+      state.board=deepBoard(t.start);
+      state.target=deepBoard(t.target);
+      state.optimal=t.optimal;
+      state.moveCount=0;
+      state.history=[];
+      state.selectedRack=null;
+      state.softMsg="看着目标卡，先想一下要把最小的甜甜圈放到哪里。";
+      state.hintMove=null;
+      state.showSuccess=false;
+      state.showHintSticker=false;
+    }
+    function pauseTraining(){state.paused=true;render();}
+    function resumeTraining(){state.paused=false;render();}
+
+    function selectRack(from){
+      if(state.screen === 'tutorial' && state.tutorialStep !== 2) return;
+      const board = state.screen === 'tutorial' ? state.tutorialBoard : state.board;
+      if(!top(board[from])) return;
+      state.selectedRack = from;
+      state.softMsg = `已选中${RACK_NAMES[from]}最上面的甜甜圈，再点一个收纳架。`;
+      render();
+    }
+    function attemptMove(from,to){
+      if(from === null || from === undefined) return;
+      if(state.screen === 'tutorial'){
+        if(state.tutorialStep !== 2) return;
+        if(canMove(state.tutorialBoard,from,to)){
+          state.tutorialBoard = applyMove(state.tutorialBoard,from,to);
+          state.tutorialMoveCount += 1;
+          state.selectedRack=null;
+          if(isSolved(state.tutorialBoard,state.tutorialTarget)){
+            state.tutorialMoveDone=true;
+          }
+          render();
+        } else {
+          state.selectedRack=null;render();
+        }
+        return;
+      }
+      if(!["practice","training"].includes(state.screen)) return;
+      if(canMove(state.board,from,to)){
+        state.history.push(deepBoard(state.board));
+        state.board=applyMove(state.board,from,to);
+        state.moveCount++;
+        state.selectedRack=null;
+        state.hintMove=null;
+        state.showHintSticker=false;
+        if(state.screen === 'training') state.training.validMoves++;
+        state.softMsg = `${DONUTS[top(state.board[to])].name}甜甜圈移动到${RACK_NAMES[to]}，移动次数 +1。`;
+        if(isSolved(state.board,state.target)) completeTask(); else render();
+      } else {
+        state.selectedRack=null;
+        state.hintMove=null;
+        state.softMsg = "这个位置会压到小甜甜圈，换个架子试试。";
+        if(state.screen === 'training') state.training.softMistakes++;
+        render();
+      }
+    }
+    function undoMove(){
+      if(!state.history.length){
+        state.softMsg="现在没有需要撤销的移动。";render();return;
+      }
+      state.board = state.history.pop();
+      state.moveCount = Math.max(0,state.moveCount-1);
+      state.selectedRack=null;
+      state.hintMove=null;
+      state.softMsg="已撤销一步，可以换一种摆法。";
+      render();
+    }
+    function showHint(){
+      const path = solveBFS(state.board,state.target);
+      if(path && path.length){
+        const mv = path[0];
+        const strength = state.screen === 'training' && state.training.adaptive ? state.training.adaptive.hintStrength : "强";
+        state.showHintSticker=true;
+        if(strength === "弱"){
+          state.hintMove={from:mv.from,to:null};
+          state.softMsg=`提示强度：弱。先观察${RACK_NAMES[mv.from]}最上面的甜甜圈，想想它要借到哪里。`;
+        }else if(strength === "中"){
+          state.hintMove=mv;
+          state.softMsg=`提示强度：中。可以先从${RACK_NAMES[mv.from]}移动到${RACK_NAMES[mv.to]}。`;
+        }else{
+          state.hintMove=mv;
+          state.softMsg=`提示强度：强。可以先把${RACK_NAMES[mv.from]}最上面的甜甜圈移到${RACK_NAMES[mv.to]}。`;
+        }
+        if(state.screen === 'training') state.training.hints++;
+      } else {
+        state.softMsg="目标已经很接近了，看看目标卡再摆一步。";
+      }
+      render();
+    }
+    function completeTask(){
+      state.showSuccess=true;
+      state.softMsg="这一组整理好了。";
+      if(state.screen === 'practice'){
+        state.practiceComplete=true;
+        render();
+        return;
+      }
+      if(state.screen === 'training'){
+        state.training.completed++;
+        state.training.totalMoves += state.moveCount;
+        state.training.totalOptimal += state.optimal;
+        state.training.taskIndex++;
+        render();
+        setTimeout(() => {
+          if(state.screen !== 'training') return;
+          if(state.training.completed >= state.training.taskTotal){finishRound();}
+          else {loadTrainingTask();render();}
+        }, state.lowStim ? 450 : 850);
+      }
+    }
+    function finishRound(){
+      if(state.training.roundEnded) return;
+      state.training.roundEnded=true;
+      clearTimer();
+      const elapsed = Math.round((Date.now()-state.training.startAt)/1000);
+      const valid = state.training.validMoves;
+      const soft = state.training.softMistakes;
+      const accuracy = valid + soft === 0 ? 1 : valid / (valid + soft);
+      const completion = state.training.completed / Math.max(1,state.training.taskTotal);
+      const avgSeconds = state.training.completed ? elapsed / state.training.completed : 0;
+      const cfg = LEVELS[state.training.level];
+      let nextLevel = state.training.level;
+      let direction = "保持";
+      if(completion >= .85 && accuracy >= .85 && avgSeconds > 0 && avgSeconds <= cfg.fastAvg && state.training.hints <= Math.max(1,state.training.completed)){
+        nextLevel++;
+        direction = "变难";
+      }
+      if(completion < .55 || accuracy < .65 || state.training.hints >= Math.max(3,state.training.completed*2+1)){
+        nextLevel--;
+        direction = "变简单";
+      }
+      nextLevel = clamp(nextLevel,1,10);
+      const nextRoundSettings = makeNextRoundSettings(nextLevel, direction);
+      const success = completion >= .85 && accuracy >= .75;
+      const failed = completion < .55 || accuracy < .65;
+      const result = {
+        level:state.training.level,
+        nextLevel,
+        adjustment:direction,
+        nextRoundSettings,
+        completed:state.training.completed,
+        taskTotal:state.training.taskTotal,
+        accuracy,
+        elapsed,
+        avgSeconds,
+        hints:state.training.hints,
+        softMistakes:soft,
+        totalMoves:state.training.totalMoves,
+        totalOptimal:state.training.totalOptimal,
+        success,
+        failed,
+        "本轮用时": elapsed,
+        "步数": state.training.totalMoves,
+        "成功": success,
+        "失败": failed,
+        createdAt:new Date().toISOString()
+      };
+      state.lastResult = result;
+      state.level = nextLevel;
+      saveRound(result);
+      state.screen='result';
+      render();
+    }
+
+    function onKeyDown(ev){
+      const k = ev.key.toLowerCase();
+      if(k === 'escape' && state.screen === 'training'){ state.paused ? resumeTraining() : pauseTraining(); return; }
+      if(k === 'z' && ["practice","training"].includes(state.screen)){ undoMove(); return; }
+      if(k === 'h' && ["practice","training"].includes(state.screen)){ showHint(); return; }
+      if(!["practice","training"].includes(state.screen)) return;
+      if(['1','2','3'].includes(k)){
+        const n = Number(k)-1;
+        if(state.selectedRack === null) selectRack(n); else attemptMove(state.selectedRack,n);
+      }
+    }
+
+    render();
+  })();
+  </script>
+</body>
+</html>
