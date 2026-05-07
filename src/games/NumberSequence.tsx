@@ -49,20 +49,46 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
   const [input, setInput] = useState('')
   const [score, setScore] = useState(0)
   const [feedback, setFeedback] = useState<string>('')
+  const [pending, setPending] = useState(false)
   const [completed, setCompleted] = useState(false)
   const saved = useRef(false)
+  const timeoutRef = useRef<number | null>(null)
   const target = Math.max(3, Math.ceil(level * 1.5))
 
+  const clearPendingTimeout = (): void => {
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+  }
+
+  const scheduleNextSequence = (delayMs: number): void => {
+    clearPendingTimeout()
+    timeoutRef.current = window.setTimeout(() => {
+      if (saved.current) return
+      setSequence(generateSequence(level))
+      setInput('')
+      setFeedback('')
+      setPending(false)
+      timeoutRef.current = null
+    }, delayMs)
+  }
+
   useEffect(() => {
+    clearPendingTimeout()
     setSequence(generateSequence(level))
     setInput('')
     setScore(0)
     setFeedback('')
+    setPending(false)
     setCompleted(false)
     saved.current = false
+    return clearPendingTimeout
   }, [level])
 
   const handleSubmit = (): void => {
+    if (completed || pending) return
+    setPending(true)
     const answer = Number(input)
     if (answer === sequence.answer) {
       const newScore = score + 1
@@ -74,20 +100,15 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
         markGameCompletedLevel('number-sequence', level, percentageScore, 100)
         saved.current = true
         setCompleted(true)
+        setPending(false)
+        clearPendingTimeout()
+        return
       }
       
-      setTimeout(() => {
-        setSequence(generateSequence(level))
-        setInput('')
-        setFeedback('')
-      }, 1500)
+      scheduleNextSequence(1500)
     } else {
       setFeedback(`❌ 错误！答案是 ${sequence.answer}`)
-      setTimeout(() => {
-        setSequence(generateSequence(level))
-        setInput('')
-        setFeedback('')
-      }, 2000)
+      scheduleNextSequence(2000)
     }
   }
 
@@ -131,14 +152,16 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
             type="number"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-            className="border-4 border-indigo-400 p-3 sm:p-4 rounded-xl flex-1 text-2xl sm:text-3xl font-bold text-center focus:ring-4 focus:ring-indigo-300 focus:outline-none shadow-lg"
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            disabled={completed || pending}
+            className="border-4 border-indigo-400 p-3 sm:p-4 rounded-xl flex-1 text-2xl sm:text-3xl font-bold text-center focus:ring-4 focus:ring-indigo-300 focus:outline-none shadow-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
             placeholder="?"
             autoFocus
           />
           <button
             onClick={handleSubmit}
-            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl sm:text-2xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all whitespace-nowrap"
+            disabled={completed || pending}
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl sm:text-2xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             ✓ 提交
           </button>

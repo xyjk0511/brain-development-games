@@ -6,15 +6,20 @@ export type MentalRotationProps = {
   level: number
 }
 
-// Simple shape generator using 个字母 as base shapes for L1-2 and blocks for higher levels
-const generatePair = (level: number): { left: string; right: string; same: boolean } => {
+const BEGINNER_PAIRS = [
+  { left: 'R', different: 'Я' },
+  { left: 'L', different: '⅃' },
+  { left: 'E', different: 'Ǝ' },
+  { left: 'F', different: 'Ⅎ' }
+]
+
+// Simple shape generator using letters as base shapes for L1-2 and blocks for higher levels
+export const generatePair = (level: number): { left: string; right: string; same: boolean } => {
   if (level <= 2) {
-    // use single letter and sometimes mirror it
-    const 个字母 = ['R', 'L', 'E', 'F']
-    const ch = 个字母[Math.floor(Math.random() * 个字母.length)]
+    const pair = BEGINNER_PAIRS[Math.floor(Math.random() * BEGINNER_PAIRS.length)]
     const same = Math.random() > 0.5
-    const right = same ? ch : ch.split('').reverse().join('') // simple mirror
-    return { left: ch, right, same }
+    const right = same ? pair.left : pair.different
+    return { left: pair.left, right, same }
   }
 
   // for higher levels produce pseudo-shapes as ascii patterns and rotate by multiples 共 90

@@ -11,6 +11,24 @@ import {
 describe('game parameter tables', () => {
   test('defines the canonical sixteen-game set', () => {
     expect(CANONICAL_GAME_DESIGNS).toHaveLength(16)
+    expect(CANONICAL_GAME_DESIGNS.map(game => game.id)).toEqual([
+      'visual-search',
+      'simon-says',
+      'card-matching',
+      'reaction-time',
+      'schulte-table',
+      'word-scramble',
+      'maze',
+      'logic-puzzles',
+      'tower-of-hanoi',
+      'n-back',
+      'mental-rotation',
+      'stroop',
+      'trail-making',
+      'number-sequence',
+      'water-jugs',
+      'quick-math'
+    ])
     expect(CANONICAL_GAME_DESIGNS.every(game => game.howToPlay && game.goal && game.trains)).toBe(true)
   })
 

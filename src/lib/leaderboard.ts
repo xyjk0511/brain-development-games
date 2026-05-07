@@ -9,6 +9,12 @@ export type LeaderboardEntry = {
 
 const STORAGE_KEY = 'mind-arcade-leaderboard'
 
+export const clampScore100 = (score: number | undefined): number | undefined => {
+  if (score === undefined) return undefined
+  if (!Number.isFinite(score)) return 0
+  return Math.max(0, Math.min(100, Math.round(score)))
+}
+
 const load = (): LeaderboardEntry[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -42,6 +48,7 @@ export const getLeaderboard = (limit = 10): LeaderboardEntry[] => {
 
 export const addLeaderboardEntry = (entry: Omit<LeaderboardEntry, 'id' | 'when'>): void => {
   const all = load()
+  const normalizedScore = clampScore100(entry.score) ?? 0
   
   // Find existing entry for same game+level
   const existingIndex = all.findIndex(
@@ -50,7 +57,7 @@ export const addLeaderboardEntry = (entry: Omit<LeaderboardEntry, 'id' | 'when'>
   
   // Keep only the best score
   if (existingIndex !== -1) {
-    if (entry.score <= all[existingIndex].score) {
+    if (normalizedScore <= all[existingIndex].score) {
       return // New score is not better, don't save
     }
     all.splice(existingIndex, 1) // Remove old score
@@ -59,6 +66,8 @@ export const addLeaderboardEntry = (entry: Omit<LeaderboardEntry, 'id' | 'when'>
   // Add new entry
   const newEntry: LeaderboardEntry = {
     ...entry,
+    score: normalizedScore,
+    maxScore: entry.maxScore === undefined ? undefined : clampScore100(entry.maxScore),
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     when: new Date().toISOString()
   }

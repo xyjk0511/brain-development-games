@@ -8,9 +8,11 @@ import {
   recordGameRun,
   resetAllProgress
 } from './progress'
+import { getLeaderboard, resetLeaderboard } from './leaderboard'
 
 beforeEach(() => {
   resetAllProgress()
+  resetLeaderboard()
 })
 
 test('marking and reading progress', () => {
@@ -71,5 +73,27 @@ describe('versioned adaptive progress', () => {
     expect(progress?.recentRuns?.[0].accuracy).toBe(0.9)
     expect(progress?.recommendedLevel).toBe(5)
     expect(getLatestRecommendation('quick-math')?.direction).toBe('升高')
+  })
+
+  test('normalizes run scores before saving progress and leaderboard entries', () => {
+    recordGameRun({
+      gameId: 'reaction-time',
+      level: 3,
+      accuracy: 1,
+      errorCount: 0,
+      hintCount: 0,
+      retryCount: 0,
+      consecutiveSuccesses: 1,
+      consecutiveFailures: 0,
+      score: 450,
+      maxScore: 100
+    })
+
+    expect(getGameProgress('reaction-time')?.bestScore).toBe(100)
+    expect(getGameProgress('reaction-time')?.recentRuns?.[0].score).toBe(100)
+    expect(getLeaderboard(1)[0].score).toBe(100)
+
+    markGameCompletedLevel('schulte-table', 2, -40, 100)
+    expect(getGameProgress('schulte-table')?.bestScore).toBe(0)
   })
 })

@@ -1,5 +1,5 @@
 import { evaluateAdaptiveDifficulty, type AdaptiveDecision, type AdaptiveDirection, type AdaptiveMetrics } from './adaptive'
-import { addLeaderboardEntry } from './leaderboard'
+import { addLeaderboardEntry, clampScore100 } from './leaderboard'
 
 export type GameProgress = {
   bestLevel: number
@@ -121,12 +121,14 @@ export const getLatestRecommendation = (gameId: string): AdaptiveDecision | unde
 export const recordGameRun = (input: GameRunInput): AdaptiveDecision => {
   const decision = evaluateAdaptiveDifficulty(input)
   const completedAt = input.completedAt ?? new Date().toISOString()
-  const run: GameRunRecord = { ...input, ...decision, completedAt }
+  const normalizedScore = clampScore100(input.score)
+  const normalizedInput: GameRunInput = { ...input, score: normalizedScore }
+  const run: GameRunRecord = { ...normalizedInput, ...decision, completedAt }
   const state = loadPersistedState()
   const prev = state.games[input.gameId] ?? { bestLevel: 0, completedLevels: [], recentRuns: [] }
   const bestLevel = Math.max(prev.bestLevel, input.level)
   const completedLevels = Array.from(new Set([...prev.completedLevels, input.level])).sort((a, b) => a - b)
-  const bestScore = input.score !== undefined ? Math.max(prev.bestScore ?? 0, input.score) : prev.bestScore
+  const bestScore = normalizedScore !== undefined ? Math.max(prev.bestScore ?? 0, normalizedScore) : prev.bestScore
   const recentRuns = [run, ...(prev.recentRuns ?? [])].slice(0, MAX_RECENT_RUNS)
 
   state.games[input.gameId] = {
@@ -140,9 +142,9 @@ export const recordGameRun = (input: GameRunInput): AdaptiveDecision => {
   }
   savePersistedState(state)
 
-  if (input.score !== undefined) {
+  if (normalizedScore !== undefined) {
     try {
-      addLeaderboardEntry({ gameId: input.gameId, level: input.level, score: input.score, maxScore: input.maxScore })
+      addLeaderboardEntry({ gameId: input.gameId, level: input.level, score: normalizedScore, maxScore: input.maxScore })
     } catch (e) {
       console.error('Could not add leaderboard entry', e)
     }

@@ -75,7 +75,7 @@ const TrailMaking = ({ level }: TrailMakingProps): JSX.Element => {
     if (currentIndex === nodes.length - 1) {
       const time = Date.now() - (startTime ?? Date.now())
       setEndTime(time)
-      const score = Math.max(0, Math.round(100000 / time))
+      const score = Math.min(100, Math.max(0, Math.round(100000 / time)))
       
       if (!saved.current) {
         markGameCompletedLevel('trail-making', level, score, 100)

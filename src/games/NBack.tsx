@@ -26,6 +26,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
   const [score, setScore] = useState(0)
   const [running, setRunning] = useState(false)
   const intervalRef = useRef<number | null>(null)
+  const answeredIndices = useRef<Set<number>>(new Set())
 
   useEffect(() => {
     // regenerate sequence on level change
@@ -39,7 +40,17 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
       window.clearInterval(intervalRef.current)
       intervalRef.current = null
     }
+    answeredIndices.current.clear()
   }, [level])
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [])
 
   const step = (): void => {
     setSequence((s) => [...s, randItem(level)])
@@ -50,7 +61,14 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
     setSequence([])
     setIndex(0)
     setScore(0)
+    setCompleted(false)
+    saved.current = false
+    answeredIndices.current.clear()
     setRunning(true)
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
     step()
     // Slower speed for easier levels: 等级 1 = 1500ms, 等级 2 = 1300ms, etc.
     intervalRef.current = window.setInterval(step, Math.max(1500 - level * 200, 400))
@@ -65,8 +83,11 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
   }
 
   const pressMatch = (): void => {
+    if (!running || completed) return
     // check if current item matches item n 步s ago
     const curIdx = sequence.length - 1
+    if (curIdx < 0 || answeredIndices.current.has(curIdx)) return
+    answeredIndices.current.add(curIdx)
     if (curIdx - n >= 0 && sequence[curIdx] === sequence[curIdx - n]) {
       setScore((s) => s + 1)
     } else {
@@ -88,6 +109,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
       markGameCompletedLevel('n-back', level, percentageScore, 100)
       saved.current = true
       setCompleted(true)
+      stop()
     }
   }, [score, level, target])
 
@@ -136,6 +158,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
           </button>
           <button
             onClick={pressMatch}
+            disabled={!running || completed}
             className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
           >
             ✨ 匹配！

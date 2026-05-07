@@ -68,11 +68,25 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
   const errorClicks = useRef(0)
   const roundTimes = useRef<number[]>([])
   const sessionStart = useRef(Date.now())
+  const roundStart = useRef(Date.now())
+  const nextRoundTimeout = useRef<number | null>(null)
+  const isAdvancingRound = useRef(false)
+
+  const clearNextRoundTimeout = (): void => {
+    if (nextRoundTimeout.current !== null) {
+      window.clearTimeout(nextRoundTimeout.current)
+      nextRoundTimeout.current = null
+    }
+  }
 
   useEffect(() => {
+    clearNextRoundTimeout()
     setGameData(generateVisualSearchItems(config))
     setFound(new Set())
-    setStartTime(null)
+    const now = Date.now()
+    roundStart.current = now
+    isAdvancingRound.current = false
+    setStartTime(now)
     setEndTime(null)
     setScore(0)
     setCompleted(false)
@@ -80,15 +94,20 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
     totalClicks.current = 0
     errorClicks.current = 0
     roundTimes.current = []
-    sessionStart.current = Date.now()
+    sessionStart.current = now
     saved.current = false
+    return clearNextRoundTimeout
   }, [config, level])
 
   const nextRound = (): void => {
     setGameData(generateVisualSearchItems(config))
     setFound(new Set())
-    setStartTime(null)
+    const now = Date.now()
+    roundStart.current = now
+    isAdvancingRound.current = false
+    setStartTime(now)
     setEndTime(null)
+    nextRoundTimeout.current = null
   }
 
   const completeRun = (newScore: number): void => {
@@ -113,13 +132,16 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
       maxScore: 100
     })
     saved.current = true
+    clearNextRoundTimeout()
     setRecommendation(decision)
     setCompleted(true)
   }
 
   const handleItemClick = (item: Item): void => {
-    if (completed) return
-    if (startTime === null) setStartTime(Date.now())
+    if (completed || isAdvancingRound.current) return
+    const clickTime = Date.now()
+    const roundStartTime = roundStart.current
+    if (startTime === null) setStartTime(roundStartTime)
     if (found.has(item.id)) return
 
     totalClicks.current += 1
@@ -133,7 +155,7 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
     setFound(newFound)
 
     if (newFound.size === gameData.targetCount) {
-      const time = Date.now() - (startTime ?? Date.now())
+      const time = Date.now() - roundStartTime
       roundTimes.current.push(time)
       setEndTime(time)
       const newScore = score + 1
@@ -144,7 +166,9 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
         return
       }
 
-      setTimeout(nextRound, 1000)
+      isAdvancingRound.current = true
+      clearNextRoundTimeout()
+      nextRoundTimeout.current = window.setTimeout(nextRound, 1000)
     }
   }
 
@@ -171,7 +195,7 @@ const VisualSearch = ({ level }: VisualSearchProps): JSX.Element => {
               <span className="text-xl font-bold">({found.size}/{gameData.targetCount})</span>
             </div>
           )}
-          {endTime && (
+          {endTime !== null && (
             <div className="text-xl font-bold text-green-600">
               ⚡ 时间： {(endTime / 1000).toFixed(2)}s
             </div>

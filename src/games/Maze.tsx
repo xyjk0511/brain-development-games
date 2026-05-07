@@ -15,7 +15,7 @@ const makeEmptyGrid = (w: number, h: number): number[][] => {
 }
 
 // BFS to find shortest path length
-const findShortestPath = (grid: number[][], start: [number, number], end: [number, number]): number => {
+export const findShortestPath = (grid: number[][], start: [number, number], end: [number, number]): number => {
   const h = grid.length
   const w = grid[0].length
   const visited = Array.from({ length: h }, () => Array(w).fill(false))
@@ -46,43 +46,44 @@ const findShortestPath = (grid: number[][], start: [number, number], end: [numbe
 }
 
 // Recursive backtracking maze generator - creates a proper maze with dead ends
-const generateMaze = (w: number, h: number): { grid: number[][]; start: [number, number]; end: [number, number]; optimalMoves: number } => {
+export const generateMaze = (w: number, h: number): { grid: number[][]; start: [number, number]; end: [number, number]; optimalMoves: number } => {
   const grid = makeEmptyGrid(w, h)
-  const visited: boolean[][] = Array.from({ length: h }, () => Array(w).fill(false))
   
   // Directions: right, down, left, up
   const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]]
   
   const carve = (x: number, y: number): void => {
-    visited[y][x] = true
     grid[y][x] = 0
     
     // Shuffle directions for randomness
-    const shuffled = dirs.sort(() => Math.random() - 0.5)
+    const shuffled = [...dirs].sort(() => Math.random() - 0.5)
     
     for (const [dx, dy] of shuffled) {
-      const nx = x + dx
-      const ny = y + dy
+      const nx = x + dx * 2
+      const ny = y + dy * 2
       
-      if (nx >= 0 && nx < w && ny >= 0 && ny < h && !visited[ny][nx]) {
+      if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid[ny][nx] === 1) {
+        grid[y + dy][x + dx] = 0
         carve(nx, ny)
       }
     }
   }
   
-  // 开始 carving from top-left
+  // Start carving from top-left, stepping over wall cells so walls remain.
   carve(0, 0)
-  
-  // Ensure there's always a path by carving additional connections
-  // This adds some loops to make the maze less linear
-  for (let i = 0; i < Math.floor(w * h * 0.1); i++) {
-    const x = Math.floor(Math.random() * w)
-    const y = Math.floor(Math.random() * h)
-    grid[y][x] = 0
-  }
   
   const start: [number, number] = [0, 0]
   const end: [number, number] = [w - 1, h - 1]
+  const connectorX = w % 2 === 0 ? w - 2 : w - 1
+  const connectorY = h % 2 === 0 ? h - 2 : h - 1
+  grid[end[1]][end[0]] = 0
+  for (let x = Math.min(connectorX, end[0]); x <= Math.max(connectorX, end[0]); x++) {
+    grid[connectorY][x] = 0
+  }
+  for (let y = Math.min(connectorY, end[1]); y <= Math.max(connectorY, end[1]); y++) {
+    grid[y][end[0]] = 0
+  }
+
   const optimalMoves = findShortestPath(grid, start, end)
   
   return { grid, start, end, optimalMoves }
@@ -126,14 +127,16 @@ const Maze = ({ level }: MazeProps): JSX.Element => {
   useEffect(() => {
     if (!dynamic) return
     const id = setInterval(() => {
-      // toggle a random wall cell to open/close
+      // toggle a random cell only when the maze remains solvable
       const w = grid.length
       const h = grid[0].length
       const x = Math.floor(Math.random() * w)
       const y = Math.floor(Math.random() * h)
       setGrid((g) => {
+        if ((x === start[0] && y === start[1]) || (x === end[0] && y === end[1])) return g
         const copy = g.map((row) => row.slice())
         copy[y][x] = copy[y][x] === 1 ? 0 : 1
+        if (findShortestPath(copy, start, end) < 0) return g
         return copy
       })
     }, 2000)
@@ -152,9 +155,10 @@ const Maze = ({ level }: MazeProps): JSX.Element => {
     setPos([nx, ny])
     setMoves((m) => m + 1)
     if (nx === end[0] && ny === end[1]) {
+      const nextMoves = moves + 1
       setWon(true)
       // Score based on efficiency: 100 points for optimal, decreasing with extra moves
-      const efficiency = Math.max(0, Math.min(100, Math.round((optimalMoves / moves) * 100)))
+      const efficiency = Math.max(0, Math.min(100, Math.round((optimalMoves / nextMoves) * 100)))
       if (!saved.current) {
         markGameCompletedLevel('maze', level, efficiency, 100)
         saved.current = true

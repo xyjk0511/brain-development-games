@@ -15,17 +15,27 @@ type Card = {
   isMatched: boolean
 }
 
-const SYMBOLS = ['🎮', '🎯', '🎨', '🎭', '🎪', '🎬', '🎵', '🎸', '🎹', '🎺', '🎻', '🎲', '🎰', '🎳', '⚽', '🏀', '🏈', '⚾', '🎾', '🏐']
+export const CARD_MATCHING_SYMBOLS = [
+  '🎮', '🎯', '🎨', '🎭', '🎪', '🎬', '🎵', '🎸',
+  '🎹', '🎺', '🎻', '🎲', '🎰', '🎳', '⚽', '🏀',
+  '🏈', '⚾', '🎾', '🏐', '🍎', '🍌', '🍓', '🍇',
+  '🐶', '🐱', '🐼', '🐸', '🌟', '🌈', '🚀', '🧩'
+]
 
-const gridSize = (level: number): number => {
+export const gridSize = (level: number): number => {
   if (level <= 2) return 4 // 4x4 = 8 pairs
   if (level <= 5) return 6 // 6x6 = 18 pairs
   return 8 // 8x8 = 32 pairs
 }
 
+export const getCardMatchingPairCount = (level: number): number => {
+  const size = gridSize(level)
+  return (size * size) / 2
+}
+
 const CardMatching = ({ level }: CardMatchingProps): JSX.Element => {
   const size = gridSize(level)
-  const pairCount = (size * size) / 2
+  const pairCount = getCardMatchingPairCount(level)
   const [cards, setCards] = useState<Card[]>([])
   const [flippedCards, setFlippedCards] = useState<number[]>([])
   const [moves, setMoves] = useState(0)
@@ -40,7 +50,7 @@ const CardMatching = ({ level }: CardMatchingProps): JSX.Element => {
   }, [level, size])
 
   const initializeGame = (): void => {
-    const symbols = SYMBOLS.slice(0, pairCount)
+    const symbols = CARD_MATCHING_SYMBOLS.slice(0, pairCount)
     const cardPairs = [...symbols, ...symbols]
     const shuffled = cardPairs.sort(() => Math.random() - 0.5)
     

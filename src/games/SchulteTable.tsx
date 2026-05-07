@@ -48,7 +48,7 @@ const SchulteTable = ({ level }: SchulteProps): JSX.Element => {
         // check threshold to save progress
         const threshold = size * size * 500 // heuristic: 500ms per cell
         if (!saved.current && t <= threshold) {
-          markGameCompletedLevel('schulte-table', level, Math.max(0, Math.round(100000 / t)), 100)
+          markGameCompletedLevel('schulte-table', level, Math.min(100, Math.max(0, Math.round(100000 / t))), 100)
           saved.current = true
         }
       } else {

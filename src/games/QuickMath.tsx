@@ -102,13 +102,23 @@ const QuickMath = ({ level }: QuickMathProps): JSX.Element => {
     setCompleted(true)
   }
 
+  useEffect(() => {
+    if (timeLeft === 0 && !completed) {
+      completeRun(score, true)
+    }
+  }, [timeLeft, completed, score])
+
   const submit = (): void => {
     if (completed) return
+    const trimmed = input.trim()
+    if (trimmed === '') {
+      return
+    }
     const timedOut = timeLeft !== null && timeLeft <= 0
     attempts.current += 1
     reactionSamples.current.push(Date.now() - problemStartMs.current)
 
-    const val = Number(input)
+    const val = Number(trimmed)
     const isCorrect = !timedOut && val === problem.answer
     const newScore = isCorrect ? score + 1 : Math.max(0, score - 1)
 
@@ -160,7 +170,7 @@ const QuickMath = ({ level }: QuickMathProps): JSX.Element => {
             className="text-2xl sm:text-4xl font-bold text-center border-4 border-blue-400 p-3 sm:p-4 rounded-xl w-full sm:w-48 focus:ring-4 focus:ring-blue-300 focus:outline-none shadow-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             placeholder="?"
             autoFocus
             disabled={completed}

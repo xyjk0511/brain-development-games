@@ -66,7 +66,7 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
       if (newAttempts.length >= target) {
         const avg = newAttempts.reduce((a, b) => a + b, 0) / newAttempts.length
         if (!saved.current && avg <= avgThreshold) {
-          const score = Math.round(1000 / avg * 100)
+          const score = Math.min(100, Math.max(0, Math.round(1000 / avg * 100)))
           markGameCompletedLevel('reaction-time', level, score, 100)
           saved.current = true
           setCompleted(true)
