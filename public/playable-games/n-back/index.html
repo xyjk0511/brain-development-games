@@ -16,6 +16,7 @@
     .modal-backdrop{position:absolute;inset:0;z-index:20;background:rgba(59,59,79,.24);display:flex;align-items:center;justify-content:center;padding:24px}.modal-card{width:min(760px,92vw);padding:30px;text-align:center}.modal-card h2{font-size:42px}.modal-card p{text-align:left}.countdown{position:absolute;z-index:20;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,247,232,.72);font-size:min(22vw,160px);font-weight:1000;color:var(--coral);text-align:center}.badge{width:min(330px,70vw);margin:0 auto}.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.stat{background:#fff;border-radius:20px;padding:16px;border:2px solid rgba(189,237,216,.8)}.stat b{display:block;font-size:30px}.stat span{font-size:16px;color:var(--muted);font-weight:900}.rail{height:14px;background:#fff;border-radius:999px;overflow:hidden;border:2px solid rgba(216,200,255,.8);margin:12px 0}.bar{height:100%;width:0;background:var(--mint);border-radius:999px}.toggle{position:absolute;z-index:30;right:18px;bottom:18px;background:#fff;border:2px solid rgba(216,200,255,.8);border-radius:999px;padding:10px 14px;font-weight:1000;box-shadow:0 8px 18px rgba(54,54,84,.10)}.low-stim *{animation:none!important;transition:none!important}.low-stim .feedback img{opacity:.8}
     @media(max-width:860px){body{overflow:auto}.screen{min-height:100%;height:auto;overflow:auto;padding:16px}.home-wrap,.detail-grid,.cover-layout,.result-grid{grid-template-columns:1fr;min-height:calc(100vh - 32px);padding:70px 0 100px}.lobby-card{min-height:auto}.lobby-card>img{height:220px}.hud{position:fixed;grid-template-columns:1fr;gap:8px}.hud-left,.hud-right{justify-self:stretch;justify-content:space-between}.target-card{min-width:100%;padding:14px 48px;font-size:20px}.stage-wrap{position:relative;left:auto;top:auto;transform:none;width:100%;height:420px;margin:150px auto 130px}.character{width:120px;left:8px;bottom:90px}.album{width:110px;right:10px;bottom:95px}.bubble{position:fixed;bottom:126px;left:16px;right:16px;transform:none}.bottom-actions{position:fixed;bottom:14px}.answer{min-height:74px}.hand{position:fixed;bottom:88px}.chip{position:fixed;right:14px;bottom:120px}.stat-grid{grid-template-columns:1fr}}
   </style>
+  <link rel="stylesheet" href="../shared/unified.css">
 </head>
 <body>
 <div id="app"></div>
@@ -114,5 +115,6 @@
   if(load().lowStim)state.lowStim=true;render();
 })();
 </script>
+  <script src="../shared/unified.js"></script>
 </body>
 </html>

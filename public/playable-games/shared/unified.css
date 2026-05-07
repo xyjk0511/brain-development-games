@@ -1,0 +1,191 @@
+:root {
+  --unified-ink: #334155;
+  --unified-title: #3f2d22;
+  --unified-paper: rgba(255, 253, 247, 0.94);
+  --unified-paper-strong: rgba(255, 255, 255, 0.96);
+  --unified-line: rgba(146, 118, 87, 0.18);
+  --unified-primary: #ffbd59;
+  --unified-primary-dark: #d67a19;
+  --unified-calm: #dff7eb;
+  --unified-calm-dark: #2f855a;
+  --unified-blue: #dff3ff;
+  --unified-blue-dark: #2563eb;
+  --unified-shadow: 0 18px 45px rgba(68, 49, 31, 0.14);
+  --unified-radius: 22px;
+  --unified-font: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", "Source Han Sans SC", sans-serif;
+}
+
+html.playable-unified,
+html.playable-unified body {
+  font-family: var(--unified-font) !important;
+  color: var(--unified-ink) !important;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255, 224, 202, 0.45), transparent 30%),
+    radial-gradient(circle at 82% 12%, rgba(214, 245, 225, 0.52), transparent 34%),
+    linear-gradient(135deg, #fff8e8 0%, #eefaf4 52%, #e9f6ff 100%) !important;
+}
+
+html.playable-unified body {
+  min-height: 100vh;
+}
+
+html.playable-unified h1,
+html.playable-unified h2,
+html.playable-unified h3,
+html.playable-unified .title,
+html.playable-unified .game-title,
+html.playable-unified .section-title {
+  color: var(--unified-title) !important;
+  letter-spacing: 0 !important;
+}
+
+html.playable-unified p,
+html.playable-unified li,
+html.playable-unified .small,
+html.playable-unified .tiny {
+  line-height: 1.65 !important;
+}
+
+html.playable-unified .unified-home-link {
+  position: fixed;
+  left: 14px;
+  top: 14px;
+  z-index: 999999;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(51, 65, 85, 0.13);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+}
+
+html.playable-unified .unified-home-link:hover {
+  background: #fff4d6;
+  color: #7c3f00;
+}
+
+html.playable-unified .unified-home-link::before {
+  content: "⌂";
+  font-size: 15px;
+  line-height: 1;
+}
+
+html.playable-unified .unified-debug-hidden,
+html.playable-unified .asset-note,
+html.playable-unified .asset-check {
+  display: none !important;
+}
+
+html.playable-unified button,
+html.playable-unified [role="button"],
+html.playable-unified .btn,
+html.playable-unified .button,
+html.playable-unified .primary,
+html.playable-unified .secondary,
+html.playable-unified .ghost {
+  min-height: 42px;
+  border-radius: 999px !important;
+  font-family: var(--unified-font) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease !important;
+}
+
+html.playable-unified button:hover,
+html.playable-unified [role="button"]:hover,
+html.playable-unified .btn:hover,
+html.playable-unified .button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.04);
+}
+
+html.playable-unified button:active,
+html.playable-unified [role="button"]:active,
+html.playable-unified .btn:active,
+html.playable-unified .button:active {
+  transform: translateY(1px);
+}
+
+html.playable-unified .primary,
+html.playable-unified button.primary,
+html.playable-unified button[data-unified-action="start"],
+html.playable-unified button[data-unified-action="teach"] {
+  border: 1px solid rgba(214, 122, 25, 0.32) !important;
+  background: linear-gradient(180deg, #ffd982 0%, var(--unified-primary) 100%) !important;
+  color: #5a3309 !important;
+  box-shadow: 0 8px 0 rgba(214, 122, 25, 0.18), 0 12px 24px rgba(214, 122, 25, 0.14) !important;
+}
+
+html.playable-unified .secondary,
+html.playable-unified button.secondary,
+html.playable-unified button[data-unified-action="practice"] {
+  border: 1px solid rgba(47, 133, 90, 0.24) !important;
+  background: linear-gradient(180deg, #f0fff6 0%, var(--unified-calm) 100%) !important;
+  color: #276749 !important;
+  box-shadow: 0 8px 18px rgba(47, 133, 90, 0.11) !important;
+}
+
+html.playable-unified .ghost,
+html.playable-unified button.ghost,
+html.playable-unified button[data-unified-action="info"],
+html.playable-unified button[data-unified-action="cover"],
+html.playable-unified button[data-unified-action="setting"] {
+  border: 1px solid rgba(37, 99, 235, 0.17) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, var(--unified-blue) 100%) !important;
+  color: #31537d !important;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08) !important;
+}
+
+html.playable-unified .card,
+html.playable-unified .panel,
+html.playable-unified .modal,
+html.playable-unified .info,
+html.playable-unified .box,
+html.playable-unified .sheet,
+html.playable-unified .hud,
+html.playable-unified .result,
+html.playable-unified .cover-card,
+html.playable-unified .detail-card {
+  border-color: var(--unified-line) !important;
+  border-radius: var(--unified-radius) !important;
+  background-color: var(--unified-paper) !important;
+  box-shadow: var(--unified-shadow) !important;
+}
+
+html.playable-unified .badge,
+html.playable-unified .tag,
+html.playable-unified .chip,
+html.playable-unified .pill {
+  border-radius: 999px !important;
+  font-family: var(--unified-font) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0 !important;
+}
+
+html.playable-unified [id*="hasAdaptive"],
+html.playable-unified [class*="debug"],
+html.playable-unified [id*="debug"] {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  html.playable-unified .unified-home-link {
+    left: 8px;
+    top: 8px;
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  html.playable-unified body {
+    overflow-x: hidden;
+  }
+}

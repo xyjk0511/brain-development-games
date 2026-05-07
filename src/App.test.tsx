@@ -42,6 +42,6 @@ describe('canonical game routes', () => {
 
     const frame = screen.getByTitle(/小动物找朋友 可玩游戏/i)
     expect(frame).toHaveAttribute('src', '/playable-games/card-matching/index.html')
-    expect(screen.getByRole('link', { name: /返回首页/i })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /返回首页/i })).not.toBeInTheDocument()
   })
 })
