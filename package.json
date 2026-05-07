@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-spa-fallback",
+    "copy-spa-fallback": "node -e \"require('fs').copyFileSync('docs/index.html','docs/404.html')\"",
     "preview": "vite preview",
     "test": "vitest --environment jsdom",
     "predeploy": "npm run build",
