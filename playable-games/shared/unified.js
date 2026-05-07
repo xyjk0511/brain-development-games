@@ -20,6 +20,14 @@
     return `${window.location.origin}${base}`;
   }
 
+  function detectGameId() {
+    const marker = '/playable-games/';
+    const path = window.location.pathname;
+    const idx = path.indexOf(marker);
+    if (idx < 0) return '';
+    return path.slice(idx + marker.length).split('/')[0] || '';
+  }
+
   function addHomeLink() {
     if (document.querySelector('.unified-home-link')) return;
     const link = document.createElement('a');
@@ -81,13 +89,20 @@
       if (!text || text.length > 260) return;
       if (!DEBUG_RE.test(text)) return;
 
-      const target = node.closest('.asset-note, .asset-check, .source-box, .info-panel, .soft-card, .badge') || node;
+      const target = /本版包含|离线资源/.test(text)
+        ? (node.closest('.asset-note, .asset-check, .source-box, .info-panel, .soft-card, .badge') || node)
+        : (node.closest('.asset-note, .asset-check, .source-box, .badge') || node);
       target.classList.add('unified-debug-hidden');
     });
   }
 
   function tidyDocument() {
     document.documentElement.classList.add('playable-unified');
+    const gameId = detectGameId();
+    if (gameId) {
+      document.documentElement.dataset.game = gameId;
+      document.body.dataset.game = gameId;
+    }
     addHomeLink();
     normalizeButtons();
     hideDebugText();

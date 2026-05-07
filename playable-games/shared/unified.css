@@ -176,6 +176,197 @@ html.playable-unified [id*="debug"] {
   display: none !important;
 }
 
+html.playable-unified[data-game="simon-says"] .cover-panel,
+html.playable-unified[data-game="schulte-table"] .cover-card,
+html.playable-unified[data-game="number-sequence"] .home-shell,
+html.playable-unified[data-game="tower-of-hanoi"] .home-grid {
+  width: min(1120px, calc(100vw - 112px)) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  align-items: center !important;
+  gap: 28px !important;
+}
+
+html.playable-unified[data-game="simon-says"] .cover-panel {
+  display: grid !important;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(0, 0.95fr) !important;
+  min-height: min(640px, calc(100vh - 120px)) !important;
+  padding: clamp(30px, 3.2vw, 44px) !important;
+}
+
+html.playable-unified[data-game="simon-says"] .cover-panel > * {
+  grid-column: 2 !important;
+}
+
+html.playable-unified[data-game="simon-says"] .cover-panel::after {
+  content: "";
+  grid-column: 1;
+  grid-row: 1 / span 6;
+  align-self: stretch;
+  min-height: 420px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 253, 247, 0.18)),
+    url("../simon-says/assets/game-cover-poster.png") center / cover no-repeat;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.74), 0 18px 40px rgba(67, 114, 139, 0.16);
+}
+
+html.playable-unified[data-game="simon-says"] .cover-info,
+html.playable-unified[data-game="number-sequence"] .info-panel,
+html.playable-unified[data-game="tower-of-hanoi"] .info-panel {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+html.playable-unified[data-game="simon-says"] .cover-info-card,
+html.playable-unified[data-game="number-sequence"] .info-block,
+html.playable-unified[data-game="tower-of-hanoi"] .info-panel > div {
+  border: 1px solid rgba(146, 118, 87, 0.16) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 253, 247, 0.78) !important;
+  box-shadow: 0 10px 22px rgba(68, 49, 31, 0.08) !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-card,
+html.playable-unified[data-game="number-sequence"] .home-shell,
+html.playable-unified[data-game="tower-of-hanoi"] .home-grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(340px, 0.85fr) !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-card,
+html.playable-unified[data-game="number-sequence"] .home-card,
+html.playable-unified[data-game="number-sequence"] .info-panel {
+  min-height: min(650px, calc(100vh - 140px)) !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-card {
+  align-items: stretch !important;
+  padding: clamp(30px, 3.2vw, 44px) !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-card > div:first-child {
+  grid-column: 2 !important;
+  display: flex !important;
+  min-width: 0 !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-art {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-height: 430px !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .adapt-box {
+  margin: 14px 0 18px !important;
+  padding: 14px 16px !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-card .row[style*="margin-top"],
+html.playable-unified[data-game="schulte-table"] .cover-card .switch {
+  display: none !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .page {
+  display: grid !important;
+  align-content: center !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .topbar {
+  width: min(1120px, calc(100vw - 112px)) !important;
+  margin: 0 auto 14px !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .home-grid {
+  max-height: calc(100vh - 128px) !important;
+  overflow: visible !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .home-card,
+html.playable-unified[data-game="tower-of-hanoi"] .info-panel {
+  height: calc(100vh - 140px) !important;
+  max-height: 660px !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .info-panel {
+  overflow: auto !important;
+  align-content: start !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .home-grid .adaptive-row,
+html.playable-unified[data-game="tower-of-hanoi"] .info-panel > div:has(.level-strip) {
+  display: none !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .home-card-body {
+  padding: 22px 24px 24px !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .brand {
+  visibility: hidden !important;
+}
+
+html.playable-unified[data-game="tower-of-hanoi"] .brand::after {
+  content: "甜甜圈收纳架";
+  visibility: visible;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-left: 58px;
+  background:
+    radial-gradient(circle at 22px 50%, #fff 0 6px, transparent 7px),
+    linear-gradient(135deg, #ffb07c, #ffd978) 0 50% / 44px 44px no-repeat;
+  border-radius: 16px;
+}
+
+html.playable-unified[data-game="schulte-table"] h1,
+html.playable-unified[data-game="simon-says"] .title,
+html.playable-unified[data-game="number-sequence"] .title-xl,
+html.playable-unified[data-game="tower-of-hanoi"] h1 {
+  font-size: clamp(42px, 4.4vw, 58px) !important;
+  line-height: 1.06 !important;
+  letter-spacing: 0 !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .lead,
+html.playable-unified[data-game="simon-says"] .subtitle,
+html.playable-unified[data-game="number-sequence"] .subtitle,
+html.playable-unified[data-game="tower-of-hanoi"] .small-note {
+  font-size: clamp(17px, 1.45vw, 20px) !important;
+  line-height: 1.62 !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-art,
+html.playable-unified[data-game="number-sequence"] .home-card img,
+html.playable-unified[data-game="tower-of-hanoi"] .home-card img {
+  min-height: 250px !important;
+  height: 34vh !important;
+  max-height: 300px !important;
+  border-radius: 24px !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .cover-art {
+  min-height: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  background-color: rgba(234, 248, 255, 0.64) !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+html.playable-unified[data-game="schulte-table"] .adapt-box,
+html.playable-unified[data-game="number-sequence"] .progress-note,
+html.playable-unified[data-game="tower-of-hanoi"] .adaptive-panel {
+  border: 1px solid rgba(47, 133, 90, 0.18) !important;
+  background: rgba(240, 255, 246, 0.84) !important;
+  border-radius: 20px !important;
+}
+
 @media (max-width: 640px) {
   html.playable-unified .unified-home-link {
     left: 8px;
@@ -187,5 +378,27 @@ html.playable-unified [id*="debug"] {
 
   html.playable-unified body {
     overflow-x: hidden;
+  }
+}
+
+@media (max-width: 900px) {
+  html.playable-unified[data-game="simon-says"] .cover-panel,
+  html.playable-unified[data-game="schulte-table"] .cover-card,
+  html.playable-unified[data-game="number-sequence"] .home-shell,
+  html.playable-unified[data-game="tower-of-hanoi"] .home-grid {
+    width: min(94vw, 720px) !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  html.playable-unified[data-game="simon-says"] .cover-panel::after {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 260px;
+  }
+
+  html.playable-unified[data-game="simon-says"] .cover-info,
+  html.playable-unified[data-game="number-sequence"] .info-panel,
+  html.playable-unified[data-game="tower-of-hanoi"] .info-panel {
+    grid-template-columns: 1fr !important;
   }
 }
