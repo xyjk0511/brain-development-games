@@ -1,0 +1,1274 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>强力记忆</title>
+  <link rel="stylesheet" href="../shared/unified.css" />
+  <style>
+    :root {
+      --paper: rgba(255, 253, 246, 0.94);
+      --paper-strong: rgba(255, 255, 255, 0.97);
+      --ink: #334155;
+      --title: #3d2b21;
+      --muted: #64748b;
+      --line: rgba(93, 74, 52, 0.16);
+      --green: #42d883;
+      --green-dark: #1b8f54;
+      --blue: #70bcff;
+      --blue-dark: #266fb8;
+      --red: #ff6b6b;
+      --yellow: #ffc857;
+      --cream: #fff7df;
+      --shadow: 0 22px 60px rgba(68, 49, 31, 0.14);
+      --soft-shadow: 0 10px 26px rgba(68, 49, 31, 0.1);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eaf9ff 0%, #fff8df 100%);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.66;
+    }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 62px 22px 34px;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(236, 251, 255, 0.84), rgba(255, 248, 224, 0.92)),
+        linear-gradient(135deg, #dbf5ff 0%, #f0fff0 54%, #fff1d5 100%);
+    }
+
+    .scene svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.9;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      display: none;
+      min-height: calc(100vh - 96px);
+    }
+
+    .screen.is-active {
+      display: grid;
+      place-items: center;
+    }
+
+    .cover-card,
+    .tutorial-shell,
+    .game-shell,
+    .result-card {
+      width: min(1060px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      border-radius: 28px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .cover-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+      gap: 30px;
+      padding: 36px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      min-height: 36px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: #daf7e7;
+      color: #25734b;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 18px;
+      color: var(--title);
+      font-size: clamp(48px, 5vw, 78px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin-top: 18px;
+      max-width: 620px;
+      color: #536a7c;
+      font-size: 25px;
+      line-height: 1.72;
+      font-weight: 800;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(37, 115, 75, 0.16);
+      background: rgba(225, 250, 237, 0.82);
+      color: #2c7b53;
+      font-weight: 900;
+    }
+
+    .cover-actions,
+    .result-actions,
+    .tutorial-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+      align-items: center;
+    }
+
+    .btn {
+      min-height: 52px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      background: #e8f6ff;
+      color: #28537a;
+      box-shadow: 0 8px 20px rgba(64, 122, 160, 0.13);
+      font-weight: 1000;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(64, 122, 160, 0.18);
+    }
+
+    .btn.primary {
+      background: linear-gradient(180deg, #ffd880, #ffb547);
+      color: #673b00;
+    }
+
+    .btn.green {
+      background: #dff8ea;
+      color: #237148;
+    }
+
+    .btn.ghost {
+      background: rgba(255, 255, 255, 0.8);
+      color: #52667a;
+      border: 1px solid rgba(82, 102, 122, 0.14);
+      box-shadow: none;
+    }
+
+    .level-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      align-items: center;
+      color: #5f7384;
+      font-weight: 900;
+    }
+
+    .level-row select {
+      min-height: 42px;
+      border: 1px solid rgba(82, 102, 122, 0.18);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      padding: 0 12px;
+      font-weight: 900;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 420px;
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #bcefff, #fff1cd);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72), var(--soft-shadow);
+    }
+
+    .hero-visual svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      min-height: 420px;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+      max-width: 620px;
+    }
+
+    .panel {
+      min-height: 112px;
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--paper-strong);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .panel h3 {
+      color: var(--title);
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .panel p {
+      margin-top: 8px;
+      color: #607488;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .tutorial-shell,
+    .game-shell {
+      padding: 28px;
+    }
+
+    .tutorial-layout,
+    .game-layout {
+      display: grid;
+      grid-template-columns: minmax(340px, 0.9fr) minmax(340px, 1.1fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .tutorial-card,
+    .side-card,
+    .play-card {
+      border-radius: 24px;
+      background: var(--paper-strong);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .tutorial-card,
+    .side-card {
+      padding: 24px;
+    }
+
+    .tutorial-card h2,
+    .side-card h2 {
+      color: var(--title);
+      font-size: 38px;
+      line-height: 1.15;
+    }
+
+    .tutorial-card p,
+    .side-card p {
+      margin-top: 14px;
+      color: #5b7184;
+      font-size: 20px;
+      line-height: 1.72;
+      font-weight: 800;
+    }
+
+    .demo-board,
+    .memory-board {
+      display: grid;
+      gap: var(--gap, 10px);
+      width: min(100%, var(--board-size, 520px));
+      aspect-ratio: var(--cols, 3) / var(--rows, 3);
+      margin: 0 auto;
+      padding: var(--board-pad, 14px);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 248, 229, 0.88)),
+        repeating-linear-gradient(90deg, transparent 0 38px, rgba(101, 82, 55, 0.05) 39px 40px);
+      border: 2px solid rgba(255, 201, 104, 0.42);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72), var(--soft-shadow);
+    }
+
+    .demo-board {
+      --board-size: 390px;
+      --rows: 3;
+      --cols: 3;
+      margin-top: 22px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .memory-board {
+      grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+      align-self: center;
+    }
+
+    .tile {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+      aspect-ratio: 1;
+      border-radius: 18px;
+      border: 2px solid rgba(83, 96, 113, 0.1);
+      background: linear-gradient(180deg, #ffffff, #f4f8fb);
+      box-shadow: inset 0 -5px 0 rgba(83, 96, 113, 0.08);
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+    }
+
+    .tile.is-target,
+    .tile.is-found {
+      border-color: rgba(27, 143, 84, 0.52);
+      background: linear-gradient(180deg, #7cf0aa, #25c96d);
+      box-shadow: inset 0 -7px 0 rgba(25, 119, 75, 0.18);
+    }
+
+    .tile.is-blue,
+    .tile.is-blue.is-found {
+      border-color: rgba(38, 111, 184, 0.48);
+      background: linear-gradient(180deg, #a9dcff, #57a9f5);
+      box-shadow: inset 0 -7px 0 rgba(38, 111, 184, 0.18);
+    }
+
+    .tile.is-wrong {
+      animation: shake 0.22s linear;
+      border-color: rgba(255, 107, 107, 0.72);
+      background: linear-gradient(180deg, #ffd8d8, #ff8d8d);
+    }
+
+    .tile.is-pending:hover {
+      transform: translateY(-2px);
+    }
+
+    .tile::after {
+      content: "";
+      width: 36%;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.34);
+      opacity: 0;
+    }
+
+    .tile.is-target::after,
+    .tile.is-found::after {
+      opacity: 1;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      35% { transform: translateX(-4px); }
+      70% { transform: translateX(4px); }
+    }
+
+    .play-card {
+      display: grid;
+      place-items: center;
+      min-height: 560px;
+      padding: 24px;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .hud-item {
+      min-height: 76px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: rgba(248, 252, 255, 0.94);
+      border: 1px solid rgba(83, 96, 113, 0.08);
+      box-shadow: 0 8px 18px rgba(83, 96, 113, 0.08);
+    }
+
+    .hud-label {
+      color: #728293;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .hud-value {
+      margin-top: 3px;
+      color: var(--title);
+      font-size: 24px;
+      font-weight: 1000;
+      line-height: 1.15;
+    }
+
+    .status {
+      margin-top: 18px;
+      min-height: 56px;
+      padding: 13px 16px;
+      border-radius: 18px;
+      background: #eaf8ff;
+      color: #41637a;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .game-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .toggle {
+      position: fixed;
+      right: 18px;
+      top: 16px;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(98, 130, 156, 0.16);
+      box-shadow: 0 8px 22px rgba(70, 99, 120, 0.12);
+      color: #536a7c;
+      font-weight: 900;
+    }
+
+    .toggle input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+    }
+
+    .result-card {
+      max-width: 720px;
+      padding: 36px;
+    }
+
+    .result-card h2 {
+      color: var(--title);
+      font-size: 48px;
+      line-height: 1.15;
+    }
+
+    .result-card p {
+      margin-top: 14px;
+      color: #5b7184;
+      font-size: 22px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .stat {
+      min-height: 98px;
+      padding: 16px;
+      border-radius: 20px;
+      background: #f7fbff;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--title);
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: #728293;
+      font-weight: 900;
+    }
+
+    .is-low-stim .scene svg {
+      opacity: 0.48;
+    }
+
+    .is-low-stim .hero-visual,
+    .is-low-stim .cover-card,
+    .is-low-stim .tutorial-shell,
+    .is-low-stim .game-shell,
+    .is-low-stim .result-card {
+      box-shadow: 0 10px 28px rgba(68, 49, 31, 0.08);
+    }
+
+    .is-low-stim .tile,
+    .is-low-stim .btn {
+      transition: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .cover-card,
+      .tutorial-layout,
+      .game-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-grid,
+      .hud,
+      .result-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 320px;
+      }
+
+      .hero-visual svg {
+        min-height: 320px;
+      }
+
+      .play-card {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app {
+        padding: 66px 12px 22px;
+      }
+
+      .cover-card,
+      .tutorial-shell,
+      .game-shell,
+      .result-card {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 44px;
+      }
+
+      .lead,
+      .tutorial-card p,
+      .side-card p,
+      .result-card p {
+        font-size: 18px;
+      }
+
+      .memory-board,
+      .demo-board {
+        --gap: 7px;
+        --board-pad: 10px;
+      }
+
+      .tile {
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <label class="toggle">
+    <input id="lowStim" type="checkbox" />
+    低刺激模式
+  </label>
+
+  <main class="app" id="app">
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="hill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#d8f6df" />
+            <stop offset="100%" stop-color="#bde8c7" />
+          </linearGradient>
+          <linearGradient id="path" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#fff0c9" />
+            <stop offset="100%" stop-color="#ffdca4" />
+          </linearGradient>
+        </defs>
+        <rect width="1600" height="900" fill="transparent" />
+        <path d="M0 690 C210 610 330 710 520 650 C760 575 920 690 1125 620 C1305 560 1460 610 1600 560 L1600 900 L0 900 Z" fill="url(#hill)" opacity=".68" />
+        <path d="M0 790 C290 720 460 835 760 760 C1040 690 1270 770 1600 720 L1600 900 L0 900 Z" fill="#ecfbdf" opacity=".9" />
+        <path d="M610 900 C650 820 720 742 828 700 C920 666 1016 700 1060 780 C1100 852 1070 898 1066 900 Z" fill="url(#path)" opacity=".9" />
+        <g opacity=".86">
+          <rect x="170" y="560" width="56" height="220" rx="28" fill="#cbe2e5" />
+          <path d="M154 552 L198 468 L242 552 Z" fill="#ffda68" stroke="#fff8dc" stroke-width="10" />
+          <rect x="1365" y="540" width="54" height="230" rx="27" fill="#cbe2e5" />
+          <path d="M1348 532 L1392 448 L1438 532 Z" fill="#ffda68" stroke="#fff8dc" stroke-width="10" />
+        </g>
+        <g opacity=".7" fill="#fff">
+          <path d="M280 145 C303 96 374 98 392 146 C430 146 454 169 454 199 C454 225 432 244 402 244 L270 244 C232 244 210 223 210 196 C210 168 237 145 280 145Z" />
+          <path d="M1198 184 C1220 145 1277 146 1294 185 C1328 184 1349 204 1349 229 C1349 252 1331 267 1304 267 L1188 267 C1155 267 1137 251 1137 228 C1137 203 1160 184 1198 184Z" />
+        </g>
+        <g transform="translate(1170 606)">
+          <ellipse cx="80" cy="112" rx="84" ry="30" fill="#9bd8a8" opacity=".55" />
+          <circle cx="78" cy="55" r="48" fill="#ffffff" />
+          <circle cx="59" cy="48" r="6" fill="#3f2d22" />
+          <circle cx="97" cy="48" r="6" fill="#3f2d22" />
+          <path d="M68 68 Q78 78 90 68" fill="none" stroke="#3f2d22" stroke-width="5" stroke-linecap="round" />
+          <path d="M38 28 L22 8 L54 17Z" fill="#fff" />
+          <path d="M118 28 L135 8 L102 17Z" fill="#fff" />
+          <rect x="40" y="98" width="78" height="64" rx="23" fill="#9fe7c4" />
+          <path d="M48 114 C72 132 90 132 112 114" fill="none" stroke="#54b47a" stroke-width="8" stroke-linecap="round" />
+        </g>
+        <g transform="translate(300 610)" opacity=".9">
+          <rect x="0" y="0" width="150" height="150" rx="30" fill="#fffdf6" stroke="#ffd98b" stroke-width="8" />
+          <rect x="22" y="22" width="28" height="28" rx="8" fill="#48d98a" />
+          <rect x="62" y="22" width="28" height="28" rx="8" fill="#f3f7fb" />
+          <rect x="102" y="22" width="28" height="28" rx="8" fill="#48d98a" />
+          <rect x="22" y="62" width="28" height="28" rx="8" fill="#f3f7fb" />
+          <rect x="62" y="62" width="28" height="28" rx="8" fill="#48d98a" />
+          <rect x="102" y="62" width="28" height="28" rx="8" fill="#f3f7fb" />
+          <rect x="22" y="102" width="28" height="28" rx="8" fill="#f3f7fb" />
+          <rect x="62" y="102" width="28" height="28" rx="8" fill="#f3f7fb" />
+          <rect x="102" y="102" width="28" height="28" rx="8" fill="#48d98a" />
+        </g>
+      </svg>
+    </div>
+
+    <section class="screen is-active" id="coverScreen">
+      <div class="cover-card">
+        <div>
+          <div class="eyebrow">绿格记忆训练</div>
+          <h1>强力记忆</h1>
+          <p class="lead">看小猫点亮绿格，再把刚才的位置找回来。关卡会按数值表逐级增加格子和目标数量。</p>
+          <div class="chips">
+            <span class="chip">视觉记忆</span>
+            <span class="chip">位置回忆</span>
+            <span class="chip">60 级数据表</span>
+            <span class="chip">自动推荐</span>
+          </div>
+          <div class="panel-grid">
+            <article class="panel">
+              <h3>怎么玩</h3>
+              <p>先看亮起的格子，熄灭后点回同样位置。</p>
+            </article>
+            <article class="panel">
+              <h3>目标是什么</h3>
+              <p>每关完成指定轮数，错太多或超时会失败。</p>
+            </article>
+            <article class="panel">
+              <h3>难度怎么变</h3>
+              <p>按表格从 3x3 到 6x6，目标逐渐变多。</p>
+            </article>
+          </div>
+          <div class="level-row">
+            <span>选择关卡</span>
+            <select id="levelSelect" aria-label="选择关卡">
+              <option value="1">第 1 级</option>
+            </select>
+            <span id="recommendLabel">正在读取推荐</span>
+          </div>
+          <div class="cover-actions">
+            <button class="btn primary" id="teachButton">先看教学</button>
+            <button class="btn green" id="startButton">开始训练</button>
+            <button class="btn" id="practiceButton">低压练习</button>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <svg viewBox="0 0 520 520" role="img">
+            <defs>
+              <linearGradient id="heroSky" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#b7ecff" />
+                <stop offset="100%" stop-color="#fff1ce" />
+              </linearGradient>
+            </defs>
+            <rect width="520" height="520" fill="url(#heroSky)" />
+            <path d="M0 382 C80 335 142 365 210 338 C302 303 382 346 520 306 L520 520 L0 520Z" fill="#d9f4c4" />
+            <path d="M88 420 C118 380 176 360 240 382 C322 411 384 378 432 346 C466 324 500 322 520 330 L520 520 L84 520 C46 496 58 458 88 420Z" fill="#fff4cf" />
+            <g transform="translate(86 68)">
+              <rect x="0" y="0" width="260" height="260" rx="42" fill="#fffdf6" stroke="#ffd174" stroke-width="8" />
+              <g transform="translate(32 32)">
+                <rect x="0" y="0" width="52" height="52" rx="14" fill="#45d986" />
+                <rect x="72" y="0" width="52" height="52" rx="14" fill="#edf6fb" />
+                <rect x="144" y="0" width="52" height="52" rx="14" fill="#45d986" />
+                <rect x="0" y="72" width="52" height="52" rx="14" fill="#edf6fb" />
+                <rect x="72" y="72" width="52" height="52" rx="14" fill="#45d986" />
+                <rect x="144" y="72" width="52" height="52" rx="14" fill="#edf6fb" />
+                <rect x="0" y="144" width="52" height="52" rx="14" fill="#edf6fb" />
+                <rect x="72" y="144" width="52" height="52" rx="14" fill="#edf6fb" />
+                <rect x="144" y="144" width="52" height="52" rx="14" fill="#45d986" />
+              </g>
+            </g>
+            <g transform="translate(306 278)">
+              <ellipse cx="82" cy="122" rx="88" ry="28" fill="#95d99f" opacity=".55" />
+              <circle cx="82" cy="55" r="52" fill="#fff" />
+              <path d="M45 30 L26 4 L62 17Z" fill="#fff" />
+              <path d="M119 30 L141 4 L102 17Z" fill="#fff" />
+              <circle cx="62" cy="50" r="6" fill="#3d2b21" />
+              <circle cx="101" cy="50" r="6" fill="#3d2b21" />
+              <path d="M72 70 Q84 80 96 70" fill="none" stroke="#3d2b21" stroke-width="6" stroke-linecap="round" />
+              <rect x="40" y="105" width="86" height="70" rx="25" fill="#9eebc4" />
+              <path d="M48 124 C68 144 98 144 120 124" fill="none" stroke="#55b875" stroke-width="9" stroke-linecap="round" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="tutorialScreen">
+      <div class="tutorial-shell">
+        <div class="tutorial-layout">
+          <article class="tutorial-card">
+            <div class="eyebrow">小猫先示范一遍</div>
+            <h2>记住亮起来的位置</h2>
+            <p id="tutorialText">绿格会先亮起，等它们藏起来后，再点回刚才的地方。</p>
+            <div class="tutorial-actions">
+              <button class="btn primary" id="tutorialReplay">重新演示</button>
+              <button class="btn green" id="tutorialStart">开始训练</button>
+              <button class="btn ghost" id="tutorialBack">回到封面</button>
+            </div>
+          </article>
+          <div class="play-card">
+            <div class="demo-board" id="demoBoard" aria-label="教学示范棋盘"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="gameScreen">
+      <div class="game-shell">
+        <div class="game-layout">
+          <aside class="side-card">
+            <div class="eyebrow" id="modeLabel">正式训练</div>
+            <h2 id="gameTitle">强力记忆</h2>
+            <p id="gamePrompt">先看亮起的格子。它们藏起来后，点回同样的位置。</p>
+            <div class="hud">
+              <div class="hud-item">
+                <div class="hud-label">关卡</div>
+                <div class="hud-value" id="hudLevel">1</div>
+              </div>
+              <div class="hud-item">
+                <div class="hud-label">轮次</div>
+                <div class="hud-value" id="hudRound">1/3</div>
+              </div>
+              <div class="hud-item">
+                <div class="hud-label">通过</div>
+                <div class="hud-value" id="hudPass">0/3</div>
+              </div>
+              <div class="hud-item">
+                <div class="hud-label">时间</div>
+                <div class="hud-value" id="hudTime">15</div>
+              </div>
+            </div>
+            <div class="status" id="statusBox">正在准备本轮。</div>
+            <div class="game-actions">
+              <button class="btn" id="replayPreview">再看一遍</button>
+              <button class="btn ghost" id="quitButton">回到封面</button>
+            </div>
+          </aside>
+          <div class="play-card">
+            <div class="memory-board" id="memoryBoard" aria-label="强力记忆棋盘"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="resultScreen">
+      <div class="result-card">
+        <div class="eyebrow" id="resultBadge">训练完成</div>
+        <h2 id="resultTitle">本关完成</h2>
+        <p id="resultText">小猫已经记下你的表现，下一轮会按推荐难度继续。</p>
+        <div class="result-stats">
+          <div class="stat">
+            <strong id="statPass">0/3</strong>
+            <span>通过轮次</span>
+          </div>
+          <div class="stat">
+            <strong id="statScore">0</strong>
+            <span>本关得分</span>
+          </div>
+          <div class="stat">
+            <strong id="statNext">1</strong>
+            <span>推荐关卡</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn primary" id="nextButton">按推荐继续</button>
+          <button class="btn" id="retryButton">重新训练</button>
+          <button class="btn ghost" id="resultBack">回到封面</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/unified.js"></script>
+  <script>
+    const DATA_URL = './data.json';
+    const STORAGE_KEY = 'strongMemoryProgressV1';
+
+    const screens = {
+      cover: document.getElementById('coverScreen'),
+      tutorial: document.getElementById('tutorialScreen'),
+      game: document.getElementById('gameScreen'),
+      result: document.getElementById('resultScreen')
+    };
+
+    const app = document.getElementById('app');
+    const levelSelect = document.getElementById('levelSelect');
+    const recommendLabel = document.getElementById('recommendLabel');
+    const lowStim = document.getElementById('lowStim');
+    const memoryBoard = document.getElementById('memoryBoard');
+    const demoBoard = document.getElementById('demoBoard');
+    const statusBox = document.getElementById('statusBox');
+
+    let levels = [];
+    let floorsById = new Map();
+    let progress = loadProgress();
+    let active = null;
+    let timerId = null;
+    let previewId = null;
+
+    lowStim.checked = Boolean(progress.lowStim);
+    document.body.classList.toggle('is-low-stim', lowStim.checked);
+
+    lowStim.addEventListener('change', () => {
+      progress.lowStim = lowStim.checked;
+      document.body.classList.toggle('is-low-stim', lowStim.checked);
+      saveProgress();
+    });
+
+    document.getElementById('teachButton').addEventListener('click', () => showTutorial());
+    document.getElementById('startButton').addEventListener('click', () => startLevel(Number(levelSelect.value) || progress.recommendedLevel || 1, 'normal'));
+    document.getElementById('practiceButton').addEventListener('click', () => startLevel(1, 'practice'));
+    document.getElementById('tutorialReplay').addEventListener('click', () => runTutorialDemo());
+    document.getElementById('tutorialStart').addEventListener('click', () => startLevel(Number(levelSelect.value) || 1, 'normal'));
+    document.getElementById('tutorialBack').addEventListener('click', () => showScreen('cover'));
+    document.getElementById('quitButton').addEventListener('click', () => endActiveTimers() || showScreen('cover'));
+    document.getElementById('resultBack').addEventListener('click', () => showScreen('cover'));
+    document.getElementById('replayPreview').addEventListener('click', () => replayPreview());
+    document.getElementById('nextButton').addEventListener('click', () => startLevel(progress.recommendedLevel || 1, 'normal'));
+    document.getElementById('retryButton').addEventListener('click', () => startLevel(active?.levelNumber || Number(levelSelect.value) || 1, active?.mode || 'normal'));
+
+    boot();
+
+    async function boot() {
+      setLoadingState('正在读取数值表');
+      try {
+        const response = await fetch(DATA_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        hydrateData(data);
+        populateLevelSelect();
+        setLoadingState('');
+      } catch (error) {
+        statusCover(`没有读到 data.json：${error.message}`);
+      }
+      runTutorialDemo();
+    }
+
+    function hydrateData(data) {
+      const floorRows = rowsFromTable(data.Floor);
+      const levelRows = rowsFromTable(data.Level);
+      floorsById = new Map(floorRows.map((row) => {
+        const grid = parseGrid(row.TargetGrid);
+        const targets = parseTargets(row.posBlock);
+        return [Number(row.ID), {
+          id: Number(row.ID),
+          floor: Number(row.Floor),
+          blockNum: Number(row.BlockNum),
+          rows: grid.rows,
+          cols: grid.cols,
+          targets
+        }];
+      }));
+
+      levels = levelRows.map((row) => {
+        const blockIds = String(row.Blocks || '').split(',').map((item) => Number(item.trim())).filter(Boolean);
+        const floorPool = blockIds.map((id) => floorsById.get(id)).filter(Boolean);
+        return {
+          id: Number(row.ID),
+          level: Number(row.Level),
+          totalNum: Number(row.TotalNum),
+          blockTypeNum: Number(row.BlockTypeNum),
+          missionNum: Number(row.MissionNum),
+          missionPass: Number(row.MissionPass),
+          fault: Number(row.Fault),
+          time: Number(row.Time),
+          brains: Number(row.Brains),
+          score: Number(row.Score),
+          scores: Number(row.Scores),
+          reward: Number(row.Reward),
+          rewardNum: Number(row.RewardNum),
+          limit: Number(row.Limit),
+          floorPool
+        };
+      }).filter((level) => level.floorPool.length > 0);
+
+      if (!levels.length) throw new Error('关卡表为空');
+      progress.recommendedLevel = clamp(progress.recommendedLevel || 1, 1, levels.length);
+      saveProgress();
+    }
+
+    function rowsFromTable(table) {
+      if (!table || !Array.isArray(table.Columes) || !Array.isArray(table.Values)) return [];
+      return table.Values.map((values) => Object.fromEntries(table.Columes.map((column, index) => [column, values[index]])));
+    }
+
+    function parseGrid(value) {
+      const match = String(value || '3x3').match(/^(\d+)x(\d+)$/i);
+      if (!match) return { rows: 3, cols: 3 };
+      return { rows: Number(match[1]), cols: Number(match[2]) };
+    }
+
+    function parseTargets(value) {
+      try {
+        const list = JSON.parse(value);
+        return list.map((item, index) => {
+          const [row, col] = String(item).split(',').map((part) => Number(part.trim()));
+          return { row, col, type: index % 2 };
+        }).filter((target) => Number.isFinite(target.row) && Number.isFinite(target.col));
+      } catch {
+        return [];
+      }
+    }
+
+    function populateLevelSelect() {
+      levelSelect.innerHTML = '';
+      for (const level of levels) {
+        const option = document.createElement('option');
+        option.value = String(level.level);
+        option.textContent = `第 ${level.level} 级`;
+        levelSelect.appendChild(option);
+      }
+      levelSelect.value = String(progress.recommendedLevel || 1);
+      recommendLabel.textContent = `推荐第 ${progress.recommendedLevel || 1} 级`;
+    }
+
+    function showTutorial() {
+      showScreen('tutorial');
+      runTutorialDemo();
+    }
+
+    function runTutorialDemo() {
+      const pattern = new Set(['1,1', '2,2', '3,3']);
+      demoBoard.innerHTML = '';
+      for (let row = 1; row <= 3; row += 1) {
+        for (let col = 1; col <= 3; col += 1) {
+          const tile = document.createElement('button');
+          tile.type = 'button';
+          tile.className = 'tile';
+          tile.setAttribute('aria-label', `示范格 ${row}-${col}`);
+          demoBoard.appendChild(tile);
+          window.setTimeout(() => {
+            tile.classList.toggle('is-target', pattern.has(`${row},${col}`));
+          }, 240 + (row + col) * 80);
+          window.setTimeout(() => {
+            tile.classList.remove('is-target');
+          }, 1900);
+          window.setTimeout(() => {
+            tile.classList.toggle('is-found', pattern.has(`${row},${col}`));
+          }, 2450 + (row + col) * 80);
+        }
+      }
+    }
+
+    function startLevel(levelNumber, mode) {
+      if (!levels.length) {
+        statusCover('数值表还没有准备好。');
+        return;
+      }
+      endActiveTimers();
+      const level = levels.find((item) => item.level === levelNumber) || levels[0];
+      active = {
+        mode,
+        level,
+        levelNumber: level.level,
+        roundIndex: 0,
+        passed: 0,
+        score: 0,
+        wrongTotal: 0,
+        round: null,
+        phase: 'idle',
+        found: new Set(),
+        wrong: 0,
+        timeLeft: mode === 'practice' ? Math.max(25, level.time + 8) : level.time
+      };
+      document.getElementById('modeLabel').textContent = mode === 'practice' ? '低压练习' : '正式训练';
+      document.getElementById('gameTitle').textContent = `强力记忆 第 ${level.level} 级`;
+      showScreen('game');
+      nextRound();
+    }
+
+    function nextRound() {
+      if (!active) return;
+      endActiveTimers();
+      if (active.roundIndex >= active.level.missionNum) {
+        finishLevel();
+        return;
+      }
+      active.roundIndex += 1;
+      active.wrong = 0;
+      active.found = new Set();
+      active.timeLeft = active.mode === 'practice' ? Math.max(25, active.level.time + 8) : active.level.time;
+      active.round = chooseFloor(active.level.floorPool);
+      active.phase = 'preview';
+      renderBoard(true);
+      updateHud();
+      statusBox.textContent = `第 ${active.roundIndex} 轮：先看亮起的位置。`;
+      previewId = window.setTimeout(() => startRecall(), previewDuration(active.round, active.mode));
+    }
+
+    function chooseFloor(pool) {
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function previewDuration(round, mode) {
+      const base = 1100 + round.targets.length * 230 + round.rows * 90;
+      return mode === 'practice' ? base + 900 : base;
+    }
+
+    function replayPreview() {
+      if (!active || !active.round || active.phase === 'done') return;
+      endActiveTimers();
+      active.phase = 'preview';
+      active.found = new Set();
+      renderBoard(true);
+      updateHud();
+      statusBox.textContent = '再看一遍，记住所有亮起的位置。';
+      previewId = window.setTimeout(() => startRecall(), previewDuration(active.round, active.mode));
+    }
+
+    function startRecall() {
+      if (!active || !active.round) return;
+      active.phase = 'recall';
+      renderBoard(false);
+      updateHud();
+      statusBox.textContent = `轮到你了：找回 ${active.round.targets.length} 个位置。`;
+      const startedAt = Date.now();
+      const limitMs = active.timeLeft * 1000;
+      timerId = window.setInterval(() => {
+        const elapsed = Date.now() - startedAt;
+        active.timeLeft = Math.max(0, Math.ceil((limitMs - elapsed) / 1000));
+        updateHud();
+        if (active.timeLeft <= 0) {
+          failRound('时间到了，这一轮没有通过。');
+        }
+      }, 250);
+    }
+
+    function renderBoard(showTargets) {
+      if (!active || !active.round) return;
+      const round = active.round;
+      memoryBoard.innerHTML = '';
+      memoryBoard.style.setProperty('--rows', round.rows);
+      memoryBoard.style.setProperty('--cols', round.cols);
+      memoryBoard.style.setProperty('--board-size', `${Math.min(610, 260 + round.cols * 72)}px`);
+
+      const targetMap = new Map(round.targets.map((target) => [`${target.row},${target.col}`, target]));
+      for (let row = 1; row <= round.rows; row += 1) {
+        for (let col = 1; col <= round.cols; col += 1) {
+          const key = `${row},${col}`;
+          const target = targetMap.get(key);
+          const tile = document.createElement('button');
+          tile.type = 'button';
+          tile.className = 'tile';
+          tile.dataset.key = key;
+          tile.setAttribute('aria-label', `第 ${row} 行第 ${col} 列`);
+          if (showTargets && target) {
+            tile.classList.add(target.type === 1 && active.level.blockTypeNum > 1 ? 'is-blue' : 'is-target');
+          }
+          if (!showTargets && active.found.has(key)) {
+            tile.classList.add(target?.type === 1 && active.level.blockTypeNum > 1 ? 'is-blue' : 'is-found');
+          }
+          if (!showTargets && active.phase === 'recall') {
+            tile.classList.add('is-pending');
+            tile.addEventListener('click', () => handleTileClick(tile, key));
+          }
+          memoryBoard.appendChild(tile);
+        }
+      }
+    }
+
+    function handleTileClick(tile, key) {
+      if (!active || active.phase !== 'recall') return;
+      if (active.found.has(key)) return;
+      const target = active.round.targets.find((item) => `${item.row},${item.col}` === key);
+      if (target) {
+        active.found.add(key);
+        tile.classList.add(target.type === 1 && active.level.blockTypeNum > 1 ? 'is-blue' : 'is-found');
+        tile.classList.remove('is-pending');
+        statusBox.textContent = `找到了 ${active.found.size}/${active.round.targets.length} 个。`;
+        if (active.found.size >= active.round.targets.length) passRound();
+        return;
+      }
+
+      active.wrong += 1;
+      active.wrongTotal += 1;
+      tile.classList.add('is-wrong');
+      window.setTimeout(() => tile.classList.remove('is-wrong'), 260);
+      const left = Math.max(0, active.level.fault - active.wrong);
+      if (active.wrong > active.level.fault) {
+        failRound('错点次数超过本关限制，这一轮没有通过。');
+      } else {
+        statusBox.textContent = `这个位置不对，还能错 ${left} 次。`;
+      }
+    }
+
+    function passRound() {
+      if (!active) return;
+      endActiveTimers();
+      active.phase = 'done';
+      active.passed += 1;
+      const timeBonus = Math.round((active.timeLeft / Math.max(1, active.level.time)) * active.level.scores);
+      active.score += Math.max(0, active.level.score + timeBonus - active.wrong * 20);
+      renderBoard(true);
+      updateHud();
+      statusBox.textContent = '这一轮通过了。';
+      window.setTimeout(nextRound, 900);
+    }
+
+    function failRound(message) {
+      if (!active || active.phase === 'done') return;
+      endActiveTimers();
+      active.phase = 'done';
+      renderBoard(true);
+      updateHud();
+      statusBox.textContent = message;
+      window.setTimeout(nextRound, 1100);
+    }
+
+    function finishLevel() {
+      if (!active) return;
+      const passed = active.passed >= active.level.missionPass;
+      const nextLevel = passed ? Math.min(levels.length, active.level.level + 1) : Math.max(1, active.level.level - 1);
+      const result = {
+        level: active.level.level,
+        passed,
+        passedRounds: active.passed,
+        missionNum: active.level.missionNum,
+        score: active.score,
+        brains: passed ? active.level.brains : Math.round(active.level.brains * 0.35),
+        nextLevel
+      };
+      progress.recommendedLevel = nextLevel;
+      progress.lastResult = result;
+      saveProgress();
+      populateLevelSelect();
+      showResult(result);
+    }
+
+    function showResult(result) {
+      document.getElementById('resultBadge').textContent = result.passed ? '本关通过' : '继续练习';
+      document.getElementById('resultTitle').textContent = result.passed ? '记忆格子收集完成' : '这一关还差一点';
+      document.getElementById('resultText').textContent = result.passed
+        ? `完成 ${result.passedRounds}/${result.missionNum} 轮，获得 ${result.brains} 点脑力。`
+        : `完成 ${result.passedRounds}/${result.missionNum} 轮，下一次从第 ${result.nextLevel} 级继续。`;
+      document.getElementById('statPass').textContent = `${result.passedRounds}/${result.missionNum}`;
+      document.getElementById('statScore').textContent = String(result.score);
+      document.getElementById('statNext').textContent = `第 ${result.nextLevel} 级`;
+      showScreen('result');
+    }
+
+    function updateHud() {
+      if (!active) return;
+      document.getElementById('hudLevel').textContent = active.level.level;
+      document.getElementById('hudRound').textContent = `${Math.min(active.roundIndex, active.level.missionNum)}/${active.level.missionNum}`;
+      document.getElementById('hudPass').textContent = `${active.passed}/${active.level.missionPass}`;
+      document.getElementById('hudTime').textContent = active.phase === 'preview' ? '看' : active.timeLeft;
+      document.getElementById('replayPreview').disabled = active.mode !== 'practice';
+    }
+
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, screen]) => {
+        screen.classList.toggle('is-active', key === name);
+      });
+      if (name === 'cover') {
+        endActiveTimers();
+        active = null;
+      }
+    }
+
+    function endActiveTimers() {
+      if (timerId) {
+        window.clearInterval(timerId);
+        timerId = null;
+      }
+      if (previewId) {
+        window.clearTimeout(previewId);
+        previewId = null;
+      }
+      return false;
+    }
+
+    function setLoadingState(text) {
+      recommendLabel.textContent = text || `推荐第 ${progress.recommendedLevel || 1} 级`;
+      document.getElementById('startButton').disabled = Boolean(text);
+      document.getElementById('practiceButton').disabled = Boolean(text);
+    }
+
+    function statusCover(message) {
+      recommendLabel.textContent = message;
+      document.getElementById('startButton').disabled = true;
+      document.getElementById('practiceButton').disabled = true;
+    }
+
+    function loadProgress() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        return {
+          recommendedLevel: Number(parsed.recommendedLevel) || 1,
+          lowStim: Boolean(parsed.lowStim),
+          lastResult: parsed.lastResult || null
+        };
+      } catch {
+        return { recommendedLevel: 1, lowStim: false, lastResult: null };
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+  </script>
+</body>
+</html>
