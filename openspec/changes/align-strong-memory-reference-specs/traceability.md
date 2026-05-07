@@ -77,6 +77,8 @@ Status values:
 | Whitespace check | passed | `git diff --check`; only LF-to-CRLF working-copy warning for `index.html` |
 | Canonical 16 boundary | passed | `src/App.test.tsx`, `src/pages/Home.test.tsx`, and `src/lib/gameParameters.test.ts` passed in full test suite; no Strong Memory registry entry added |
 | Local browser smoke | passed | Headless Chrome smoke loaded 60 levels, completed first-time tutorial, paused without timer drift, passed a difficulty, failed a difficulty, and reached both result states |
+| GitHub Pages asset check | passed | `index.html`, `data.json`, and `rules.mjs` returned HTTP 200 from `https://xyjk0511.github.io/brain-development-games/playable-games/strong-memory/` |
+| Online browser smoke | passed | Headless Chrome against the deployed URL loaded 60 levels, completed first-time tutorial, paused without timer drift, passed a difficulty, failed a difficulty, and reached both result states |
 
 Screenshot evidence from local smoke:
 
@@ -86,3 +88,7 @@ Screenshot evidence from local smoke:
 - Pause: `C:\Users\55093\AppData\Local\Temp\strong-memory-smoke-1778188070822\04-pause.png`
 - Success result: `C:\Users\55093\AppData\Local\Temp\strong-memory-smoke-1778188070822\05-result-success.png`
 - Failure result: `C:\Users\55093\AppData\Local\Temp\strong-memory-smoke-1778188070822\06-result-fail.png`
+
+Online smoke screenshot directory:
+
+- `C:\Users\55093\AppData\Local\Temp\strong-memory-online-smoke-1778188521921`
