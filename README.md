@@ -4,9 +4,9 @@
 
 <div align="center">
 
-## 🎮 [**PLAY NOW →**](https://sojinantony01.github.io/brain-development-games)
+## 🎮 [**PLAY NOW →**](https://xyjk0511.github.io/brain-development-games)
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://sojinantony01.github.io/brain-development-games)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://xyjk0511.github.io/brain-development-games)
 [![React](https://img.shields.io/badge/React-18.2-blue)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8)](https://tailwindcss.com/)
@@ -97,7 +97,7 @@ These games are based on established cognitive training principles:
 
 ```bash
 # Clone the repository
-git clone https://github.com/sojinantony01/brain-development-games.git
+git clone https://github.com/xyjk0511/brain-development-games.git
 
 # Navigate to project directory
 cd brain-development-games
@@ -264,9 +264,9 @@ This project is open source and available under the MIT License.
 
 ## 📞 Contact
 
-- **GitHub**: [@sojinantony01](https://github.com/sojinantony01)
-- **Issues**: [Report a bug](https://github.com/sojinantony01/brain-development-games/issues)
-- **Pull Requests**: [Contribute](https://github.com/sojinantony01/brain-development-games/pulls)
+- **GitHub**: [@xyjk0511](https://github.com/xyjk0511)
+- **Issues**: [Report a bug](https://github.com/xyjk0511/brain-development-games/issues)
+- **Pull Requests**: [Contribute](https://github.com/xyjk0511/brain-development-games/pulls)
 
 ---
 
@@ -283,7 +283,7 @@ This project is open source and available under the MIT License.
 
 <div align="center">
 
-## 🎮 [**PLAY NOW →**](https://sojinantony01.github.io/brain-development-games)
+## 🎮 [**PLAY NOW →**](https://xyjk0511.github.io/brain-development-games)
 
 **⭐ Star this repo if you find it helpful!**
 

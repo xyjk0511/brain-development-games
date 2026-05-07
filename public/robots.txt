@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://sojinantony01.github.io/brain-development-games/sitemap.xml
+Sitemap: https://xyjk0511.github.io/brain-development-games/sitemap.xml
 
 # Crawl-delay (optional, helps prevent server overload)
 Crawl-delay: 1

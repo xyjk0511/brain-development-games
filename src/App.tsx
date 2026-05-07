@@ -57,9 +57,9 @@ export default function App(): JSX.Element {
 
       <footer className="bg-slate-200 text-slate-700 p-3 sm:p-4 text-center">
         <div className="text-xs sm:text-sm">
-          © 认知训练游戏 — <a href="https://sojinantony01.github.io/brain-development-games" className="underline hover:text-indigo-600">在线演示</a>
+          © 认知训练游戏 — <a href="https://xyjk0511.github.io/brain-development-games" className="underline hover:text-indigo-600">在线演示</a>
         </div>
-        <div className="text-xs sm:text-sm mt-1">作者：Sojin Antony</div>
+        <div className="text-xs sm:text-sm mt-1">作者：xyjk0511</div>
       </footer>
     </div>
   )

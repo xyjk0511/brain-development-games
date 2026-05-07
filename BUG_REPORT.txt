@@ -1,7 +1,7 @@
 BRAIN DEVELOPMENT GAMES - BUG REPORT & TEST RESULTS
 ====================================================
 Test Date: 2026-01-08
-Application URL: https://sojinantony01.github.io/brain-development-games
+Application URL: https://xyjk0511.github.io/brain-development-games
 Local URL: http://127.0.0.1:5173/
 
 TESTING METHODOLOGY

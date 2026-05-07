@@ -121,10 +121,10 @@ export default function LeaderBoard(): JSX.Element {
     ctx.font = 'italic 20px Arial'
     ctx.fillStyle = '#ffffff'
     ctx.textAlign = 'center'
-    ctx.fillText('https://sojinantony01.github.io/brain-development-games/', canvas.width / 2, canvas.height - 160)
+    ctx.fillText('https://xyjk0511.github.io/brain-development-games/', canvas.width / 2, canvas.height - 160)
 
     ctx.font = 'italic 18px Arial'
-    ctx.fillText('作者：Sojin Antony', canvas.width / 2, canvas.height - 125)
+    ctx.fillText('作者：xyjk0511', canvas.width / 2, canvas.height - 125)
 
     ctx.font = '18px Arial'
     ctx.fillText(new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }), canvas.width / 2, canvas.height - 95)
