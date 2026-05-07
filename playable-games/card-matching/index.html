@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>小动物找朋友｜配对记忆游戏</title>
+  <style>
+    :root {
+      --cream: #fff7e8;
+      --cream2: #fff1d4;
+      --mint: #c9f7dd;
+      --sky: #d9efff;
+      --pink: #ffd2df;
+      --yellow: #ffe48d;
+      --orange: #ffb56a;
+      --green: #79c68f;
+      --text: #523b29;
+      --soft: #7f6958;
+      --line: rgba(96, 67, 41, .16);
+      --panel: rgba(255, 255, 255, .80);
+      --shadow: 0 22px 54px rgba(109, 74, 34, .18);
+      --radius: 28px;
+      --safe-top: env(safe-area-inset-top, 0px);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; }
+    body {
+      font-family: ui-rounded, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 12%, rgba(255,210,223,.55), transparent 27%),
+        radial-gradient(circle at 82% 8%, rgba(201,247,221,.72), transparent 30%),
+        radial-gradient(circle at 52% 92%, rgba(217,239,255,.80), transparent 34%),
+        linear-gradient(180deg, #fff8e9, #f4fff4 74%, #eaf8ff);
+      overflow-x: hidden;
+    }
+    button {
+      font: inherit;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 20px;
+      color: var(--text);
+      background: rgba(255,255,255,.78);
+      border: 2px solid rgba(106,74,45,.14);
+      box-shadow: 0 8px 18px rgba(106,74,45,.10);
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+      user-select: none;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(106,74,45,.15); }
+    button:active { transform: translateY(1px) scale(.99); }
+    button.primary { background: linear-gradient(135deg, #ffe48d, #ffb56a); font-weight: 900; }
+    button.soft { background: linear-gradient(135deg, #e2f7ff, #eaffdd); }
+    button.pink { background: linear-gradient(135deg, #ffd9e6, #fff2bc); }
+    button[disabled] { opacity: .58; cursor: not-allowed; transform: none; }
+    button[hidden], [hidden] { display: none !important; }
+    h1,h2,h3,p { margin-top: 0; }
+    h1 { margin-bottom: 16px; font-size: clamp(44px, 8vw, 86px); line-height: .95; letter-spacing: -.06em; }
+    h2 { margin-bottom: 14px; font-size: clamp(30px, 5vw, 50px); line-height: 1.05; letter-spacing: -.04em; }
+    h3 { margin: 0 0 6px; font-size: 19px; }
+    p { color: var(--soft); line-height: 1.75; font-size: 16px; }
+    .small { color: var(--soft); font-size: 13px; line-height: 1.6; }
+    .app { position: relative; min-height: 100vh; }
+    .screen { display: none; min-height: 100vh; padding: calc(22px + var(--safe-top)) 22px 22px; }
+    .screen.active { display: grid; align-items: center; }
+    .shell { width: min(1120px, 100%); margin: 0 auto; }
+    .panel { background: var(--panel); border: 2px solid rgba(255,255,255,.84); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .pad { padding: clamp(22px, 4vw, 38px); }
+    .two-col { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, .92fr); gap: 22px; align-items: stretch; }
+    .eyebrow { margin-bottom: 12px; color: #4f966b; font-size: 13px; font-weight: 950; letter-spacing: .12em; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .between { justify-content: space-between; }
+    .chips { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 20px; }
+    .chip { padding: 8px 11px; border-radius: 999px; background: rgba(255,255,255,.72); border: 1px solid var(--line); color: var(--soft); font-size: 13px; }
+    .chip strong { color: var(--text); }
+    .auto-note { margin-top: 18px; padding: 14px 16px; border-radius: 22px; background: rgba(223,255,235,.78); border: 2px dashed rgba(79,150,107,.38); color: var(--soft); line-height: 1.65; font-weight: 850; }
+    .auto-note strong { color: var(--text); }
+    .scene-art { position: relative; min-height: 420px; overflow: hidden; border-radius: var(--radius); border: 2px solid rgba(255,255,255,.82); background-size: cover; background-position: center; background-color: #fff6e5; box-shadow: var(--shadow); }
+    .hero-art { min-height: 540px; }
+    .lesson-layout { display: grid; grid-template-columns: minmax(300px, .95fr) minmax(320px, 1.05fr); gap: 22px; align-items: stretch; }
+    .lesson-copy { min-height: 430px; display: flex; flex-direction: column; justify-content: space-between; }
+    .lesson-kicker { color: #c77b28; font-weight: 950; margin-bottom: 10px; }
+    .rule-box { margin: 18px 0; padding: 16px; border-radius: 22px; background: rgba(255,248,226,.84); border: 2px dashed rgba(255,181,106,.62); color: var(--soft); line-height: 1.65; }
+    .progress-beads { display: flex; gap: 8px; margin: 18px 0 4px; }
+    .bead { width: 12px; height: 12px; border-radius: 999px; background: rgba(106,74,45,.16); }
+    .bead.active { width: 34px; background: linear-gradient(135deg, #ffb56a, #ffe48d); }
+    .game-shell { width: min(1120px, 100%); margin: 0 auto; display: grid; gap: 14px; }
+    .game-header { display: grid; grid-template-columns: minmax(280px, 1fr) auto; gap: 16px; align-items: center; }
+    .hud { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+    .hud-card { min-height: 70px; padding: 13px 14px; border-radius: 22px; background: rgba(255,255,255,.78); border: 2px solid rgba(255,255,255,.86); box-shadow: 0 10px 24px rgba(106,74,45,.08); }
+    .hud-card .label { margin-bottom: 4px; color: var(--soft); font-size: 12px; font-weight: 850; }
+    .hud-card .value { font-size: 22px; font-weight: 950; letter-spacing: -.03em; }
+    .board-wrap { position: relative; min-height: 470px; border-radius: 34px; overflow: hidden; border: 2px solid rgba(255,255,255,.86); box-shadow: var(--shadow); background: rgba(255,255,255,.56); }
+    .board-bg { position: absolute; inset: 0; min-height: 100%; border-radius: 0; box-shadow: none; opacity: .74; }
+    .board-content { position: relative; z-index: 2; display: grid; gap: 14px; min-height: 470px; padding: clamp(16px, 3vw, 28px); }
+    .helper-strip { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .bubble { padding: 9px 13px; border-radius: 999px; background: rgba(255,255,255,.84); border: 1px solid var(--line); color: var(--soft); font-size: 13px; }
+    .feedback { min-height: 48px; display: flex; align-items: center; justify-content: center; padding: 12px 16px; border-radius: 999px; background: rgba(255,255,255,.88); border: 2px solid rgba(255,255,255,.94); color: var(--soft); text-align: center; font-weight: 850; box-shadow: 0 12px 24px rgba(106,74,45,.08); }
+    .feedback.good { color: #3b8559; background: rgba(223,255,235,.94); border-color: rgba(143,230,187,.74); }
+    .feedback.kind { color: #a06522; background: rgba(255,243,203,.94); border-color: rgba(255,181,106,.68); }
+    .memory-board { align-self: center; display: grid; gap: clamp(10px, 2vw, 18px); width: min(820px, 100%); margin: 0 auto; padding: 4px; }
+    .memory-board.empty { min-height: 280px; place-items: center; border-radius: 28px; background: rgba(255,255,255,.58); border: 2px dashed rgba(106,74,45,.16); color: var(--soft); text-align: center; line-height: 1.7; }
+    .memory-board[data-count="4"] { grid-template-columns: repeat(2, minmax(108px, 1fr)); max-width: 430px; }
+    .memory-board[data-count="6"] { grid-template-columns: repeat(3, minmax(96px, 1fr)); max-width: 620px; }
+    .memory-board[data-count="8"] { grid-template-columns: repeat(4, minmax(86px, 1fr)); max-width: 760px; }
+    .memory-board[data-count="10"] { grid-template-columns: repeat(5, minmax(76px, 1fr)); max-width: 850px; }
+    .memory-card { position: relative; aspect-ratio: .78; width: 100%; padding: 0; border: 0; border-radius: 24px; background: transparent; box-shadow: none; perspective: 900px; cursor: pointer; }
+    .memory-card:hover { transform: translateY(-2px); box-shadow: none; }
+    .memory-card[disabled] { opacity: 1; cursor: default; }
+    .card-inner { position: absolute; inset: 0; border-radius: 24px; transform-style: preserve-3d; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
+    .memory-card.is-open .card-inner, .memory-card.is-matched .card-inner { transform: rotateY(180deg); }
+    .card-face { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 24px; backface-visibility: hidden; overflow: hidden; border: 3px solid rgba(255,255,255,.90); }
+    .card-back { background: url("assets/card_back.png") center/cover no-repeat, linear-gradient(135deg, #d9efff, #ffe48d); box-shadow: 0 12px 24px rgba(106,74,45,.16); }
+    .card-front { transform: rotateY(180deg); background: linear-gradient(180deg, #fff, #fff7df); box-shadow: 0 12px 24px rgba(106,74,45,.13); }
+    .animal-picture { width: 78%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 999px; background: radial-gradient(circle, rgba(201,247,221,.62), rgba(255,255,255,.36)); overflow: hidden; }
+    .animal-picture img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .animal-name { position: absolute; left: 10px; right: 10px; bottom: 9px; padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,.78); color: var(--soft); font-size: 13px; font-weight: 950; text-align: center; }
+    .memory-card.is-matched .card-face { border-color: rgba(143,230,187,.95); box-shadow: 0 0 0 4px rgba(143,230,187,.24), 0 16px 30px rgba(91,156,105,.14); }
+    .modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(87,62,34,.28); backdrop-filter: blur(12px); }
+    .modal.hidden { display: none; }
+    .modal-card { width: min(680px, 100%); padding: clamp(24px, 4vw, 38px); border-radius: 34px; background: rgba(255,255,255,.94); border: 3px solid rgba(255,255,255,.96); box-shadow: 0 26px 80px rgba(106,74,45,.22); }
+    .checklist { display: grid; gap: 10px; margin: 18px 0 24px; padding: 0; list-style: none; }
+    .checklist li { display: flex; gap: 10px; color: var(--soft); line-height: 1.6; }
+    .checklist li::before { content: "🌼"; flex: 0 0 auto; }
+    .result-grid { display: grid; grid-template-columns: minmax(300px,.85fr) minmax(320px,1.15fr); gap: 22px; align-items: stretch; }
+    .stats { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin: 18px 0; }
+    .stat { padding: 16px; border-radius: 24px; background: rgba(255,255,255,.78); border: 2px solid rgba(255,255,255,.88); }
+    .stat strong { display: block; margin-bottom: 4px; font-size: 30px; letter-spacing: -.04em; }
+    .stat span { color: var(--soft); font-size: 13px; font-weight: 850; }
+    .result-detail { display: grid; gap: 10px; margin: 18px 0; padding: 16px; border-radius: 24px; background: rgba(255,248,226,.84); border: 2px dashed rgba(255,181,106,.58); }
+    .result-detail p { margin: 0; }
+    .recommend { display: grid; gap: 12px; margin: 18px 0 22px; padding: 16px; border-radius: 24px; background: rgba(223,255,235,.78); border: 2px solid rgba(143,230,187,.68); }
+    .recommend-title { display: flex; gap: 12px; align-items: center; font-size: 18px; font-weight: 950; }
+    .badge-art { width: 58px; min-height: 58px; border-radius: 18px; flex: 0 0 auto; background-size: cover; background-position: center; }
+    .recommend ul { margin: 0; padding-left: 22px; color: var(--soft); line-height: 1.7; }
+    @media (max-width: 880px) {
+      .two-col, .lesson-layout, .result-grid, .game-header { grid-template-columns: 1fr; }
+      .hero-art, .scene-art { min-height: 320px; }
+      .hud { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .board-wrap, .board-content { min-height: 430px; }
+    }
+    @media (max-width: 620px) {
+      .screen { padding: calc(14px + var(--safe-top)) 14px 14px; }
+      .pad { padding: 20px; }
+      .hud { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .stats { grid-template-columns: 1fr; }
+      .row button { width: 100%; }
+      .memory-board[data-count="8"], .memory-board[data-count="10"] { grid-template-columns: repeat(3, minmax(72px,1fr)); }
+      .animal-name { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section id="cover" class="screen active">
+      <div class="shell two-col">
+        <div class="panel pad">
+          <div class="eyebrow">配对记忆游戏</div>
+          <h1>小动物<br>找朋友</h1>
+          <p>翻开背面卡片，每次选择两张，找到相同的小动物朋友。游戏会根据最近一局表现进行自动调节难度：表现稳定会增加卡牌对数、缩短展示时间；需要帮助时会减少对数、延长展示时间。</p>
+          <div class="row">
+            <button id="startLessonBtn" class="primary">开始教学</button>
+            <button id="goPracticeBtn" class="soft">先玩低压练习</button>
+            <button id="openReadyBtn" class="pink">直接准备开始</button>
+          </div>
+          <div class="chips">
+            <span class="chip"><strong>玩法</strong> 翻牌配对</span>
+            <span class="chip"><strong>第 1 级</strong> 2 对朋友</span>
+            <span class="chip"><strong>帮助</strong> 开局看一眼</span>
+            <span class="chip"><strong>难度</strong> 自动调节难度</span>
+          </div>
+          <div class="auto-note"><strong>自动调节难度：</strong>连续配对成功或正确率≥80%，下一轮卡牌对数增加、展示时间缩短；正确率≤50%，下一轮卡牌对数减少、展示时间更长。</div>
+          <p id="lastRecordText" class="small" style="margin-top:20px;">还没有本地试玩记录。</p>
+        </div>
+        <div class="scene-art hero-art" data-bg="assets/cover_home.png"></div>
+      </div>
+    </section>
+
+    <section id="lesson" class="screen">
+      <div class="shell lesson-layout">
+        <div id="lessonArt" class="scene-art" data-bg="assets/tutorial_01_back_cards.png"></div>
+        <div class="panel pad lesson-copy">
+          <div>
+            <div id="lessonKicker" class="lesson-kicker">教学 1 / 6</div>
+            <h2 id="lessonTitle">先看背面卡片</h2>
+            <p id="lessonBody">卡片一开始都是背面。你要慢慢记住小动物藏在哪里，帮它们找到朋友。</p>
+            <div id="lessonRule" class="rule-box">玩法：每次选择两张卡片。</div>
+            <div id="lessonBeads" class="progress-beads" aria-label="教学进度"></div>
+          </div>
+          <div class="row between">
+            <button id="lessonPrevBtn" class="soft">上一屏</button>
+            <button id="lessonNextBtn" class="primary">下一步</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="practice" class="screen">
+      <div class="game-shell">
+        <div class="panel pad game-header">
+          <div>
+            <div class="eyebrow">低压练习</div>
+            <h2 style="margin-bottom:8px;">先轻松玩一轮</h2>
+            <p style="margin-bottom:0;">这里没有倒计时。可以反复看提示，慢慢找到 2 对小动物朋友。</p>
+          </div>
+          <div class="row">
+            <button id="startPracticeBtn" class="primary">开始低压练习</button>
+            <button id="practiceHintBtn" class="soft" hidden>看一眼提示</button>
+            <button id="practiceReadyBtn" class="pink" hidden>准备开始</button>
+          </div>
+        </div>
+
+        <div class="hud">
+          <div class="hud-card"><div class="label">练习卡片</div><div id="practiceCardsHud" class="value">4 张</div></div>
+          <div class="hud-card"><div class="label">已找到</div><div id="practiceMatchedHud" class="value">0/2</div></div>
+          <div class="hud-card"><div class="label">翻牌次数</div><div id="practiceMovesHud" class="value">0</div></div>
+          <div class="hud-card"><div class="label">温柔提醒</div><div id="practiceKindHud" class="value">0</div></div>
+          <div class="hud-card"><div class="label">提示</div><div class="value">不限</div></div>
+          <div class="hud-card"><div class="label">状态</div><div id="practiceStateHud" class="value">未开始</div></div>
+        </div>
+
+        <div class="board-wrap">
+          <div class="scene-art board-bg" data-bg="assets/practice_room.png"></div>
+          <div class="board-content">
+            <div class="helper-strip">
+              <span class="bubble">每次选两张卡片</span>
+              <span class="bubble">一样的小动物会留下来</span>
+              <span class="bubble">不一样也没关系</span>
+            </div>
+            <div id="practiceBoard" class="memory-board empty">轻触“开始低压练习”，先玩 2 对小动物。</div>
+            <div id="practiceFeedback" class="feedback">准备好后开始。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="training" class="screen">
+      <div class="game-shell">
+        <div class="panel pad game-header">
+          <div>
+            <div class="eyebrow">正式训练信息栏</div>
+            <h2 style="margin-bottom:8px;">小动物找朋友</h2>
+            <p style="margin-bottom:0;">开局会先给你看一眼。之后每次选择两张卡片，找到相同的小动物朋友。会进行自动调节难度，并在结算页给出下轮推荐。</p>
+          </div>
+          <div class="row">
+            <button id="formalHintBtn" class="soft" hidden>看一眼提示</button>
+            <button id="leaveFormalBtn" class="pink">回到封面</button>
+          </div>
+        </div>
+
+        <div class="hud">
+          <div class="hud-card"><div class="label">级别</div><div id="formalLevelHud" class="value">第 1 级</div></div>
+          <div class="hud-card"><div class="label">小动物对数</div><div id="formalPairsHud" class="value">2 对</div></div>
+          <div class="hud-card"><div class="label">已找到</div><div id="formalMatchedHud" class="value">0/2</div></div>
+          <div class="hud-card"><div class="label">翻牌次数</div><div id="formalMovesHud" class="value">0</div></div>
+          <div class="hud-card"><div class="label">用时</div><div id="formalTimeHud" class="value">0 秒</div></div>
+          <div class="hud-card"><div class="label">提示剩余</div><div id="formalHintsHud" class="value">1</div></div>
+        </div>
+
+        <div class="board-wrap">
+          <div class="scene-art board-bg" data-bg="assets/training_room.png"></div>
+          <div class="board-content">
+            <div class="helper-strip">
+              <span id="formalBubbleA" class="bubble">第 1 级只有 2 对朋友</span>
+              <span id="formalBubbleB" class="bubble">开局可看一眼</span>
+              <span class="bubble">自动调节难度</span>
+            </div>
+            <div id="formalBoard" class="memory-board empty">准备开始后，小动物卡片会出现在这里。</div>
+            <div id="formalFeedback" class="feedback">请先完成准备。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="shell result-grid">
+        <div class="scene-art" data-bg="assets/result_room.png"></div>
+        <div class="panel pad">
+          <div class="eyebrow">结算页</div>
+          <h2>朋友找到了</h2>
+          <div class="auto-note"><strong>自动调节难度：</strong>结算页会根据本轮表现生成下轮推荐难度，并保存到本地。</div>
+          <p id="resultSummary">本轮结果生成中。</p>
+          <div class="stats">
+            <div class="stat"><strong id="resultStars">0</strong><span>朋友星星</span></div>
+            <div class="stat"><strong id="resultAccuracy">0%</strong><span>正确率</span></div>
+            <div class="stat"><strong id="resultMoves">0</strong><span>翻牌次数</span></div>
+            <div class="stat"><strong id="resultTime">0 秒</strong><span>完成用时</span></div>
+          </div>
+          <div class="result-detail">
+            <h3>本轮表现</h3>
+            <p id="resultPerformance">等待本轮表现。</p>
+            <h3>下轮推荐难度</h3>
+            <p id="resultNextDifficulty">等待推荐结果。</p>
+          </div>
+          <div class="recommend">
+            <div class="recommend-title">
+              <div class="scene-art badge-art" data-bg="assets/badge_friend_star.png"></div>
+              <span id="recommendTitle">自适应推荐</span>
+            </div>
+            <ul id="recommendList"></ul>
+          </div>
+          <div class="row">
+            <button id="retryRecommendedBtn" class="primary">按推荐再玩一轮</button>
+            <button id="backLessonBtn" class="soft">回到教学</button>
+            <button id="backCoverBtn" class="pink">回到封面</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="readyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="readyTitle">
+    <div class="modal-card">
+      <div class="eyebrow">准备开始</div>
+      <h2 id="readyTitle">准备开始</h2>
+      <p id="readyIntro">本轮是第 1 级：只有 2 对小动物朋友。开始后会先给你看一眼，然后再盖上卡片。会根据本轮表现自动调节难度。</p>
+      <ul class="checklist">
+        <li id="readyRuleA">每次选择两张卡片，找到一样的小动物。</li>
+        <li id="readyRuleB">第 1 级很简单，只有 4 张卡片。</li>
+        <li id="readyRuleC">如果两张不一样，会温柔盖回去，可以继续找。</li>
+        <li id="readyRuleD">本轮有一次额外提示，可以再看一眼。</li>
+        <li id="readyRuleE">自动调节难度：连续配对成功或正确率≥80%会提高下轮难度；正确率≤50%会降低下轮难度。</li>
+      </ul>
+      <div class="row between">
+        <button id="readyCancelBtn" class="soft">返回</button>
+        <button id="readyStartBtn" class="primary">进入训练</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const animals = [
+        { id: "rabbit", name: "小兔", img: "assets/animal_rabbit.png" },
+        { id: "cat", name: "小猫", img: "assets/animal_cat.png" },
+        { id: "bear", name: "小熊", img: "assets/animal_bear.png" },
+        { id: "fox", name: "小狐狸", img: "assets/animal_fox.png" },
+        { id: "duck", name: "小黄鸭", img: "assets/animal_duck.png" }
+      ];
+
+      const lessons = [
+        { img: "assets/tutorial_01_back_cards.png", title: "先看背面卡片", body: "卡片一开始都是背面。你要慢慢记住小动物藏在哪里，帮它们找到朋友。", rule: "玩法：每次选择两张卡片。" },
+        { img: "assets/tutorial_02_two_cards.png", title: "一次翻开两张", body: "选择第一张后，再选择第二张。两张都会露出里面的小动物。", rule: "提示：先看清楚，再继续选。" },
+        { img: "assets/tutorial_03_same_friends.png", title: "一样就是朋友", body: "如果两张卡片里的小动物一样，它们就是一对朋友，会留在桌面上。", rule: "目标：把所有相同的小动物朋友都找出来。" },
+        { img: "assets/tutorial_04_try_again.png", title: "不一样也没关系", body: "如果两张卡片不一样，它们会温柔盖回去。记住它们的位置，下次会更容易。", rule: "这里没有责备，只有继续尝试。" },
+        { img: "assets/tutorial_05_helper_star.png", title: "可以看一眼提示", body: "低难度会给你先看一眼的机会。第 1 级还会留一次额外提示，适合刚开始玩。", rule: "第 1 级：2 对小动物，4 张卡片。" },
+        { img: "assets/tutorial_06_ready_room.png", title: "准备找朋友", body: "先完成低压练习，再进入正式训练。结算页会显示本轮表现和下轮推荐难度。", rule: "下一步：开始低压练习。" }
+      ];
+
+      const levels = {
+        1: { pairs: 2, previewMs: 5200, hints: 1, label: "第 1 级" },
+        2: { pairs: 3, previewMs: 4500, hints: 1, label: "第 2 级" },
+        3: { pairs: 4, previewMs: 3900, hints: 1, label: "第 3 级" },
+        4: { pairs: 5, previewMs: 3400, hints: 1, label: "第 4 级" },
+        5: { pairs: 5, previewMs: 2800, hints: 1, label: "第 5 级" }
+      };
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+      let activeScreen = "cover";
+      let lessonIndex = 0;
+      let practiceGame = null;
+      let formalGame = null;
+      let plannedLevel = 1;
+      let readyReturnScreen = "practice";
+      let lastRecommendationLevel = 1;
+      let gameCounter = 0;
+
+      function showScreen(id) {
+        activeScreen = id;
+        $$(".screen").forEach((screen) => screen.classList.toggle("active", screen.id === id));
+        if (id === "cover") renderLastRecord();
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
+
+      function applyBackgrounds() {
+        $$("[data-bg]").forEach((el) => { el.style.backgroundImage = `url("${el.dataset.bg}")`; });
+      }
+
+      function renderLesson() {
+        const lesson = lessons[lessonIndex];
+        $("#lessonArt").style.backgroundImage = `url("${lesson.img}")`;
+        $("#lessonKicker").textContent = `教学 ${lessonIndex + 1} / ${lessons.length}`;
+        $("#lessonTitle").textContent = lesson.title;
+        $("#lessonBody").textContent = lesson.body;
+        $("#lessonRule").textContent = lesson.rule;
+        $("#lessonPrevBtn").disabled = lessonIndex === 0;
+        $("#lessonNextBtn").textContent = lessonIndex === lessons.length - 1 ? "进入低压练习" : "下一步";
+        $("#lessonBeads").innerHTML = lessons.map((_, index) => `<span class="bead ${index === lessonIndex ? "active" : ""}" aria-hidden="true"></span>`).join("");
+      }
+
+      function shuffle(list) {
+        const copy = list.slice();
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function createDeck(pairCount) {
+        const chosen = animals.slice(0, pairCount);
+        const raw = [];
+        chosen.forEach((animal) => {
+          raw.push({ ...animal, uid: `${animal.id}-a-${Math.random().toString(36).slice(2)}`, animalId: animal.id, open: false, matched: false });
+          raw.push({ ...animal, uid: `${animal.id}-b-${Math.random().toString(36).slice(2)}`, animalId: animal.id, open: false, matched: false });
+        });
+        return shuffle(raw);
+      }
+
+      function createGame(mode, level, pairCount, hints) {
+        gameCounter += 1;
+        return {
+          internalId: gameCounter,
+          mode,
+          level,
+          pairCount,
+          deck: createDeck(pairCount),
+          opened: [],
+          matchedPairs: 0,
+          moves: 0,
+          mismatches: 0,
+          currentStreak: 0,
+          maxStreak: 0,
+          attemptLog: [],
+          hintsLeft: hints,
+          usedHints: 0,
+          locked: false,
+          showAll: false,
+          finished: false,
+          startedAt: null,
+          endedAt: null,
+          timerId: null
+        };
+      }
+
+      function currentGame(mode) { return mode === "practice" ? practiceGame : formalGame; }
+      function isCurrent(game) { return currentGame(game.mode) === game; }
+      function boardFor(mode) { return mode === "practice" ? $("#practiceBoard") : $("#formalBoard"); }
+      function feedbackFor(mode) { return mode === "practice" ? $("#practiceFeedback") : $("#formalFeedback"); }
+      function setFeedback(mode, text, tone) { const el = feedbackFor(mode); el.textContent = text; el.className = `feedback ${tone || ""}`.trim(); }
+
+      function renderBoard(game) {
+        const board = boardFor(game.mode);
+        board.classList.remove("empty");
+        board.dataset.count = String(game.deck.length);
+        board.innerHTML = game.deck.map((card) => {
+          const visible = card.open || card.matched || game.showAll;
+          const classes = ["memory-card", visible ? "is-open" : "", card.matched ? "is-matched" : ""].filter(Boolean).join(" ");
+          const disabled = game.locked || game.showAll || card.matched || card.open || game.finished;
+          return `
+            <button class="${classes}" data-card-uid="${card.uid}" aria-label="${card.name}卡片" ${disabled ? "disabled" : ""}>
+              <span class="card-inner">
+                <span class="card-face card-back"></span>
+                <span class="card-face card-front">
+                  <span class="animal-picture"><img src="${card.img}" alt="${card.name}"></span>
+                  <span class="animal-name">${card.name}</span>
+                </span>
+              </span>
+            </button>`;
+        }).join("");
+      }
+
+      function emptyBoard(mode, text) {
+        const board = boardFor(mode);
+        board.removeAttribute("data-count");
+        board.className = "memory-board empty";
+        board.innerHTML = text;
+      }
+
+      function clearPracticeTimer() { if (practiceGame && practiceGame.timerId) clearInterval(practiceGame.timerId); }
+
+      function resetPracticePanel() {
+        clearPracticeTimer();
+        practiceGame = null;
+        $("#startPracticeBtn").textContent = "开始低压练习";
+        $("#practiceHintBtn").hidden = true;
+        $("#practiceReadyBtn").hidden = true;
+        emptyBoard("practice", "轻触“开始低压练习”，先玩 2 对小动物。");
+        setFeedback("practice", "准备好后开始。", "");
+        updatePracticeHud();
+      }
+
+      function startPractice() {
+        clearPracticeTimer();
+        practiceGame = createGame("practice", 1, 2, 99);
+        $("#startPracticeBtn").textContent = "再玩一次";
+        $("#practiceHintBtn").hidden = false;
+        $("#practiceReadyBtn").hidden = true;
+        setFeedback("practice", "先看一眼小动物的位置，然后开始找朋友。", "kind");
+        updatePracticeHud();
+        showAllTemporarily(practiceGame, 2800, () => {
+          practiceGame.startedAt = Date.now();
+          setFeedback("practice", "现在开始。每次选择两张卡片。", "");
+          updatePracticeHud();
+        });
+      }
+
+      function updatePracticeHud() {
+        const game = practiceGame;
+        if (!game) {
+          $("#practiceCardsHud").textContent = "4 张";
+          $("#practiceMatchedHud").textContent = "0/2";
+          $("#practiceMovesHud").textContent = "0";
+          $("#practiceKindHud").textContent = "0";
+          $("#practiceStateHud").textContent = "未开始";
+          return;
+        }
+        $("#practiceCardsHud").textContent = `${game.pairCount * 2} 张`;
+        $("#practiceMatchedHud").textContent = `${game.matchedPairs}/${game.pairCount}`;
+        $("#practiceMovesHud").textContent = String(game.moves);
+        $("#practiceKindHud").textContent = String(game.mismatches);
+        $("#practiceStateHud").textContent = game.finished ? "完成" : (game.showAll ? "提示中" : "进行中");
+      }
+
+      function cancelFormalTimer() { if (formalGame && formalGame.timerId) { clearInterval(formalGame.timerId); formalGame.timerId = null; } }
+
+      function resetFormalPanel() {
+        cancelFormalTimer();
+        formalGame = null;
+        emptyBoard("formal", "准备开始后，小动物卡片会出现在这里。");
+        $("#formalHintBtn").hidden = true;
+        updateFormalHud();
+        const config = levels[plannedLevel] || levels[1];
+        $("#formalBubbleA").textContent = `${config.label}：${config.pairs} 对朋友`;
+        $("#formalBubbleB").textContent = `开局看一眼 ${formatSeconds(config.previewMs)}`;
+        setFeedback("formal", "请先完成准备。", "");
+      }
+
+      function startFormal(level) {
+        cancelFormalTimer();
+        const config = levels[level] || levels[1];
+        formalGame = createGame("formal", level, config.pairs, config.hints);
+        $("#formalHintBtn").hidden = false;
+        $("#formalHintBtn").disabled = true;
+        $("#formalBubbleA").textContent = `${config.label}：${config.pairs} 对朋友`;
+        $("#formalBubbleB").textContent = `开局看一眼 ${formatSeconds(config.previewMs)}`;
+        $("#readyModal").classList.add("hidden");
+        showScreen("training");
+        setFeedback("formal", `先看一眼小动物的位置。本轮展示 ${formatSeconds(config.previewMs)}。`, "kind");
+        updateFormalHud();
+        showAllTemporarily(formalGame, config.previewMs, () => {
+          formalGame.startedAt = Date.now();
+          formalGame.timerId = setInterval(updateFormalHud, 500);
+          $("#formalHintBtn").disabled = formalGame.hintsLeft <= 0;
+          setFeedback("formal", "开始找朋友。每次选择两张卡片。", "");
+          updateFormalHud();
+        });
+      }
+
+      function updateFormalHud() {
+        const game = formalGame;
+        const config = levels[plannedLevel] || levels[1];
+        if (!game) {
+          $("#formalLevelHud").textContent = `第 ${plannedLevel} 级`;
+          $("#formalPairsHud").textContent = `${config.pairs} 对`;
+          $("#formalMatchedHud").textContent = `0/${config.pairs}`;
+          $("#formalMovesHud").textContent = "0";
+          $("#formalTimeHud").textContent = "0 秒";
+          $("#formalHintsHud").textContent = String(config.hints);
+          return;
+        }
+        $("#formalLevelHud").textContent = `第 ${game.level} 级`;
+        $("#formalPairsHud").textContent = `${game.pairCount} 对`;
+        $("#formalMatchedHud").textContent = `${game.matchedPairs}/${game.pairCount}`;
+        $("#formalMovesHud").textContent = String(game.moves);
+        $("#formalTimeHud").textContent = `${elapsedSeconds(game)} 秒`;
+        $("#formalHintsHud").textContent = String(game.hintsLeft);
+        $("#formalHintBtn").disabled = game.hintsLeft <= 0 || game.locked || game.showAll || game.finished || game.opened.length > 0;
+      }
+
+      function showAllTemporarily(game, ms, after) {
+        game.showAll = true;
+        game.locked = true;
+        renderBoard(game);
+        if (game.mode === "practice") updatePracticeHud();
+        if (game.mode === "formal") updateFormalHud();
+        const capturedId = game.internalId;
+        setTimeout(() => {
+          if (!isCurrent(game) || game.internalId !== capturedId || game.finished) return;
+          game.showAll = false;
+          game.locked = false;
+          renderBoard(game);
+          if (typeof after === "function") after();
+          if (game.mode === "practice") updatePracticeHud();
+          if (game.mode === "formal") updateFormalHud();
+        }, ms);
+      }
+
+      function useHint(mode) {
+        const game = currentGame(mode);
+        if (!game || game.finished || game.showAll || game.locked) return;
+        if (game.opened.length > 0) { setFeedback(mode, "先把这一次看完，再使用提示。", "kind"); return; }
+        if (game.hintsLeft <= 0) { setFeedback(mode, "这轮提示已经用完了，继续慢慢找。", "kind"); return; }
+        if (mode === "formal") { game.hintsLeft -= 1; game.usedHints += 1; }
+        setFeedback(mode, "提示时间：再看一眼小动物的位置。", "kind");
+        showAllTemporarily(game, mode === "practice" ? 2200 : 1800, () => setFeedback(mode, "提示结束，继续找朋友。", ""));
+      }
+
+      function chooseCard(mode, uid) {
+        const game = currentGame(mode);
+        if (!game || game.finished || game.locked || game.showAll) return;
+        const card = game.deck.find((item) => item.uid === uid);
+        if (!card || card.open || card.matched) return;
+        card.open = true;
+        game.opened.push(card.uid);
+        renderBoard(game);
+        if (game.opened.length === 1) setFeedback(mode, "再选一张，看看是不是同一位朋友。", "");
+        if (game.opened.length === 2) { game.moves += 1; evaluatePair(game); }
+        if (mode === "practice") updatePracticeHud();
+        if (mode === "formal") updateFormalHud();
+      }
+
+      function evaluatePair(game) {
+        const [firstUid, secondUid] = game.opened;
+        const first = game.deck.find((item) => item.uid === firstUid);
+        const second = game.deck.find((item) => item.uid === secondUid);
+        if (!first || !second) return;
+        game.locked = true;
+        if (first.animalId === second.animalId) {
+          game.currentStreak += 1;
+          game.maxStreak = Math.max(game.maxStreak, game.currentStreak);
+          game.attemptLog.push(true);
+          setFeedback(game.mode, `找到了：${first.name}和朋友在一起啦。`, "good");
+          setTimeout(() => {
+            if (!isCurrent(game) || game.finished) return;
+            first.matched = true;
+            second.matched = true;
+            game.opened = [];
+            game.matchedPairs += 1;
+            game.locked = false;
+            renderBoard(game);
+            if (game.mode === "practice") updatePracticeHud();
+            if (game.mode === "formal") updateFormalHud();
+            if (game.matchedPairs >= game.pairCount) finishGame(game);
+          }, 520);
+        } else {
+          game.mismatches += 1;
+          game.currentStreak = 0;
+          game.attemptLog.push(false);
+          setFeedback(game.mode, "没关系，它们还不是同一对朋友。记住位置，再找找。", "kind");
+          setTimeout(() => {
+            if (!isCurrent(game) || game.finished) return;
+            first.open = false;
+            second.open = false;
+            game.opened = [];
+            game.locked = false;
+            renderBoard(game);
+            if (game.mode === "practice") updatePracticeHud();
+            if (game.mode === "formal") updateFormalHud();
+          }, 1050);
+        }
+      }
+
+      function finishGame(game) {
+        game.finished = true;
+        game.endedAt = Date.now();
+        game.locked = true;
+        renderBoard(game);
+        if (game.mode === "practice") {
+          setFeedback("practice", "练习完成。你已经会帮小动物找朋友了。", "good");
+          $("#practiceReadyBtn").hidden = false;
+          $("#practiceHintBtn").hidden = true;
+          updatePracticeHud();
+          return;
+        }
+        cancelFormalTimer();
+        const result = buildResult(game);
+        saveResult(result);
+        renderResult(result);
+        showScreen("result");
+      }
+
+      function elapsedSeconds(game) {
+        if (!game || !game.startedAt) return 0;
+        const end = game.endedAt || Date.now();
+        return Math.max(0, Math.round((end - game.startedAt) / 1000));
+      }
+
+      function buildResult(game) {
+        const pairCount = game.pairCount;
+        const moves = Math.max(game.moves, 1);
+        const correctPairs = pairCount;
+        const accuracy = Math.round((correctPairs / moves) * 100);
+        const correctRate = accuracy;
+        const pairSuccessRate = accuracy;
+        const time = elapsedSeconds(game);
+        const currentConfig = levels[game.level] || levels[1];
+        const recommend = makeRecommendation({
+          accuracy,
+          pairSuccessRate,
+          mismatches: game.mismatches,
+          pairCount,
+          level: game.level,
+          usedHints: game.usedHints,
+          maxStreak: game.maxStreak,
+          moves,
+          previewMs: currentConfig.previewMs
+        });
+        const stars = calculateStars({ accuracy, pairCount, usedHints: game.usedHints, maxStreak: game.maxStreak });
+        return {
+          level: game.level,
+          pairCount,
+          previewMs: currentConfig.previewMs,
+          moves: game.moves,
+          correctPairs,
+          mismatches: game.mismatches,
+          time,
+          elapsedSeconds: time,
+          accuracy,
+          correctRate,
+          pairSuccessRate,
+          maxStreak: game.maxStreak,
+          usedHints: game.usedHints,
+          stars,
+          recommend
+        };
+      }
+
+      function calculateStars(data) {
+        let stars = 1;
+        if (data.accuracy >= 60) stars += 1;
+        if ((data.accuracy >= 80 || data.maxStreak >= Math.min(2, data.pairCount)) && data.usedHints <= 1) stars += 1;
+        return Math.max(1, Math.min(3, stars));
+      }
+
+      function makeRecommendation(data) {
+        let nextLevel = data.level;
+        let title = "当前难度合适，继续稳稳找朋友";
+        let ruleText = "本轮表现处于中间区间，下一轮保持当前难度。";
+        const streakTarget = Math.min(2, data.pairCount);
+        const canIncrease = data.maxStreak >= streakTarget || data.accuracy >= 80;
+        const shouldDecrease = data.accuracy <= 50;
+
+        if (shouldDecrease) {
+          nextLevel = clampLevel(data.level - 1);
+          if (nextLevel < data.level) {
+            title = "自动调节：下一轮更轻松";
+            ruleText = "正确率≤50%，系统建议减少卡牌对数并延长开局展示时间。";
+          } else {
+            title = "自动调节：保持最轻松级别";
+            ruleText = "正确率≤50%，但当前已是第 1 级，系统会继续保留最长展示时间。";
+          }
+        } else if (canIncrease) {
+          nextLevel = clampLevel(data.level + 1);
+          if (nextLevel > data.level) {
+            title = "自动调节：下一轮加一点挑战";
+            ruleText = "连续配对成功或正确率≥80%，系统建议增加卡牌对数并缩短开局展示时间。";
+          } else {
+            title = "自动调节：保持最高练习级别";
+            ruleText = "表现已达进阶条件，但当前已是最高级别，下一轮继续保持短展示时间。";
+          }
+        }
+
+        const currentConfig = levels[data.level] || levels[1];
+        const nextConfig = levels[nextLevel] || levels[1];
+        const bullets = [
+          `本轮正确率：${data.accuracy}%；配对成功率：${data.pairSuccessRate}%；连续成功配对：${data.maxStreak} 次。`,
+          `下轮推荐难度：第 ${nextLevel} 级，${nextConfig.pairs} 对卡片，开局展示 ${formatSeconds(nextConfig.previewMs)}。`,
+          ruleText
+        ];
+        return {
+          nextLevel,
+          title,
+          bullets,
+          nextPairs: nextConfig.pairs,
+          nextPreviewMs: nextConfig.previewMs,
+          currentPairs: currentConfig.pairs,
+          currentPreviewMs: currentConfig.previewMs,
+          ruleText
+        };
+      }
+
+      function renderResult(result) {
+        lastRecommendationLevel = result.recommend.nextLevel;
+        const next = result.recommend;
+        $("#resultSummary").textContent = `本轮表现：第 ${result.level} 级，${result.pairCount} 对小动物朋友，正确率 ${result.accuracy}%，配对成功率 ${result.pairSuccessRate}%，连续成功配对 ${result.maxStreak} 次。`;
+        $("#resultStars").textContent = "★".repeat(result.stars);
+        $("#resultAccuracy").textContent = `${result.accuracy}%`;
+        $("#resultMoves").textContent = String(result.moves);
+        $("#resultTime").textContent = `${result.time} 秒`;
+        $("#resultPerformance").textContent = `本轮表现：用了 ${result.moves} 次翻牌，完成 ${result.correctPairs} 次正确配对；本轮正确率 ${result.accuracy}%，配对成功率 ${result.pairSuccessRate}%，本轮用时 ${result.time} 秒；收到 ${result.mismatches} 次温柔提醒，开局展示时间为 ${formatSeconds(result.previewMs)}。`;
+        $("#resultNextDifficulty").textContent = `下轮推荐难度：第 ${next.nextLevel} 级，${next.nextPairs} 对卡片，开局展示 ${formatSeconds(next.nextPreviewMs)}。最近一局表现已记录到本地，用于下次自动推荐。`;
+        $("#recommendTitle").textContent = result.recommend.title;
+        $("#recommendList").innerHTML = result.recommend.bullets.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+      }
+
+      function openReadyModal(fromScreen, level) {
+        readyReturnScreen = fromScreen || "practice";
+        plannedLevel = clampLevel(level || recommendedLevel());
+        const config = levels[plannedLevel] || levels[1];
+        resetFormalPanel();
+        showScreen("training");
+        const last = readResult();
+        const sourceText = last ? "这是根据最近一局表现自动推荐的难度。" : "这是新手起始难度。";
+        $("#readyIntro").textContent = `${sourceText} 本轮是第 ${plannedLevel} 级：有 ${config.pairs} 对小动物朋友，开局展示 ${formatSeconds(config.previewMs)}。自动调节难度会根据本轮表现继续更新。`;
+        $("#readyRuleA").textContent = "每次选择两张卡片，找到一样的小动物。";
+        $("#readyRuleB").textContent = plannedLevel === 1 ? "第 1 级很简单，只有 4 张卡片。" : `这一轮有 ${config.pairs * 2} 张卡片。`;
+        $("#readyRuleC").textContent = "如果两张不一样，会温柔盖回去，可以继续找。";
+        $("#readyRuleD").textContent = `本轮有 ${config.hints} 次额外提示，可以再看一眼。`;
+        $("#readyRuleE").textContent = "自动调节难度：连续配对成功或正确率≥80%会提高下轮难度；正确率≤50%会降低下轮难度。";
+        $("#readyModal").classList.remove("hidden");
+      }
+
+      function closeReadyModal() {
+        $("#readyModal").classList.add("hidden");
+        if (readyReturnScreen === "cover") showScreen("cover");
+        else if (readyReturnScreen === "result") showScreen("result");
+        else showScreen("practice");
+      }
+
+      function recommendedLevel() {
+        const stored = readResult();
+        if (!stored || !stored.recommend) return 1;
+        return clampLevel(stored.recommend.nextLevel || 1);
+      }
+
+      function clampLevel(level) {
+        const n = Number(level);
+        return Number.isFinite(n) ? Math.max(1, Math.min(5, Math.round(n))) : 1;
+      }
+
+      function saveResult(result) {
+        try {
+          const recent = { ...result, playedAt: new Date().toISOString() };
+          localStorage.setItem("animalFriendsLastResult", JSON.stringify(recent));
+          localStorage.setItem("animalFriendsAdaptiveRecent", JSON.stringify({
+            playedAt: recent.playedAt,
+            level: result.level,
+            pairCount: result.pairCount,
+            previewMs: result.previewMs,
+            accuracy: result.accuracy,
+            correctRate: result.correctRate,
+            accuracyPercent: result.accuracy,
+            timeSeconds: result.time,
+            elapsedSeconds: result.elapsedSeconds,
+            pairSuccessRate: result.pairSuccessRate,
+            pairSuccessRatePercent: result.pairSuccessRate,
+            "本轮正确率": result.accuracy,
+            "本轮用时秒": result.time,
+            "配对成功率": result.pairSuccessRate,
+            maxStreak: result.maxStreak,
+            moves: result.moves,
+            nextLevel: result.recommend.nextLevel,
+            nextPairs: result.recommend.nextPairs,
+            nextPreviewMs: result.recommend.nextPreviewMs
+          }));
+        } catch (error) {}
+      }
+
+      function readResult() {
+        try {
+          const raw = localStorage.getItem("animalFriendsLastResult");
+          return raw ? JSON.parse(raw) : null;
+        } catch (error) { return null; }
+      }
+
+      function renderLastRecord() {
+        const result = readResult();
+        $("#lastRecordText").textContent = result
+          ? `上次试玩：第 ${result.level} 级｜正确率 ${result.accuracy}%｜连续成功 ${result.maxStreak} 次｜下轮推荐第 ${result.recommend.nextLevel} 级（${result.recommend.nextPairs} 对，展示 ${formatSeconds(result.recommend.nextPreviewMs)}）。自动调节难度。`
+          : "还没有本地试玩记录。自动调节难度：完成一局后会在这里显示下轮推荐。";
+      }
+
+      function formatSeconds(ms) {
+        const sec = ms / 1000;
+        return `${Number.isInteger(sec) ? sec.toFixed(0) : sec.toFixed(1)} 秒`;
+      }
+
+      function escapeHtml(text) {
+        return String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+      }
+
+      function bindEvents() {
+        $("#startLessonBtn").addEventListener("click", () => { lessonIndex = 0; renderLesson(); showScreen("lesson"); });
+        $("#goPracticeBtn").addEventListener("click", () => { resetPracticePanel(); showScreen("practice"); });
+        $("#openReadyBtn").addEventListener("click", () => openReadyModal("cover", recommendedLevel()));
+        $("#lessonPrevBtn").addEventListener("click", () => { lessonIndex = Math.max(0, lessonIndex - 1); renderLesson(); });
+        $("#lessonNextBtn").addEventListener("click", () => { if (lessonIndex >= lessons.length - 1) { resetPracticePanel(); showScreen("practice"); return; } lessonIndex += 1; renderLesson(); });
+        $("#startPracticeBtn").addEventListener("click", startPractice);
+        $("#practiceHintBtn").addEventListener("click", () => useHint("practice"));
+        $("#practiceReadyBtn").addEventListener("click", () => openReadyModal("practice", recommendedLevel()));
+        $("#practiceBoard").addEventListener("click", (event) => { const card = event.target.closest(".memory-card"); if (card) chooseCard("practice", card.dataset.cardUid); });
+        $("#formalBoard").addEventListener("click", (event) => { const card = event.target.closest(".memory-card"); if (card) chooseCard("formal", card.dataset.cardUid); });
+        $("#formalHintBtn").addEventListener("click", () => useHint("formal"));
+        $("#leaveFormalBtn").addEventListener("click", () => { cancelFormalTimer(); $("#readyModal").classList.add("hidden"); showScreen("cover"); });
+        $("#readyCancelBtn").addEventListener("click", closeReadyModal);
+        $("#readyStartBtn").addEventListener("click", () => startFormal(plannedLevel));
+        $("#retryRecommendedBtn").addEventListener("click", () => openReadyModal("result", lastRecommendationLevel));
+        $("#backLessonBtn").addEventListener("click", () => { lessonIndex = 0; renderLesson(); showScreen("lesson"); });
+        $("#backCoverBtn").addEventListener("click", () => showScreen("cover"));
+      }
+
+      applyBackgrounds();
+      bindEvents();
+      renderLesson();
+      resetPracticePanel();
+      resetFormalPanel();
+      renderLastRecord();
+    })();
+  </script>
+</body>
+</html>
