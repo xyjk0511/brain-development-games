@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route, Link, Navigate } from 'react-router-dom'
-import Home from './pages/Home'
+import 首页 from './pages/Home'
 import WaterJugsPage from './pages/games/WaterJugsPage'
 import TowerOfHanoiPage from './pages/games/TowerOfHanoiPage'
 import BallSortPage from './pages/games/BallSortPage'
@@ -28,10 +28,10 @@ export default function App(): JSX.Element {
     <div className="min-h-screen flex flex-col">
       <header className="bg-indigo-600 text-white p-3 sm:p-4">
         <nav className="container mx-auto flex justify-between items-center">
-          <h1 className="text-base sm:text-lg lg:text-xl font-bold">Brain Development Games</h1>
+          <h1 className="text-base sm:text-lg lg:text-xl font-bold">认知训练游戏</h1>
           <div className="space-x-2 sm:space-x-4">
             <Link to="/" className="underline text-sm sm:text-base hover:text-indigo-200">
-              Home
+              首页
             </Link>
           </div>
         </nav>
@@ -39,7 +39,7 @@ export default function App(): JSX.Element {
 
       <main className="flex-1 container mx-auto p-3 sm:p-4 lg:p-6">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<首页 />} />
           <Route path="/games/water-jugs" element={<WaterJugsPage />} />
           <Route path="/games/tower-of-hanoi" element={<TowerOfHanoiPage />} />
           <Route path="/games/ball-sort" element={<BallSortPage />} />
@@ -67,10 +67,11 @@ export default function App(): JSX.Element {
 
       <footer className="bg-slate-200 text-slate-700 p-3 sm:p-4 text-center">
         <div className="text-xs sm:text-sm">
-          © Brain Development Games — <a href="https://sojinantony01.github.io/brain-development-games" className="underline hover:text-indigo-600">Live demo</a>
+          © 认知训练游戏 — <a href="https://sojinantony01.github.io/brain-development-games" className="underline hover:text-indigo-600">在线演示</a>
         </div>
-        <div className="text-xs sm:text-sm mt-1">By - Sojin Antony</div>
+        <div className="text-xs sm:text-sm mt-1">作者：Sojin Antony</div>
       </footer>
     </div>
   )
 }
+

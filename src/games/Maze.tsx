@@ -70,7 +70,7 @@ const generateMaze = (w: number, h: number): { grid: number[][]; start: [number,
     }
   }
   
-  // Start carving from top-left
+  // 开始 carving from top-left
   carve(0, 0)
   
   // Ensure there's always a path by carving additional connections
@@ -169,14 +169,14 @@ const Maze = ({ level }: MazeProps): JSX.Element => {
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-green-700 flex items-center justify-center gap-3">
             🌳 Maze Adventure
-            <span className="text-2xl bg-green-100 px-4 py-1 rounded-full">Level {level}</span>
+            <span className="text-2xl bg-green-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
           <p className="text-lg text-slate-600 mt-2">Find your way to the treasure! 🏆</p>
         </div>
 
         <div className="mb-6 text-center flex gap-4 justify-center items-center">
           <div className="inline-block bg-white px-8 py-4 rounded-xl shadow-md">
-            <span className="text-2xl font-bold text-green-700">🚶 Moves: </span>
+            <span className="text-2xl font-bold text-green-700">🚶 步数： </span>
             <span className="text-4xl font-black text-blue-600">{moves}</span>
           </div>
           <div className="inline-block bg-white px-8 py-4 rounded-xl shadow-md">
@@ -278,14 +278,14 @@ const Maze = ({ level }: MazeProps): JSX.Element => {
                 {stars === 3 ? '⭐⭐⭐' : stars === 2 ? '⭐⭐' : '⭐'}
               </div>
               <div className="text-xl">
-                Completed in <span className="font-bold text-2xl text-blue-600">{moves}</span> moves
+                完成用时：<span className="font-bold text-2xl text-blue-600">{moves}</span> moves
               </div>
               <div className="text-lg mt-1">
                 Optimal: <span className="font-bold text-amber-600">{optimalMoves}</span> moves
                 {moves === optimalMoves && <span className="ml-2 text-green-600 font-bold">🏆 PERFECT!</span>}
               </div>
               <div className="text-md mt-2 font-semibold">
-                Efficiency: <span className="text-2xl">{Math.round((optimalMoves / moves) * 100)}%</span>
+              效率： <span className="text-2xl">{Math.round((optimalMoves / moves) * 100)}%</span>
               </div>
             </div>
             <div className="flex justify-center">
@@ -299,3 +299,4 @@ const Maze = ({ level }: MazeProps): JSX.Element => {
 }
 
 export default Maze
+

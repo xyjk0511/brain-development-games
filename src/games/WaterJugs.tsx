@@ -119,7 +119,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
         copy[index] = cfg.capacities[index]
         return copy
       })
-      setMoves((m) => [...m, `Fill ${index + 1}`])
+      setMoves((m) => [...m, `装满 ${index + 1}`])
       setAnimatingJug(null)
     }, 600)
   }
@@ -132,7 +132,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
         copy[index] = 0
         return copy
       })
-      setMoves((m) => [...m, `Empty ${index + 1}`])
+      setMoves((m) => [...m, `倒空 ${index + 1}`])
       setAnimatingJug(null)
     }, 400)
   }
@@ -147,7 +147,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
         copy[to] += amount
         return copy
       })
-      setMoves((m) => [...m, `Pour ${from + 1} -> ${to + 1}`])
+      setMoves((m) => [...m, `倒水 ${from + 1} -> ${to + 1}`])
       setAnimatingJug(null)
     }, 500)
   }
@@ -162,7 +162,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
     
     return (
       <div className="flex flex-col items-center gap-3">
-        <div className="text-lg font-bold text-indigo-700">🏺 Jug {index + 1}</div>
+        <div className="text-lg font-bold text-indigo-700">🏺 水壶 {index + 1}</div>
         
         {/* Jar Container */}
         <div className="relative w-32 h-48 rounded-b-3xl border-4 border-indigo-400 bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg overflow-hidden">
@@ -204,7 +204,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
         {/* Display */}
         <div className="text-center">
           <div className="text-3xl font-bold text-indigo-700">{current}L</div>
-          <div className="text-sm text-slate-500">of {capacity}L</div>
+          <div className="text-sm text-slate-500">共 {capacity}L</div>
         </div>
         
         {/* Buttons */}
@@ -214,14 +214,14 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
             onClick={() => fill(index)}
             disabled={won || isTimeUp || isAnimating}
           >
-            💧 Fill
+            💧 装满
           </button>
           <button
             className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-lg font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             onClick={() => empty(index)}
             disabled={won || isTimeUp || isAnimating}
           >
-            🚰 Empty
+            🚰 倒空
           </button>
         </div>
       </div>
@@ -235,11 +235,11 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-3xl font-bold text-indigo-700 flex items-center gap-2">
-              🎯 Water Jugs Challenge
-              <span className="text-2xl bg-indigo-100 px-3 py-1 rounded-full">Level {level}</span>
+              🎯 量水壶挑战
+              <span className="text-2xl bg-indigo-100 px-3 py-1 rounded-full">等级 {level}</span>
             </h2>
             <p className="text-lg text-slate-600 mt-2">
-              Target: <strong className="text-2xl text-green-600">{cfg.target}L</strong> 💦
+              目标： <strong className="text-2xl text-green-600">{cfg.target}L</strong> 💦
             </p>
           </div>
           {!won && <ResetButton onReset={resetGame} resetCount={resetCount} />}
@@ -247,7 +247,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
 
       {cfg.timerSeconds && (
         <div className="mb-6 text-xl font-bold text-orange-600 bg-orange-100 px-4 py-2 rounded-lg inline-block">
-          ⏱️ Time: <strong>{timeLeft ?? cfg.timerSeconds}</strong> seconds
+          ⏱️ 时间： <strong>{timeLeft ?? cfg.timerSeconds}</strong> 秒
         </div>
       )}
 
@@ -260,7 +260,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
       </div>
 
       <div className="mb-6 bg-white p-4 rounded-xl shadow-md">
-        <h3 className="text-xl font-bold text-indigo-700 mb-3">🔄 Pour Water</h3>
+        <h3 className="text-xl font-bold text-indigo-700 mb-3">🔄 倒水操作</h3>
         <div className="flex gap-2 flex-wrap justify-center">
           {cfg.capacities.map((_, i) =>
             cfg.capacities.map((_, j) =>
@@ -271,7 +271,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
                   onClick={() => pour(i, j)}
                   disabled={won || isTimeUp || animatingJug !== null}
                 >
-                  {`Jug ${i + 1} ➜ ${j + 1}`}
+                  {`水壶 ${i + 1} ➜ ${j + 1}`}
                 </button>
               ) : null
             )
@@ -280,7 +280,7 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
       </div>
 
       <div className="mb-6 bg-white p-4 rounded-xl shadow-md">
-        <h3 className="text-xl font-bold text-indigo-700 mb-3">📝 Move History</h3>
+        <h3 className="text-xl font-bold text-indigo-700 mb-3">📝 操作记录</h3>
         <div className="max-h-32 overflow-y-auto">
           <ul className="space-y-1">
             {moves.slice().reverse().map((m, idx) => (
@@ -294,15 +294,15 @@ const WaterJugs = ({ level }: WaterJugsProps): JSX.Element => {
 
       {won ? (
         <div className="p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-2 border-emerald-300">
-          <div className="text-2xl font-bold mb-2">🎉 Amazing! You achieved the target! 🎉</div>
-          <div className="text-lg">You completed it in {moves.length} moves!</div>
+          <div className="text-2xl font-bold mb-2">🎉 完成！你量出了目标水量！ 🎉</div>
+          <div className="text-lg">你用了 {moves.length} 步！</div>
           <div className="mt-4 flex flex-col gap-2">
             <NextLevelButton currentLevel={level} />
           </div>
         </div>
       ) : isTimeUp ? (
         <div className="p-6 bg-gradient-to-r from-red-100 to-orange-100 text-red-800 rounded-xl shadow-lg border-2 border-red-300">
-          <div className="text-2xl font-bold">⏱️ Time's up! Try again! 💪</div>
+          <div className="text-2xl font-bold">⏱️ 时间到！再试一次。 💪</div>
         </div>
       ) : null}
       </div>

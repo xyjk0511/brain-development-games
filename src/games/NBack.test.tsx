@@ -4,8 +4,8 @@ import NBack from './NBack'
 
 test('renders NBack and starts sequence', () => {
   render(<NBack level={1} />)
-  expect(screen.getByText(/N-Back/i)).toBeInTheDocument()
-  const start = screen.getByText(/Start/i)
+  expect(screen.getByText(/记忆挑战/i)).toBeInTheDocument()
+  const start = screen.getByText(/开始/i)
   fireEvent.click(start)
-  expect(screen.getByText(/Score:/i)).toBeInTheDocument()
+  expect(screen.getByText(/得分：/i)).toBeInTheDocument()
 })

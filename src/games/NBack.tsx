@@ -8,15 +8,15 @@ export type NBackProps = {
 }
 
 const randItem = (level: number): string => {
-  // Fewer letters for easier levels
+  // Fewer 个字母 for easier levels
   const letterSets = [
-    'ABC',      // Level 1: 3 letters
-    'ABCD',     // Level 2: 4 letters
-    'ABCDE',    // Level 3: 5 letters
-    'ABCDEF',   // Level 4+: 6 letters
+    'ABC',      // 等级 1: 3 个字母
+    'ABCD',     // 等级 2: 4 个字母
+    'ABCDE',    // 等级 3: 5 个字母
+    'ABCDEF',   // 等级 4+: 6 个字母
   ]
-  const letters = letterSets[Math.min(level - 1, 3)] || 'ABCDEFGH'
-  return letters[Math.floor(Math.random() * letters.length)]
+  const 个字母 = letterSets[Math.min(level - 1, 3)] || 'ABCDEFGH'
+  return 个字母[Math.floor(Math.random() * 个字母.length)]
 }
 
 const NBack = ({ level }: NBackProps): JSX.Element => {
@@ -52,7 +52,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
     setScore(0)
     setRunning(true)
     step()
-    // Slower speed for easier levels: Level 1 = 1500ms, Level 2 = 1300ms, etc.
+    // Slower speed for easier levels: 等级 1 = 1500ms, 等级 2 = 1300ms, etc.
     intervalRef.current = window.setInterval(step, Math.max(1500 - level * 200, 400))
   }
 
@@ -65,7 +65,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
   }
 
   const pressMatch = (): void => {
-    // check if current item matches item n steps ago
+    // check if current item matches item n 步s ago
     const curIdx = sequence.length - 1
     if (curIdx - n >= 0 && sequence[curIdx] === sequence[curIdx - n]) {
       setScore((s) => s + 1)
@@ -97,11 +97,11 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
       <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-blue-700 flex items-center justify-center gap-3">
-            🧠 Memory Challenge
-            <span className="text-2xl bg-blue-100 px-4 py-1 rounded-full">Level {level}</span>
+            🧠 记忆挑战
+            <span className="text-2xl bg-blue-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
           <p className="text-lg text-slate-600 mt-2">
-            {level === 10 ? '🎯 Dual N-Back Mode!' : `Remember ${n} steps back! 🎯`}
+            {level === 10 ? '🎯 双重 N 步记忆模式！' : `记住前 ${n} 步的内容！ 🎯`}
           </p>
         </div>
 
@@ -113,7 +113,7 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
 
         <div className="mb-6 text-center">
           <div className="inline-block bg-white px-8 py-4 rounded-xl shadow-md">
-            <span className="text-2xl font-bold text-blue-700">Score: </span>
+            <span className="text-2xl font-bold text-blue-700">得分： </span>
             <span className="text-4xl font-black text-green-600">{score}</span>
             <span className="text-2xl font-bold text-slate-500"> / {target}</span>
           </div>
@@ -125,33 +125,33 @@ const NBack = ({ level }: NBackProps): JSX.Element => {
             className="px-8 py-4 bg-gradient-to-r from-green-400 to-green-500 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             disabled={running}
           >
-            ▶️ Start
+            ▶️ 开始
           </button>
           <button
             onClick={stop}
             className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             disabled={!running}
           >
-            ⏸️ Stop
+            ⏸️ 停止
           </button>
           <button
             onClick={pressMatch}
             className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
           >
-            ✨ Match!
+            ✨ 匹配！
           </button>
         </div>
 
         <div className="bg-blue-100 p-4 rounded-xl text-center">
           <p className="text-lg text-blue-800 font-semibold">
-            💡 Press "Match" when the current letter matches the one shown {n} step{n > 1 ? 's' : ''} ago!
+            💡 当当前字母与前 {n} 步{n > 1 ? 's' : ''}出现的字母相同时点击“匹配”。
           </p>
         </div>
         
         {completed && (
           <div className="mt-6 p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-4 border-emerald-300">
-            <div className="text-3xl font-bold text-center mb-4">🎉 Amazing! Level {level} completed! 🎉</div>
-            <div className="text-xl text-center mb-4">Target score: {target} ✨</div>
+            <div className="text-3xl font-bold text-center mb-4">🎉 很棒！ 等级 {level} 已完成！ 🎉</div>
+            <div className="text-xl text-center mb-4">目标分数： {target} ✨</div>
             <div className="flex justify-center">
               <NextLevelButton currentLevel={level} />
             </div>

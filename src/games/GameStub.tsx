@@ -9,9 +9,9 @@ export type GameStubProps = {
 export default function GameStub({ name, description, level }: GameStubProps): JSX.Element {
   return (
     <div className="bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold">{name} (Level {level})</h2>
+      <h2 className="text-xl font-bold">{name} (等级 {level})</h2>
       <p className="text-slate-600 mb-4">{description}</p>
-      <div className="p-4 border rounded">This is a placeholder stage for <strong>{name}</strong>. Gameplay will scale by level.</div>
+      <div className="p-4 border rounded">这是 <strong>{name}</strong> 的占位关卡。玩法会随等级提升。</div>
     </div>
   )
 }

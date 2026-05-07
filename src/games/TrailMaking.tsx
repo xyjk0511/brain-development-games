@@ -32,7 +32,7 @@ const generateNodes = (level: number): Node[] => {
       })
     }
   } else {
-    // Alternating numbers and letters
+    // Alternating numbers and 个字母
     for (let i = 0; i < count; i++) {
       nodes.push({
         id: i,
@@ -93,19 +93,19 @@ const TrailMaking = ({ level }: TrailMakingProps): JSX.Element => {
       <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4 sm:p-6 lg:p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-4 sm:mb-6">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-700 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
-            <span>🎯 Connect the Dots</span>
-            <span className="text-lg sm:text-xl lg:text-2xl bg-purple-100 px-3 sm:px-4 py-1 rounded-full">Level {level}</span>
+            <span>🎯 连线测验</span>
+            <span className="text-lg sm:text-xl lg:text-2xl bg-purple-100 px-3 sm:px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
-          <p className="text-sm sm:text-base lg:text-lg text-slate-600 mt-2 px-2">Connect the nodes in order as fast as you can! 🚀</p>
+          <p className="text-sm sm:text-base lg:text-lg text-slate-600 mt-2 px-2">Connect the nodes in order 的所有数字，越快越好！ 🚀</p>
         </div>
 
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center text-base sm:text-lg font-bold">
           <div className="bg-white px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl shadow-md">
-            <span className="text-purple-600">📍 Progress:</span> <span className="text-2xl sm:text-3xl text-purple-700">{currentIndex + 1}/{nodes.length}</span>
+            <span className="text-purple-600">📍 进度：</span> <span className="text-2xl sm:text-3xl text-purple-700">{currentIndex + 1}/{nodes.length}</span>
           </div>
           {endTime && (
             <div className="bg-white px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl shadow-md">
-              <span className="text-green-600">⏱️ Time:</span> <span className="text-2xl sm:text-3xl text-green-700">{(endTime / 1000).toFixed(2)}s</span>
+              <span className="text-green-600">⏱️ 时间：</span> <span className="text-2xl sm:text-3xl text-green-700">{(endTime / 1000).toFixed(2)}s</span>
             </div>
           )}
         </div>
@@ -164,7 +164,7 @@ const TrailMaking = ({ level }: TrailMakingProps): JSX.Element => {
 
         {completed && (
           <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-2 sm:border-4 border-emerald-300 mx-2">
-            <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-2">🎉 Perfect Connection! Completed in {((endTime ?? 0) / 1000).toFixed(2)}s! 🎉</div>
+            <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-center mb-2">🎉 连线完成！ 完成用时：{((endTime ?? 0) / 1000).toFixed(2)}s! 🎉</div>
             <div className="flex justify-center mt-3 sm:mt-4">
               <NextLevelButton currentLevel={level} />
             </div>

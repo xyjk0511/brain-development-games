@@ -112,21 +112,21 @@ export default function DualTask({ level }: DualTaskProps): JSX.Element {
       <CelebrationAnimation show={completed} />
       <div className="bg-gradient-to-br from-cyan-50 via-teal-50 to-green-50 p-8 rounded-2xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-600 to-green-600 bg-clip-text text-transparent">
-        🧠 Dual Task Challenge (Level {level})
+        🧠 双任务挑战 (等级 {level})
       </h2>
-      <p className="text-xl text-slate-700 mb-6 font-semibold">Count target shapes AND solve math problems!</p>
+      <p className="text-xl text-slate-700 mb-6 font-semibold">一边数目标形状，一边解数学题。</p>
 
       <div className="mb-6 text-2xl font-bold text-center bg-white/70 p-4 rounded-xl backdrop-blur">
-        <span className="text-green-600">Score: {score} / {target}</span> •
-        <span className="text-cyan-600 ml-2">Shapes: {shapeCount}</span>
+        <span className="text-green-600">得分： {score} / {target}</span> •
+        <span className="text-cyan-600 ml-2">形状数： {shapeCount}</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Shape Task */}
         <div className="border-4 border-cyan-300 rounded-2xl p-6 bg-gradient-to-br from-cyan-50 to-blue-50 shadow-lg">
-          <h3 className="text-2xl font-bold mb-3 text-cyan-700">🔷 Task 1: Count Shapes</h3>
+          <h3 className="text-2xl font-bold mb-3 text-cyan-700">🔷 任务 1：数形状</h3>
           <div className="text-lg font-semibold text-slate-600 mb-4">
-            Click when you see: <span className="text-2xl font-bold capitalize text-cyan-600">{targetShape}</span>
+            看到这个形状时点击： <span className="text-2xl font-bold capitalize text-cyan-600">{targetShape}</span>
           </div>
           <button
             onClick={handleShapeClick}
@@ -137,7 +137,7 @@ export default function DualTask({ level }: DualTaskProps): JSX.Element {
 
         {/* Math Task */}
         <div className="border-4 border-green-300 rounded-2xl p-6 bg-gradient-to-br from-green-50 to-teal-50 shadow-lg">
-          <h3 className="text-2xl font-bold mb-3 text-green-700">➕ Task 2: Solve Math</h3>
+          <h3 className="text-2xl font-bold mb-3 text-green-700">➕ 任务 2：解数学题</h3>
           <div className="text-4xl font-mono font-bold mb-6 text-center text-green-600">{mathProblem.question} = ?</div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <input
@@ -147,7 +147,7 @@ export default function DualTask({ level }: DualTaskProps): JSX.Element {
               onKeyPress={(e) => e.key === 'Enter' && handleMathSubmit()}
               disabled={!running}
               className="border-4 border-green-300 p-2 sm:p-3 rounded-xl flex-1 text-xl sm:text-2xl font-bold text-center focus:border-green-500 focus:outline-none shadow-lg"
-              placeholder="Answer"
+              placeholder="答案"
             />
             <button
               onClick={handleMathSubmit}
@@ -166,20 +166,20 @@ export default function DualTask({ level }: DualTaskProps): JSX.Element {
           disabled={running}
           className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 shadow-lg transform hover:scale-105 transition-all"
         >
-          ▶️ Start
+          ▶️ 开始
         </button>
         <button
           onClick={stopGame}
           disabled={!running}
           className="px-8 py-4 bg-gradient-to-r from-red-500 to-pink-600 text-white text-2xl font-bold rounded-xl hover:from-red-600 hover:to-pink-700 disabled:opacity-50 shadow-lg transform hover:scale-105 transition-all"
         >
-          ⏹️ Stop
+          ⏹️ 停止
         </button>
       </div>
 
       {completed && (
         <div className="mt-6 p-6 bg-gradient-to-r from-green-100 to-emerald-100 text-emerald-800 rounded-xl border-4 border-green-400 shadow-lg">
-          <div className="text-3xl font-bold mb-2">✅ Level {level} completed!</div>
+          <div className="text-3xl font-bold mb-2">✅ 等级 {level} 已完成！</div>
           <div className="mt-4">
             <NextLevelButton currentLevel={level} />
           </div>

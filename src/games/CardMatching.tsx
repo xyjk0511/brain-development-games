@@ -77,7 +77,7 @@ const CardMatching = ({ level }: CardMatchingProps): JSX.Element => {
       const [first, second] = newFlipped
       
       if (cards[first].value === cards[second].value) {
-        // Match!
+        // 匹配！
         setTimeout(() => {
           setCards(prev => prev.map(card =>
             card.id === first || card.id === second
@@ -119,22 +119,22 @@ const CardMatching = ({ level }: CardMatchingProps): JSX.Element => {
       <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-yellow-50 p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-purple-700 flex items-center justify-center gap-3">
-            🎴 Memory Match Game
-            <span className="text-2xl bg-purple-100 px-4 py-1 rounded-full">Level {level}</span>
+            🎴 记忆配对游戏
+            <span className="text-2xl bg-purple-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
-          <p className="text-xl text-slate-600 mt-2">Find all matching pairs! 🎯</p>
+          <p className="text-xl text-slate-600 mt-2">找出全部相同配对。 🎯</p>
         </div>
 
         <div className="mb-6 flex gap-6 justify-center text-lg font-bold">
           <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-            <span className="text-blue-600">🎮 Moves:</span> <span className="text-2xl text-blue-700">{moves}</span>
+            <span className="text-blue-600">🎮 步数：</span> <span className="text-2xl text-blue-700">{moves}</span>
           </div>
           <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-            <span className="text-green-600">✨ Matches:</span> <span className="text-2xl text-green-700">{matches}/{pairCount}</span>
+            <span className="text-green-600">✨ 配对：</span> <span className="text-2xl text-green-700">{matches}/{pairCount}</span>
           </div>
           {endTime && (
             <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-              <span className="text-orange-600">⏱️ Time:</span> <span className="text-2xl text-orange-700">{(endTime / 1000).toFixed(1)}s</span>
+              <span className="text-orange-600">⏱️ 时间：</span> <span className="text-2xl text-orange-700">{(endTime / 1000).toFixed(1)}s</span>
             </div>
           )}
         </div>
@@ -170,15 +170,15 @@ const CardMatching = ({ level }: CardMatchingProps): JSX.Element => {
             onClick={initializeGame}
             className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
           >
-            🔄 New Game
+            🔄 新游戏
           </button>
         </div>
 
         {completed && (
           <div className="mt-6 p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-4 border-emerald-300">
-            <div className="text-3xl font-bold mb-2 text-center">🎉 Awesome! You found all pairs! 🎉</div>
+            <div className="text-3xl font-bold mb-2 text-center">🎉 完成！你找到了全部配对！ 🎉</div>
             <div className="text-xl text-center mb-4">
-              Completed in <span className="font-bold text-2xl">{moves}</span> moves and <span className="font-bold text-2xl">{((endTime ?? 0) / 1000).toFixed(1)}s</span>!
+              完成用时：<span className="font-bold text-2xl">{moves}</span> 步，用时 <span className="font-bold text-2xl">{((endTime ?? 0) / 1000).toFixed(1)}s</span>!
             </div>
             <div className="flex justify-center">
               <NextLevelButton currentLevel={level} />

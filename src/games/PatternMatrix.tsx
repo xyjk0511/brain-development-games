@@ -60,7 +60,7 @@ const PatternMatrix = ({ level }: PatternMatrixProps): JSX.Element => {
       setScore(newScore)
       
       if (newScore >= target) {
-        // Completed all rounds!
+        // 已完成 all rounds!
         if (!saved.current) {
           const percentageScore = Math.min(100, Math.round((newScore / target) * 100))
           markGameCompletedLevel('pattern-matrix', level, percentageScore, 100)
@@ -88,9 +88,9 @@ const PatternMatrix = ({ level }: PatternMatrixProps): JSX.Element => {
       <CelebrationAnimation show={completed} />
       <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 p-8 rounded-2xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-pink-600 to-indigo-600 bg-clip-text text-transparent">
-        🎨 Pattern Matrix (Level {level})
+        🎨 图形矩阵 (等级 {level})
       </h2>
-      <p className="text-xl text-slate-700 mb-6 font-semibold">Observe the flashed squares and recreate the pattern!</p>
+      <p className="text-xl text-slate-700 mb-6 font-semibold">观察短暂闪现的格子，然后复现图案。</p>
 
       <div className="grid gap-2 mb-6 p-6 bg-white/50 rounded-xl backdrop-blur border-4 border-pink-200 mx-auto" style={{ gridTemplateColumns: `repeat(${size}, 40px)`, maxWidth: 'fit-content' }}>
         {Array.from({ length: total }, (_, idx) => {
@@ -119,35 +119,35 @@ const PatternMatrix = ({ level }: PatternMatrixProps): JSX.Element => {
           className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xl font-bold rounded-xl hover:from-yellow-500 hover:to-orange-500 shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={phase !== 'recreate'}
         >
-          🔄 Replay
+          🔄 重播
         </button>
         <button
           onClick={submit}
           className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xl font-bold rounded-xl hover:from-indigo-600 hover:to-purple-700 shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={phase !== 'recreate'}
         >
-          ✓ Submit
+          ✓ 提交
         </button>
       </div>
 
       <div className="space-y-3">
         <div className="text-2xl font-bold text-center text-indigo-600 bg-white/70 p-4 rounded-xl backdrop-blur">
-          Round: {roundNumber} / {target}
+          轮次： {roundNumber} / {target}
         </div>
         <div className="text-2xl font-bold text-center text-purple-600 bg-white/70 p-4 rounded-xl backdrop-blur">
-          Score: {score} / {target}
+          得分： {score} / {target}
         </div>
       </div>
       
       {phase === 'done' && !completed && (
         <div className="mt-4 p-4 bg-red-100 border-2 border-red-400 rounded-xl text-center">
-          <p className="text-lg font-bold text-red-700">❌ Incorrect! Try again...</p>
+          <p className="text-lg font-bold text-red-700">❌ 不正确，请再试一次。</p>
         </div>
       )}
       
       {completed && (
         <div className="mt-6 p-6 bg-gradient-to-r from-green-100 to-emerald-100 text-emerald-800 rounded-xl border-4 border-green-400 shadow-lg">
-          <div className="text-3xl font-bold mb-2">✅ Level {level} completed!</div>
+          <div className="text-3xl font-bold mb-2">✅ 等级 {level} 已完成！</div>
           <div className="mt-4">
             <NextLevelButton currentLevel={level} />
           </div>

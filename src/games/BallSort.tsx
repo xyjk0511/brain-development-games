@@ -8,7 +8,7 @@ export type BallSortProps = {
   level: number
 }
 
-type Tube = string[] // Array of color strings
+type Tube = string[] // Array 共 color strings
 
 type LevelConfig = {
   colors: string[]
@@ -192,12 +192,12 @@ export default function BallSort({ level }: BallSortProps): JSX.Element {
     <div className="flex flex-col items-center gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 rounded-2xl shadow-2xl">
       <div className="text-center w-full">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          🧪 Ball Sort Puzzle - Level {level}
+          🧪 彩球分类 - 等级 {level}
         </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-slate-700 font-semibold px-2">Sort the colored balls so each tube contains only one color!</p>
+        <p className="text-base sm:text-lg lg:text-xl text-slate-700 font-semibold px-2">把彩球整理好，让每根试管只包含一种颜色。</p>
         <div className="mt-3 sm:mt-4 text-lg sm:text-xl lg:text-2xl font-bold bg-white/70 p-3 sm:p-4 rounded-xl backdrop-blur">
-          <span className="text-purple-600">Moves: {moves}</span> <span className="hidden sm:inline">|</span>
-          <span className="text-pink-600 sm:ml-2 block sm:inline mt-1 sm:mt-0">Colors: {config.colors.length}</span>
+          <span className="text-purple-600">步数： {moves}</span> <span className="hidden sm:inline">|</span>
+          <span className="text-pink-600 sm:ml-2 block sm:inline mt-1 sm:mt-0">颜色数： {config.colors.length}</span>
         </div>
       </div>
 
@@ -236,13 +236,13 @@ export default function BallSort({ level }: BallSortProps): JSX.Element {
           <CelebrationAnimation show={won} />
           <div className="text-center p-4 sm:p-6 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl border-2 sm:border-4 border-green-400 shadow-lg w-full max-w-2xl">
             <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-2 sm:mb-3">
-              🎉 Level {level} Complete! 🎉
+              🎉 等级 {level} 已完成！ 🎉
             </div>
             <div className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-700 mb-2">
-              ✨ Completed in {moves} moves
+              ✨ 完成用时：{moves} moves
             </div>
             <div className="text-lg sm:text-xl lg:text-2xl font-bold text-emerald-600">
-              🏆 Score: {Math.max(0, 100 - moves)}/100
+              🏆 得分： {Math.max(0, 100 - moves)}/100
             </div>
             <div className="mt-4 sm:mt-6">
               <NextLevelButton currentLevel={level} />
@@ -255,3 +255,4 @@ export default function BallSort({ level }: BallSortProps): JSX.Element {
 }
 
 // Made with Bob
+

@@ -1,167 +1,55 @@
 /**
- * Central registry for all games in the application.
- * This is the single source of truth for game metadata.
+ * Central registry for the 16 redesigned games in the application.
+ * This is the single source of truth for homepage ordering and copy.
  */
+
+import { CANONICAL_GAME_DESIGNS, type CognitiveDomain, type TaskFamily } from './gameParameters'
 
 export interface GameMetadata {
   id: string
   name: string
   description: string
-  category: 'memory' | 'logic' | 'attention' | 'speed' | 'spatial'
+  category: CognitiveDomain
   maxLevel: number
+  taskFamily: TaskFamily
+  beginnerFriendly: boolean
+  howToPlay: string
+  goal: string
+  trains: string
 }
 
-export const GAME_REGISTRY: GameMetadata[] = [
-  {
-    id: 'water-jugs',
-    name: 'Water Jugs',
-    description: 'Solve logic puzzles by measuring exact amounts using different sized jugs. Improves problem-solving and planning skills.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'tower-of-hanoi',
-    name: 'Tower of Hanoi',
-    description: 'Move disks between pegs following specific rules. Classic recursive thinking and strategic planning exercise.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'ball-sort',
-    name: 'Ball Sort Puzzle',
-    description: 'Sort colored balls into tubes so each tube contains only one color. Develops logical thinking and planning skills.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'n-back',
-    name: 'N-Back',
-    description: 'Remember and match items from N steps back in a sequence. Scientifically proven to enhance working memory capacity.',
-    category: 'memory',
-    maxLevel: 10
-  },
-  {
-    id: 'logic-puzzles',
-    name: 'Logic Puzzles',
-    description: 'Solve challenging logic and math puzzles that require step-by-step reasoning. Develops analytical thinking and problem-solving skills.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'stroop',
-    name: 'Stroop Test',
-    description: 'Name the color of words while ignoring their meaning. Trains cognitive control and selective attention.',
-    category: 'attention',
-    maxLevel: 10
-  },
-  {
-    id: 'mental-rotation',
-    name: 'Mental Rotation',
-    description: 'Identify if rotated shapes match the original. Develops spatial reasoning and visualization abilities.',
-    category: 'spatial',
-    maxLevel: 10
-  },
-  {
-    id: 'schulte-table',
-    name: 'Schulte Table',
-    description: 'Find numbers in sequence as fast as possible. Improves peripheral vision, focus, and reading speed.',
-    category: 'attention',
-    maxLevel: 10
-  },
-  {
-    id: 'maze',
-    name: 'Pathway Maze',
-    description: 'Navigate through increasingly complex mazes. Enhances spatial planning and strategic thinking skills.',
-    category: 'spatial',
-    maxLevel: 10
-  },
-  {
-    id: 'pattern-matrix',
-    name: 'Pattern Matrix',
-    description: 'Memorize and recreate visual patterns on a grid. Strengthens visual memory and pattern recognition.',
-    category: 'memory',
-    maxLevel: 10
-  },
-  {
-    id: 'quick-math',
-    name: 'Quick Math',
-    description: 'Solve arithmetic problems under time pressure. Boosts mental calculation speed and numerical fluency.',
-    category: 'speed',
-    maxLevel: 10
-  },
-  {
-    id: 'word-scramble',
-    name: 'Word Scramble',
-    description: 'Unscramble letters to form valid words. Enhances vocabulary, spelling, and verbal reasoning.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'simon-says',
-    name: 'Simon Says',
-    description: 'Remember and repeat increasingly long color sequences. Classic memory game that improves sequential recall.',
-    category: 'memory',
-    maxLevel: 10
-  },
-  {
-    id: 'card-matching',
-    name: 'Card Matching',
-    description: 'Find matching pairs in a grid of face-down cards. Concentration game that trains visual memory and attention.',
-    category: 'memory',
-    maxLevel: 10
-  },
-  {
-    id: 'reaction-time',
-    name: 'Reaction Time',
-    description: 'Click as fast as possible when the screen changes color. Measures and improves reflexes and response speed.',
-    category: 'speed',
-    maxLevel: 10
-  },
-  {
-    id: 'number-sequence',
-    name: 'Number Sequence',
-    description: 'Identify patterns and predict the next number in sequences. Develops logical reasoning and pattern recognition.',
-    category: 'logic',
-    maxLevel: 10
-  },
-  {
-    id: 'dual-task',
-    name: 'Dual Task Challenge',
-    description: 'Count shapes while solving math problems simultaneously. Tests divided attention and multitasking abilities.',
-    category: 'attention',
-    maxLevel: 10
-  },
-  {
-    id: 'visual-search',
-    name: 'Visual Search',
-    description: 'Find target shapes among distractors as quickly as possible. Improves visual scanning and selective attention.',
-    category: 'attention',
-    maxLevel: 10
-  },
-  {
-    id: 'anagram-solver',
-    name: 'Anagram Solver',
-    description: 'Rearrange letters to form words before time runs out. Enhances linguistic flexibility and problem-solving speed.',
-    category: 'speed',
-    maxLevel: 10
-  },
-  {
-    id: 'trail-making',
-    name: 'Trail Making',
-    description: 'Connect numbers and letters in alternating sequence. Tests cognitive flexibility and task-switching ability.',
-    category: 'attention',
-    maxLevel: 10
-  },
-  {
-    id: 'working-memory-grid',
-    name: 'Working Memory Grid',
-    description: 'Remember positions of highlighted cells on a grid. Trains spatial working memory and visual retention.',
-    category: 'memory',
-    maxLevel: 10
-  }
-]
+const DESCRIPTIONS: Record<string, string> = {
+  'visual-search': '在一群可爱图案中找出指定目标，练习视觉搜索和选择性注意。',
+  'simon-says': '记住彩虹水母亮灯顺序，再按同样顺序点回来，练习顺序记忆。',
+  'card-matching': '翻开卡片寻找小动物朋友，练习视觉记忆和位置记忆。',
+  'reaction-time': '等待安全信号再帮助小动物过马路，练习反应和抑制控制。',
+  'schulte-table': '按顺序找到数字星星，练习专注、扫描和周边视觉。',
+  'word-scramble': '把打乱的字重新组成词语，练习语义判断和语言灵活性。',
+  maze: '帮萤火虫找到回家路线，练习空间规划和路线记忆。',
+  'logic-puzzles': '跟着线索一步步推理，完成森林小侦探谜题。',
+  'tower-of-hanoi': '移动甜甜圈到目标架，练习计划、步骤控制和递归思维。',
+  'n-back': '判断当前图案是否和前面某一步一样，练习工作记忆更新。',
+  'mental-rotation': '观察积木旋转后是否相同，练习空间想象和心理旋转。',
+  stroop: '在干扰中看准目标队长，练习干扰抑制和认知控制。',
+  'trail-making': '按顺序连接宝藏点，练习任务切换和视觉搜索。',
+  'number-sequence': '观察规律小火车编号，练习模式识别和逻辑推理。',
+  'water-jugs': '帮小熊调出刚好的果汁容量，练习分步计划和执行控制。',
+  'quick-math': '帮小动物完成轻松心算，练习数字流畅性和计算注意。'
+}
 
-// Helper functions for easy access
+export const GAME_REGISTRY: GameMetadata[] = CANONICAL_GAME_DESIGNS.map(game => ({
+  id: game.id,
+  name: game.redesignedTitle,
+  description: DESCRIPTIONS[game.id],
+  category: game.domain,
+  maxLevel: 10,
+  taskFamily: game.taskFamily,
+  beginnerFriendly: game.beginnerFriendly,
+  howToPlay: game.howToPlay,
+  goal: game.goal,
+  trains: game.trains
+}))
+
 export const getGameById = (id: string): GameMetadata | undefined => {
   return GAME_REGISTRY.find(game => game.id === id)
 }
@@ -186,7 +74,4 @@ export const getMaxLevel = (): number => {
   return GAME_REGISTRY[0]?.maxLevel ?? 10
 }
 
-// Create a map for O(1) lookups
 export const GAME_MAP = new Map(GAME_REGISTRY.map(game => [game.id, game]))
-
-// Made with Bob

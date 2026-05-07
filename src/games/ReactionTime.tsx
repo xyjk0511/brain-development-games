@@ -51,7 +51,7 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
       setPhase('result')
       setReactionTime(null)
-      alert('Too early! Wait for the green signal.')
+      alert('太早了！请等待绿色信号。')
       setPhase('ready')
       return
     }
@@ -85,22 +85,22 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
       <div className="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-red-700 flex items-center justify-center gap-3">
-            ⚡ Lightning Reflexes
-            <span className="text-2xl bg-red-100 px-4 py-1 rounded-full">Level {level}</span>
+            ⚡ 闪电反应
+            <span className="text-2xl bg-red-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
-          <p className="text-lg text-slate-600 mt-2">Click as fast as you can when it turns green! 🟢</p>
+          <p className="text-lg text-slate-600 mt-2">变绿后尽快点击。 🟢</p>
         </div>
 
         <div className="mb-6 flex gap-4 justify-center flex-wrap text-lg font-bold">
           <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-            <span className="text-blue-600">🎯 Attempts:</span> <span className="text-2xl text-blue-700">{attempts.length}/{target}</span>
+            <span className="text-blue-600">🎯 尝试：</span> <span className="text-2xl text-blue-700">{attempts.length}/{target}</span>
           </div>
           <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-            <span className="text-orange-600">🎪 Target:</span> <span className="text-2xl text-orange-700">{'<'}{avgThreshold}ms</span>
+            <span className="text-orange-600">🎪 目标：</span> <span className="text-2xl text-orange-700">{'<'}{avgThreshold}ms</span>
           </div>
           {avgTime && (
             <div className="bg-white px-6 py-3 rounded-xl shadow-md">
-              <span className="text-green-600">✨ Your Avg:</span> <span className="text-2xl text-green-700">{avgTime.toFixed(0)}ms</span>
+              <span className="text-green-600">✨ 平均：</span> <span className="text-2xl text-green-700">{avgTime.toFixed(0)}ms</span>
             </div>
           )}
         </div>
@@ -117,19 +117,19 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
           {phase === 'ready' && (
             <>
               <div className="text-6xl mb-4">👆</div>
-              <div>Click to Start!</div>
+              <div>点击开始！</div>
             </>
           )}
           {phase === 'wait' && (
             <>
               <div className="text-6xl mb-4">⏳</div>
-              <div>Wait for it...</div>
+              <div>等待信号...</div>
             </>
           )}
           {phase === 'click' && (
             <>
               <div className="text-6xl mb-4 animate-bounce">🎯</div>
-              <div>CLICK NOW!</div>
+              <div>现在点击！</div>
             </>
           )}
           {phase === 'result' && reactionTime && (
@@ -146,14 +146,14 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
               onClick={() => setPhase('ready')}
               className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
             >
-              {attempts.length < target ? '🔄 Next Round' : '🔄 Try Again'}
+              {attempts.length < target ? '🔄 下一轮' : '🔄 再试一次'}
             </button>
           </div>
         )}
 
         {attempts.length > 0 && (
           <div className="mt-6 bg-white p-4 rounded-xl shadow-md">
-            <div className="text-lg font-bold text-indigo-700 mb-2">📊 Recent Times:</div>
+            <div className="text-lg font-bold text-indigo-700 mb-2">📊 最近用时：</div>
             <div className="flex gap-2 flex-wrap justify-center">
               {attempts.slice(-5).map((t, idx) => (
                 <span key={idx} className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg font-bold">
@@ -172,20 +172,20 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
           }`}>
             {completed ? (
               <>
-                <div className="text-3xl font-bold text-center mb-2">🎉 Lightning Fast! Level {level} completed! 🎉</div>
-                <div className="text-xl text-center mb-4">Average: <span className="font-bold text-2xl">{avgTime?.toFixed(0)}ms</span></div>
+                <div className="text-3xl font-bold text-center mb-2">🎉 反应很快！ 等级 {level} 已完成！ 🎉</div>
+                <div className="text-xl text-center mb-4">平均： <span className="font-bold text-2xl">{avgTime?.toFixed(0)}ms</span></div>
                 <div className="flex justify-center">
                   <NextLevelButton currentLevel={level} />
                 </div>
               </>
             ) : (
               <>
-                <div className="text-2xl font-bold text-center mb-2">⚡ Round Complete!</div>
+                <div className="text-2xl font-bold text-center mb-2">⚡ 本轮完成！</div>
                 <div className="text-xl text-center mb-4">
-                  Average: <span className="font-bold text-2xl">{avgTime?.toFixed(0)}ms</span>
+                  平均： <span className="font-bold text-2xl">{avgTime?.toFixed(0)}ms</span>
                   {avgTime && avgTime > avgThreshold && (
                     <div className="text-lg mt-2">
-                      🎯 Target: {'<'}{avgThreshold}ms - Keep practicing to unlock next level!
+                      🎯 目标： {'<'}{avgThreshold}ms - 继续练习以解锁下一等级！
                     </div>
                   )}
                 </div>
@@ -197,7 +197,7 @@ const ReactionTime = ({ level }: ReactionTimeProps): JSX.Element => {
                     }}
                     className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
                   >
-                    🔄 Try Again
+                    🔄 再试一次
                   </button>
                 </div>
               </>

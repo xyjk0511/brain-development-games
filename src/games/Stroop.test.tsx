@@ -4,8 +4,8 @@ import Stroop from './Stroop'
 
 test('renders Stroop and can press buttons', () => {
   render(<Stroop level={1} />)
-  expect(screen.getByText(/Stroop Test/i)).toBeInTheDocument()
-  const btn = screen.getByText(/Red|Blue|Green|Yellow/i)
+  expect(screen.getByText(/颜色干扰挑战/i)).toBeInTheDocument()
+  const btn = screen.getByRole('button', { name: /红色/i })
   fireEvent.click(btn)
-  expect(screen.getByText(/Score:/i)).toBeInTheDocument()
+  expect(screen.getByText(/得分：/i)).toBeInTheDocument()
 })

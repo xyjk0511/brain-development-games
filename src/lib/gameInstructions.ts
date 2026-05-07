@@ -6,342 +6,342 @@ export interface GameInstructions {
 
 export const GAME_INSTRUCTIONS: Record<string, GameInstructions> = {
   'water-jugs': {
-    title: 'Water Jugs',
+    title: '量水壶',
     instructions: [
-      'You have two jugs with different capacities and need to measure an exact target amount',
-      'Click "Fill" to fill a jug to its maximum capacity',
-      'Click "Empty" to empty a jug completely',
-      'Click "Pour" to transfer water from one jug to another',
-      'The goal is to get the exact target amount in one of the jugs',
-      'Complete the puzzle in the minimum number of moves to score higher'
+      '你有几个不同容量的水壶，需要量出指定目标水量。',
+      '点击“装满”把水壶装到最大容量。',
+      '点击“倒空”把水壶清空。',
+      '点击“倒水”把一个水壶里的水倒入另一个水壶。',
+      '目标是在任意一个水壶里得到精确的目标水量。',
+      '用更少步数完成会获得更高分。'
     ],
     tips: [
-      'Think ahead - plan your moves before executing',
-      'Sometimes you need to empty jugs to make progress',
-      'The solution often involves filling and pouring multiple times'
+      '先想好几步再操作。',
+      '有时必须先倒空水壶才能继续推进。',
+      '常见解法需要多次装满、倒水和倒空。'
     ]
   },
   'ball-sort': {
-    title: 'Ball Sort Puzzle',
+    title: '彩球分类',
     instructions: [
-      'Sort colored balls into tubes so each tube contains only one color',
-      'Click on a tube to select it, then click another tube to move the top ball',
-      'You can only move a ball onto an empty tube or onto a ball of the same color',
-      'Each tube has a maximum capacity - you cannot overfill tubes',
-      'Use the empty tubes strategically to rearrange the balls',
-      'Complete the puzzle in fewer moves to score higher'
+      '把彩球整理到试管中，让每根试管最终只保留一种颜色。',
+      '先点击一个试管选中，再点击另一个试管移动顶部彩球。',
+      '彩球只能移动到空试管或可容纳的位置。',
+      '每根试管都有容量上限，不能装满后继续放入。',
+      '合理利用空试管作为临时空间。',
+      '用更少步数完成会获得更高分。'
     ],
     tips: [
-      'Plan your moves ahead - think about which colors to isolate first',
-      'Use empty tubes as temporary storage',
-      'Try to complete one color at a time',
-      'If you get stuck, use the Reset button to start over'
+      '优先隔离最容易完成的一种颜色。',
+      '空试管是关键的中转空间。',
+      '尽量一次完成一种颜色。',
+      '卡住时可以重置重新开始。'
     ]
   },
   'tower-of-hanoi': {
-    title: 'Tower of Hanoi',
+    title: '汉诺塔',
     instructions: [
-      'Move all disks from the left peg to the right peg',
-      'Click on a peg to select it, then click another peg to move the top disk',
-      'You can only move one disk at a time',
-      'A larger disk cannot be placed on top of a smaller disk',
-      'Try to complete the puzzle in the minimum number of moves',
-      'The optimal solution requires 2^n - 1 moves (where n is the number of disks)'
+      '把所有圆盘从左侧塔移动到右侧塔。',
+      '点击一座塔选中顶部圆盘，再点击另一座塔移动。',
+      '每次只能移动一个圆盘。',
+      '大圆盘不能放在小圆盘上面。',
+      '尝试用最少步数完成。',
+      '最优步数是 2^n - 1，其中 n 是圆盘数量。'
     ],
     tips: [
-      'Start by moving the smallest disk',
-      'Think recursively - solve for smaller subproblems',
-      'The middle peg is your temporary storage'
+      '通常从最小圆盘开始。',
+      '把问题拆成更小的子问题来想。',
+      '中间塔是临时存放区。'
     ]
   },
   'n-back': {
-    title: 'N-Back',
+    title: 'N 步记忆',
     instructions: [
-      'Watch the sequence of letters/numbers appearing on screen',
-      'Press the button when the current item matches the one from N positions back',
-      'For 1-back: match if current item equals the previous item',
-      'For 2-back: match if current item equals the item 2 positions ago',
-      'Higher levels increase the N value, making it more challenging',
-      'Score points for correct matches and avoid false positives'
+      '观察屏幕上连续出现的字母或数字。',
+      '当当前项目与前 N 个位置的项目相同时点击匹配。',
+      '1-back 表示和上一个项目比较。',
+      '2-back 表示和前两个位置的项目比较。',
+      '等级越高，N 值越大，难度越高。',
+      '正确匹配得分，误点会影响表现。'
     ],
     tips: [
-      'Focus and maintain concentration throughout',
-      'Mentally rehearse the sequence as it appears',
-      'Don\'t rush - accuracy is more important than speed'
+      '保持持续专注。',
+      '在心里复述最近出现的序列。',
+      '不要抢点，准确性比速度更重要。'
     ]
   },
   'stroop': {
-    title: 'Stroop Test',
+    title: '斯特鲁普测验',
     instructions: [
-      'Words will appear on screen in different colors',
-      'Your task is to identify the COLOR of the text, not the word itself',
-      'Click the button matching the text color',
-      'Ignore what the word says - focus only on its color',
-      'Answer as quickly and accurately as possible',
-      'Higher levels add more color options and time pressure'
+      '屏幕会显示不同颜色的文字。',
+      '你的任务是判断文字的颜色，而不是文字含义。',
+      '点击与文字颜色相同的按钮。',
+      '忽略文字写的是什么，只看颜色。',
+      '尽量又快又准。',
+      '高等级会增加颜色选项和时间压力。'
     ],
     tips: [
-      'Train yourself to focus on color, not meaning',
-      'Take a brief moment to process before clicking',
-      'Practice improves your cognitive control over time'
+      '训练自己只关注颜色。',
+      '点击前短暂停顿确认颜色。',
+      '反复练习能提高认知控制能力。'
     ]
   },
   'mental-rotation': {
-    title: 'Mental Rotation',
+    title: '心理旋转',
     instructions: [
-      'You\'ll see a reference shape and a rotated shape',
-      'Determine if the rotated shape is the same as the reference (just rotated)',
-      'Or if it\'s a mirror image (flipped)',
-      'Click "Same" if it\'s just rotated, "Different" if it\'s mirrored',
-      'Higher levels use more complex shapes and rotations',
-      'Visualize rotating the shape in your mind'
+      '你会看到一个参考图形和一个旋转后的图形。',
+      '判断旋转后的图形是否与参考图形相同。',
+      '如果是镜像翻转，则属于不同。',
+      '点击“相同”或“不同”作答。',
+      '高等级会使用更复杂的图形和旋转。',
+      '在脑中想象图形旋转后的样子。'
     ],
     tips: [
-      'Mentally rotate the shape step by step',
-      'Look for distinctive features to track',
-      'Practice improves your spatial visualization speed'
+      '一步步在脑中旋转图形。',
+      '抓住图形中的明显特征来追踪。',
+      '练习会提升空间想象速度。'
     ]
   },
   'schulte-table': {
-    title: 'Schulte Table',
+    title: '舒尔特方格',
     instructions: [
-      'Numbers are randomly arranged in a grid',
-      'Click the numbers in sequential order (1, 2, 3, etc.)',
-      'Use your peripheral vision to locate numbers',
-      'Try to complete the sequence as fast as possible',
-      'Higher levels have larger grids with more numbers',
-      'Your time is recorded for each level'
+      '数字会随机排列在方格中。',
+      '按 1、2、3 的顺序依次点击数字。',
+      '尽量使用周边视觉寻找下一个数字。',
+      '用最快速度完成整个序列。',
+      '高等级会扩大方格并增加数字数量。',
+      '每一关都会记录完成时间。'
     ],
     tips: [
-      'Don\'t focus on one spot - scan with peripheral vision',
-      'Develop a systematic scanning pattern',
-      'Regular practice significantly improves speed'
+      '不要只盯着一个点，尝试整体扫描。',
+      '形成固定的扫描路线。',
+      '持续练习能明显提升速度。'
     ]
   },
   'maze': {
-    title: 'Pathway Maze',
+    title: '路径迷宫',
     instructions: [
-      'Navigate from the start (green) to the goal (red)',
-      'Use arrow keys or click adjacent cells to move',
-      'You cannot move through walls (black cells)',
-      'Plan your route before moving',
-      'Higher levels have larger and more complex mazes',
-      'Complete in fewer moves for a higher score'
+      '从绿色起点走到红色终点。',
+      '使用方向键或点击相邻格子移动。',
+      '不能穿过黑色墙格。',
+      '移动前先规划路线。',
+      '高等级会出现更大、更复杂的迷宫。',
+      '用更少步数完成会获得更高分。'
     ],
     tips: [
-      'Look ahead and plan your entire route',
-      'Sometimes the shortest path isn\'t obvious',
-      'If stuck, backtrack and try a different route'
+      '先观察整条路线再移动。',
+      '最短路径不一定一眼能看出来。',
+      '卡住时回退并尝试另一条路。'
     ]
   },
   'pattern-matrix': {
-    title: 'Pattern Matrix',
+    title: '图形矩阵',
     instructions: [
-      'Study the pattern of highlighted cells in the grid',
-      'Memorize the positions during the display time',
-      'After the pattern disappears, recreate it by clicking cells',
-      'Click cells to toggle them on/off',
-      'Submit when you think you\'ve recreated the pattern',
-      'Higher levels have more cells to remember'
+      '观察网格中短暂高亮的格子。',
+      '在展示时间内记住这些位置。',
+      '高亮消失后点击格子复现图案。',
+      '点击格子可切换选中或取消。',
+      '确认后提交答案。',
+      '高等级需要记住更多格子。'
     ],
     tips: [
-      'Look for patterns or shapes in the arrangement',
-      'Group cells mentally (rows, columns, clusters)',
-      'Visualize the pattern even after it disappears'
+      '把高亮格子看成形状或图案。',
+      '按行、列或区域分组记忆。',
+      '图案消失后继续在脑中保持画面。'
     ]
   },
   'quick-math': {
-    title: 'Quick Math',
+    title: '快速心算',
     instructions: [
-      'Solve arithmetic problems as quickly as possible',
-      'Type your answer and press Enter or click Submit',
-      'Problems include addition, subtraction, multiplication, and division',
-      'Higher levels have more complex calculations',
-      'You have limited time per problem',
-      'Accuracy and speed both contribute to your score'
+      '尽快解出算术题。',
+      '输入答案后按 Enter 或点击提交。',
+      '题目包含加法、减法、乘法和除法。',
+      '高等级会出现更复杂的计算。',
+      '部分等级每题有时间限制。',
+      '准确性和速度都会影响得分。'
     ],
     tips: [
-      'Practice mental math techniques',
-      'For multiplication, break down into simpler parts',
-      'Stay calm - rushing leads to mistakes'
+      '练习常用心算技巧。',
+      '乘法可以拆成更简单的部分。',
+      '保持稳定，过度着急容易出错。'
     ]
   },
   'word-scramble': {
-    title: 'Word Scramble',
+    title: '文字重组',
     instructions: [
-      'Letters are scrambled - rearrange them to form a valid word',
-      'Type your answer and press Enter or click Submit',
-      'Click "Skip" if you can\'t solve the current word',
-      'Higher levels use longer and more difficult words',
-      'You have limited time per word',
-      'Score points for each correct word'
+      '文字会被打乱，请重排成正确的中文词语。',
+      '输入答案后按 Enter 或点击提交。',
+      '不会时可以跳过当前词语。',
+      '高等级会使用更长、更难的词语。',
+      '部分关卡有时间限制。',
+      '每答对一个词语都会得分。'
     ],
     tips: [
-      'Look for common letter patterns (ing, tion, etc.)',
-      'Try rearranging vowels and consonants separately',
-      'Sound out possible combinations'
+      '先找出熟悉的词组结构。',
+      '把可能的组合读出来。',
+      '注意词语是否通顺。'
     ]
   },
   'simon-says': {
-    title: 'Simon Says',
+    title: '颜色序列',
     instructions: [
-      'Watch the sequence of colored buttons light up',
-      'Memorize the order of the colors',
-      'Repeat the sequence by clicking the buttons in the same order',
-      'Each round adds one more color to the sequence',
-      'Higher levels have longer sequences and faster playback',
-      'One mistake ends the game'
+      '观察彩色按钮亮起的顺序。',
+      '记住颜色出现的顺序。',
+      '按相同顺序点击按钮复现序列。',
+      '每一轮会增加一个颜色。',
+      '高等级序列更长，播放更快。',
+      '点错后需要重新观察。'
     ],
     tips: [
-      'Focus intently during the demonstration',
-      'Mentally rehearse the sequence',
-      'Associate colors with positions or patterns'
+      '演示阶段集中注意。',
+      '在心里复述颜色顺序。',
+      '可以把颜色和位置或节奏联系起来。'
     ]
   },
   'card-matching': {
-    title: 'Card Matching',
+    title: '卡片配对',
     instructions: [
-      'All cards start face-down',
-      'Click a card to flip it over',
-      'Click a second card to find its match',
-      'If they match, they stay face-up',
-      'If they don\'t match, they flip back over',
-      'Find all pairs to complete the level',
-      'Higher levels have more cards to match'
+      '所有卡片初始都是背面朝上。',
+      '点击一张卡片将其翻开。',
+      '再点击第二张卡片寻找配对。',
+      '如果两张相同，它们会保持翻开。',
+      '如果不同，它们会重新盖上。',
+      '找出全部配对即可完成本关。',
+      '高等级会有更多卡片。'
     ],
     tips: [
-      'Remember the positions of cards you\'ve seen',
-      'Develop a systematic flipping strategy',
-      'Focus on one area at a time'
+      '记住已经看过的卡片位置。',
+      '使用固定顺序翻牌。',
+      '一次重点记忆一个区域。'
     ]
   },
   'reaction-time': {
-    title: 'Reaction Time Test',
+    title: '反应速度',
     instructions: [
-      'Wait for the screen to turn green',
-      'Click as fast as possible when it changes color',
-      'Your reaction time is measured in milliseconds',
-      'Complete multiple attempts per level',
-      'Don\'t click before it turns green (false start)',
-      'Higher levels require faster average reaction times'
+      '等待屏幕变成绿色。',
+      '变色后尽快点击。',
+      '反应时间会以毫秒记录。',
+      '每个等级需要完成多次尝试。',
+      '不要在变绿前提前点击。',
+      '高等级要求更快的平均反应时间。'
     ],
     tips: [
-      'Stay focused and ready to click',
-      'Don\'t anticipate - wait for the color change',
-      'Relax your hand to react faster'
+      '保持专注并准备点击。',
+      '不要预判，等颜色真正变化。',
+      '手部放松有助于更快反应。'
     ]
   },
   'number-sequence': {
-    title: 'Number Sequence Finder',
+    title: '数字序列',
     instructions: [
-      'Study the sequence of numbers shown',
-      'Identify the pattern (arithmetic, geometric, etc.)',
-      'Enter the next number that should come in the sequence',
-      'Patterns can be addition, multiplication, Fibonacci, or more complex',
-      'Higher levels have more difficult patterns',
-      'You have limited time to solve each sequence'
+      '观察给出的数字序列。',
+      '识别其中规律，例如等差、等比或斐波那契。',
+      '输入下一个应该出现的数字。',
+      '规律可能包含加法、乘法或组合运算。',
+      '高等级会出现更难的规律。',
+      '每题都有时间压力。'
     ],
     tips: [
-      'Look for differences between consecutive numbers',
-      'Check if numbers are doubling, tripling, etc.',
-      'Consider multiple operations (add then multiply)'
+      '先看相邻数字之间的差。',
+      '检查是否存在倍增或倍减。',
+      '考虑多步规律，例如先加再乘。'
     ]
   },
   'logic-puzzles': {
-    title: 'Logic Puzzles',
+    title: '逻辑谜题',
     instructions: [
-      'Read each puzzle carefully and understand the problem',
-      'Use logical reasoning and mathematical thinking to solve',
-      'Enter your numerical answer in the input field',
-      'Click "Show Hint" if you need help (available after first attempt)',
-      'Each puzzle has a unique solution - think step by step',
-      'Higher levels have more complex puzzles requiring deeper analysis'
+      '认真阅读题目并理解条件。',
+      '用逻辑推理和数学思维解题。',
+      '在输入框中填写数字答案。',
+      '第一次尝试后可以查看提示。',
+      '每道题都有唯一解，请分步思考。',
+      '高等级题目需要更深入分析。'
     ],
     tips: [
-      'Work backwards from the end result when possible',
-      'Write down intermediate steps to track your thinking',
-      'Look for patterns in sequences and operations',
-      'Don\'t rush - take time to understand the problem fully'
+      '必要时从结果倒推。',
+      '写下中间步骤帮助跟踪思路。',
+      '寻找序列和运算中的模式。',
+      '不要急，先确保读懂题目。'
     ]
   },
   'dual-task': {
-    title: 'Dual Task Challenge',
+    title: '双任务挑战',
     instructions: [
-      'Two tasks appear simultaneously on screen',
-      'Count the number of specific shapes shown',
-      'Solve the math problem displayed',
-      'Enter both answers before time runs out',
-      'Both answers must be correct to score',
-      'Higher levels have more complex tasks'
+      '屏幕上会同时出现两个任务。',
+      '统计指定形状出现的次数。',
+      '同时解出显示的数学题。',
+      '在时间内输入两个答案。',
+      '两个任务都正确才算得分。',
+      '高等级任务会更复杂。'
     ],
     tips: [
-      'Quickly scan for shapes first',
-      'Solve the math problem while counting',
-      'Practice dividing your attention effectively'
+      '先快速扫视形状。',
+      '在计数的同时完成数学题。',
+      '练习把注意力分配到两个任务上。'
     ]
   },
   'visual-search': {
-    title: 'Visual Search',
+    title: '视觉搜索',
     instructions: [
-      'Find all target shapes among the distractors',
-      'The target shape is shown at the top',
-      'Click on each target shape you find',
-      'Avoid clicking on distractor shapes',
-      'Find all targets as quickly as possible',
-      'Higher levels have more items and targets'
+      '在干扰项中找出所有目标图形。',
+      '目标图形会显示在顶部。',
+      '点击你找到的每一个目标。',
+      '避免点击干扰项。',
+      '尽快找齐所有目标。',
+      '高等级会有更多元素和目标。'
     ],
     tips: [
-      'Scan systematically (left to right, top to bottom)',
-      'Use peripheral vision to spot targets',
-      'Don\'t rush - accuracy matters'
+      '按固定方向系统扫描。',
+      '用周边视觉辅助寻找目标。',
+      '不要盲目抢点，准确性同样重要。'
     ]
   },
   'anagram-solver': {
-    title: 'Anagram Solver',
+    title: '字谜重排',
     instructions: [
-      'Letters are scrambled - form a valid word',
-      'Type your answer and press Enter',
-      'Click "Skip" if you can\'t solve it',
-      'Higher levels have longer words and time limits',
-      'Each correct answer scores points',
-      'Time pressure increases with level'
+      '文字会被打乱，请组成正确的中文词语。',
+      '输入答案后按 Enter。',
+      '不会时可以点击跳过。',
+      '高等级会有更长单词和时间限制。',
+      '每答对一次都会得分。',
+      '等级越高时间压力越大。'
     ],
     tips: [
-      'Look for common prefixes and suffixes',
-      'Try different vowel placements',
-      'Think of word categories (animals, objects, etc.)'
+      '寻找常见前缀和后缀。',
+      '尝试不同的元音位置。',
+      '从动物、物品等词类联想。'
     ]
   },
   'trail-making': {
-    title: 'Trail Making',
+    title: '连线测验',
     instructions: [
-      'Connect circles in the correct sequence',
-      'Early levels: connect numbers in order (1-2-3...)',
-      'Later levels: alternate between numbers and letters (1-A-2-B-3-C...)',
-      'Click circles in sequence to draw the trail',
-      'Complete the trail as quickly as possible',
-      'Mistakes add time penalties'
+      '按正确顺序连接圆点。',
+      '低等级只按数字顺序连接。',
+      '高等级需要在数字和字母之间交替连接。',
+      '按顺序点击圆点绘制路径。',
+      '尽快完成整条路径。',
+      '点错会浪费时间。'
     ],
     tips: [
-      'Plan your path before starting',
-      'Look ahead to the next few items',
-      'Practice improves task-switching speed'
+      '开始前先规划路径。',
+      '提前观察后面几个目标。',
+      '练习可以提升任务切换速度。'
     ]
   },
   'working-memory-grid': {
-    title: 'Working Memory Grid',
+    title: '工作记忆网格',
     instructions: [
-      'Watch as cells in the grid light up briefly',
-      'Memorize the positions of all highlighted cells',
-      'After they disappear, click the cells that were highlighted',
-      'Click cells to toggle them on/off',
-      'Submit when you\'ve selected all the correct positions',
-      'Higher levels have larger grids and more cells to remember'
+      '观察短暂亮起的网格位置。',
+      '记住所有高亮格子。',
+      '高亮消失后点击刚才出现过的格子。',
+      '点击格子可切换选中或取消。',
+      '选好后提交答案。',
+      '高等级网格更大，需要记忆的位置更多。'
     ],
     tips: [
-      'Look for patterns in the positions',
-      'Group nearby cells mentally',
-      'Visualize the grid layout after it disappears'
+      '寻找位置之间的图案。',
+      '把相邻格子作为一组记忆。',
+      '高亮消失后继续在脑中保持网格。'
     ]
   }
 }

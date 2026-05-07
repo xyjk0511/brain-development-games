@@ -8,7 +8,7 @@ beforeEach(() => resetAllProgress())
 test('reaching target score saves progress', () => {
   jest.useFakeTimers && jest.useFakeTimers()
   render(<NBack level={1} />)
-  const start = screen.getByText(/Start/i)
+  const start = screen.getByText(/开始/i)
   fireEvent.click(start)
   // artificially press Match multiple times to increase score
   const match = screen.getByText(/Match/i)

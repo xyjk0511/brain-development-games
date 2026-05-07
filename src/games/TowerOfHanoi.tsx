@@ -7,7 +7,7 @@ export type TowerProps = {
 }
 
 export const disksForLevel = (level: number): number => {
-  // Level 1: 3 disks, Level 2: 4, Level 3:5, ... Level 8:10
+  // 等级 1: 3 disks, 等级 2: 4, 等级 3:5, ... 等级 8:10
   if (level <= 8) return 2 + level // 3..10
   if (level === 9) return 5 // randomized starting pos
   return 6 // level 10: 6 disks with blind mode
@@ -16,7 +16,7 @@ export const disksForLevel = (level: number): number => {
 const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
   const diskCount = useMemo(() => disksForLevel(level), [level])
 
-  // rods are arrays of disk sizes (1=smallest, diskCount=largest), top at end
+  // rods are arrays 共 disk sizes (1=smallest, diskCount=largest), top at end
   const initialRods = useMemo(() => {
     if (level === 9) {
       // randomized starting position: put disks across rods randomly
@@ -131,22 +131,22 @@ const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
       <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 p-4 sm:p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-4 sm:mb-6">
           <h2 className="text-2xl sm:text-4xl font-bold text-orange-700 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
-            <span>🗼 Tower of Hanoi</span>
-            <span className="text-lg sm:text-2xl bg-orange-100 px-3 sm:px-4 py-1 rounded-full">Level {level}</span>
+            <span>🗼 汉诺塔</span>
+            <span className="text-lg sm:text-2xl bg-orange-100 px-3 sm:px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
           <div className="flex flex-wrap gap-3 sm:gap-6 justify-center mt-3 sm:mt-4 text-sm sm:text-lg font-bold">
             <div className="bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl shadow-md">
-              <span className="text-blue-600">🎯 Disks:</span> <span className="text-xl sm:text-2xl text-blue-700">{diskCount}</span>
+              <span className="text-blue-600">🎯 圆盘：</span> <span className="text-xl sm:text-2xl text-blue-700">{diskCount}</span>
             </div>
             <div className="bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl shadow-md">
-              <span className="text-green-600">🎮 Moves:</span> <span className="text-xl sm:text-2xl text-green-700">{moves}</span>
+              <span className="text-green-600">🎮 步数：</span> <span className="text-xl sm:text-2xl text-green-700">{moves}</span>
             </div>
           </div>
         </div>
 
         {level === 10 && (
           <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-yellow-100 border-2 border-yellow-400 rounded-xl text-center">
-            <p className="text-sm sm:text-lg font-bold text-yellow-800">⚠️ Blind Mode: Disks hide after 2 seconds! 👀</p>
+            <p className="text-sm sm:text-lg font-bold text-yellow-800">⚠️ 盲记模式：圆盘会在 2 秒后隐藏！ 👀</p>
           </div>
         )}
 
@@ -155,7 +155,7 @@ const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
             <div key={idx} className="flex-1 max-w-full sm:max-w-xs">
               <div className="mb-2 sm:mb-4 text-center">
                 <span className="text-base sm:text-2xl font-bold text-orange-700 bg-orange-100 px-3 sm:px-4 py-1 sm:py-2 rounded-full">
-                  🏛️ Tower {idx + 1}
+                  🏛️ 塔 {idx + 1}
                 </span>
               </div>
               <div
@@ -166,7 +166,7 @@ const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
                   selectedFrom === idx ? 'border-orange-500 ring-4 ring-orange-300' : 'border-amber-400'
                 } rounded-2xl p-3 sm:p-6 flex flex-col justify-end items-center cursor-pointer hover:shadow-xl transition-all relative`}
               >
-                {/* Tower pole */}
+                {/* 塔 pole */}
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 sm:w-3 h-full bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-full"></div>
                 {/* Base */}
                 <div className="absolute bottom-0 left-0 right-0 h-3 sm:h-4 bg-gradient-to-r from-amber-700 to-amber-900 rounded-b-xl"></div>
@@ -182,8 +182,8 @@ const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
         <div className="mt-4 sm:mt-6">
           {won ? (
             <div className="p-4 sm:p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-4 border-emerald-300">
-              <div className="text-2xl sm:text-3xl font-bold text-center mb-2">🎉 Puzzle Solved! 🎉</div>
-              <div className="text-lg sm:text-xl text-center mb-4">Completed in <span className="font-bold text-xl sm:text-2xl">{moves}</span> moves!</div>
+              <div className="text-2xl sm:text-3xl font-bold text-center mb-2">🎉 谜题已完成！ 🎉</div>
+              <div className="text-lg sm:text-xl text-center mb-4">完成用时：<span className="font-bold text-xl sm:text-2xl">{moves}</span> 步！</div>
               <div className="flex justify-center">
                 <NextLevelButton currentLevel={level} />
               </div>
@@ -191,7 +191,7 @@ const TowerOfHanoi = ({ level }: TowerProps): JSX.Element => {
           ) : (
             <div className="bg-blue-100 p-3 sm:p-4 rounded-xl text-center">
               <p className="text-sm sm:text-lg text-blue-800 font-semibold">
-                💡 Click a tower to select the top disk, then click another tower to move it!
+                💡 先点击一座塔选中顶部圆盘，再点击另一座塔移动。
               </p>
             </div>
           )}

@@ -8,9 +8,15 @@ export type StroopProps = {
 }
 
 const COLORS = ['Red', 'Blue', 'Green', 'Yellow']
+const COLOR_LABELS: Record<string, string> = {
+  Red: '红色',
+  Blue: '蓝色',
+  Green: '绿色',
+  Yellow: '黄色',
+}
 
 const Stroop = ({ level }: StroopProps): JSX.Element => {
-  const [word, setWord] = useState({ text: 'RED', color: 'red' })
+  const [word, setWord] = useState({ text: 'Red', color: 'red' })
   const [speed, setSpeed] = useState(2000)
   const [score, setScore] = useState(0)
   const [swapButtons, setSwapButtons] = useState(false)
@@ -30,7 +36,7 @@ const Stroop = ({ level }: StroopProps): JSX.Element => {
   useEffect(() => {
     const t = setInterval(() => {
       const color = COLORS[Math.floor(Math.random() * COLORS.length)]
-      const text = COLORS[Math.floor(Math.random() * COLORS.length)].toUpperCase()
+      const text = COLORS[Math.floor(Math.random() * COLORS.length)]
       setWord({ text, color: color.toLowerCase() })
     }, speed)
     return () => clearInterval(t)
@@ -40,7 +46,7 @@ const Stroop = ({ level }: StroopProps): JSX.Element => {
   const [completed, setCompleted] = useState(false)
   const target = Math.max(3, level * 2)
 
-  // Reset state when level changes
+  // 重置 state when level changes
   useEffect(() => {
     setCompleted(false)
     setScore(0)
@@ -81,15 +87,15 @@ const Stroop = ({ level }: StroopProps): JSX.Element => {
       <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-indigo-700 flex items-center justify-center gap-3">
-            🎨 Color Challenge
-            <span className="text-2xl bg-indigo-100 px-4 py-1 rounded-full">Level {level}</span>
+            🎨 颜色干扰挑战
+            <span className="text-2xl bg-indigo-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
-          <p className="text-lg text-slate-600 mt-2">Click the COLOR of the word, not what it says! 🧠</p>
+          <p className="text-lg text-slate-600 mt-2">点击文字显示的颜色，不要看文字含义。</p>
         </div>
 
         <div className="mb-8 p-8 bg-white rounded-2xl shadow-lg border-4 border-indigo-200">
           <div className="text-7xl font-black text-center animate-pulse" style={{ color: word.color, textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>
-            {word.text}
+            {COLOR_LABELS[word.text] ?? word.text}
           </div>
         </div>
 
@@ -100,14 +106,14 @@ const Stroop = ({ level }: StroopProps): JSX.Element => {
               onClick={() => press(c)}
               className={`px-8 py-4 ${colorButtonStyles[c]} text-white text-xl font-bold rounded-xl shadow-lg transform hover:scale-110 transition-all duration-200`}
             >
-              {c}
+              {COLOR_LABELS[c]}
             </button>
           ))}
         </div>
 
         <div className="text-center mb-6">
           <div className="inline-block bg-white px-8 py-4 rounded-xl shadow-md">
-            <span className="text-2xl font-bold text-indigo-700">Score: </span>
+            <span className="text-2xl font-bold text-indigo-700">得分： </span>
             <span className="text-4xl font-black text-green-600">{score}</span>
             <span className="text-2xl font-bold text-slate-500"> / {target}</span>
           </div>
@@ -115,7 +121,7 @@ const Stroop = ({ level }: StroopProps): JSX.Element => {
         
         {completed && (
           <div className="mt-6 p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-4 border-emerald-300">
-            <div className="text-3xl font-bold text-center mb-4">🎉 Fantastic! Level {level} completed! 🎉</div>
+            <div className="text-3xl font-bold text-center mb-4">🎉 太好了！ 等级 {level} 已完成！ 🎉</div>
             <div className="flex justify-center">
               <NextLevelButton currentLevel={level} />
             </div>

@@ -8,9 +8,9 @@ export type AnagramSolverProps = {
 }
 
 const WORD_LISTS = {
-  easy: ['cat', 'dog', 'sun', 'moon', 'star', 'tree', 'bird', 'fish'],
-  medium: ['brain', 'react', 'vital', 'garden', 'puzzle', 'orange', 'planet'],
-  hard: ['complex', 'rotation', 'sequence', 'pattern', 'cognitive', 'challenge']
+  easy: ['太阳', '月亮', '小鸟', '鱼儿', '森林', '花朵', '星星', '云朵'],
+  medium: ['记忆力', '注意力', '反应力', '观察力', '想象力', '判断力', '专注力'],
+  hard: ['认知训练', '空间旋转', '逻辑推理', '问题解决', '快速反应', '工作记忆']
 }
 
 const scramble = (word: string): string => {
@@ -69,7 +69,7 @@ const AnagramSolver = ({ level }: AnagramSolverProps): JSX.Element => {
           saved.current = true
         }
         setCompleted(true)
-        return // Stop here, don't pick new word
+        return // 停止 here, don't pick new word
       }
       
       // Only pick new word if not completed
@@ -84,25 +84,25 @@ const AnagramSolver = ({ level }: AnagramSolverProps): JSX.Element => {
       <CelebrationAnimation show={completed} />
       <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-8 rounded-2xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-        🧩 Anagram Solver (Level {level})
+        🧩 字谜重排 (等级 {level})
       </h2>
-      <p className="text-xl text-slate-700 mb-6 font-semibold">Unscramble the letters to form words!</p>
+      <p className="text-xl text-slate-700 mb-6 font-semibold">重排文字组成正确的中文词语。</p>
 
       <div className="mb-6 flex gap-6 justify-center items-center bg-white/70 p-4 rounded-xl backdrop-blur">
-        <div className="text-2xl font-bold text-orange-600">Score: {score} / {target}</div>
+        <div className="text-2xl font-bold text-orange-600">得分： {score} / {target}</div>
         {timeLeft !== null && (
           <div className={`text-2xl font-bold ${timeLeft <= 10 ? 'text-red-600 animate-pulse' : 'text-amber-600'}`}>
-            ⏱️ Time: {timeLeft}s
+            ⏱️ 时间： {timeLeft}s
           </div>
         )}
       </div>
 
       <div className="mb-8 text-center p-6 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-2xl border-4 border-orange-300 shadow-lg">
         <div className="text-7xl font-mono font-bold tracking-widest mb-3 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent animate-pulse">
-          {scrambled.toUpperCase()}
+          {scrambled}
         </div>
         <div className="text-xl font-bold text-slate-600">
-          📝 {word.length} letters
+          📝 {word.length} 个字
         </div>
       </div>
 
@@ -113,7 +113,7 @@ const AnagramSolver = ({ level }: AnagramSolverProps): JSX.Element => {
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
           className="border-4 border-orange-300 p-3 sm:p-4 rounded-xl text-xl sm:text-2xl font-bold text-center flex-1 focus:border-orange-500 focus:outline-none shadow-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
-          placeholder="Type your answer..."
+          placeholder="输入答案..."
           disabled={timeLeft === 0 || completed}
         />
         <button
@@ -121,7 +121,7 @@ const AnagramSolver = ({ level }: AnagramSolverProps): JSX.Element => {
           disabled={timeLeft === 0 || completed}
           className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-amber-600 text-white text-xl sm:text-2xl font-bold rounded-xl hover:from-orange-600 hover:to-amber-700 shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
         >
-          ✓ Submit
+          ✓ 提交
         </button>
       </div>
 
@@ -130,12 +130,12 @@ const AnagramSolver = ({ level }: AnagramSolverProps): JSX.Element => {
         disabled={completed}
         className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xl font-bold rounded-xl hover:from-yellow-500 hover:to-orange-500 shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
-        ⏭️ Skip
+        ⏭️ 跳过
       </button>
 
       {completed && (
         <div className="mt-6 p-6 bg-gradient-to-r from-green-100 to-emerald-100 text-emerald-800 rounded-xl border-4 border-green-400 shadow-lg">
-          <div className="text-3xl font-bold mb-2">✅ Level {level} completed!</div>
+          <div className="text-3xl font-bold mb-2">✅ 等级 {level} 已完成！</div>
           <div className="mt-4">
             <NextLevelButton currentLevel={level} />
           </div>

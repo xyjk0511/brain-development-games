@@ -15,14 +15,14 @@ export default function HowToPlay({ title, instructions, tips }: HowToPlayProps)
         onClick={() => setIsOpen(!isOpen)}
         className="w-full bg-blue-50 hover:bg-blue-100 px-4 py-3 text-left font-semibold text-blue-900 flex items-center justify-between transition-colors"
       >
-        <span>📖 How to Play: {title}</span>
+        <span>📖 玩法说明：{title}</span>
         <span className="text-2xl">{isOpen ? '−' : '+'}</span>
       </button>
       
       {isOpen && (
         <div className="bg-white p-4 border-t">
           <div className="mb-4">
-            <h4 className="font-semibold text-gray-900 mb-2">Instructions:</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">操作步骤：</h4>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
               {instructions.map((instruction, index) => (
                 <li key={index}>{instruction}</li>
@@ -32,7 +32,7 @@ export default function HowToPlay({ title, instructions, tips }: HowToPlayProps)
           
           {tips && tips.length > 0 && (
             <div className="border-t pt-4">
-              <h4 className="font-semibold text-gray-900 mb-2">💡 Tips:</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">💡 小提示：</h4>
               <ul className="list-disc list-inside space-y-1 text-gray-600">
                 {tips.map((tip, index) => (
                   <li key={index}>{tip}</li>
@@ -47,3 +47,4 @@ export default function HowToPlay({ title, instructions, tips }: HowToPlayProps)
 }
 
 // Made with Bob
+

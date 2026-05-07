@@ -67,7 +67,7 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
     if (answer === sequence.answer) {
       const newScore = score + 1
       setScore(newScore)
-      setFeedback('✅ Correct!')
+      setFeedback('✅ 正确！')
       
       if (!saved.current && newScore >= target) {
         const percentageScore = Math.min(100, Math.round((newScore / target) * 100))
@@ -82,7 +82,7 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
         setFeedback('')
       }, 1500)
     } else {
-      setFeedback(`❌ Wrong! Answer was ${sequence.answer}`)
+      setFeedback(`❌ 错误！答案是 ${sequence.answer}`)
       setTimeout(() => {
         setSequence(generateSequence(level))
         setInput('')
@@ -97,15 +97,15 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
       <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8 rounded-2xl shadow-xl">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-indigo-700 flex items-center justify-center gap-3">
-            🔢 Pattern Detective
-            <span className="text-2xl bg-indigo-100 px-4 py-1 rounded-full">Level {level}</span>
+            🔢 规律侦探
+            <span className="text-2xl bg-indigo-100 px-4 py-1 rounded-full">等级 {level}</span>
           </h2>
-          <p className="text-lg text-slate-600 mt-2">Find the next number in the sequence! 🔍</p>
+          <p className="text-lg text-slate-600 mt-2">找出序列中的下一个数字。 🔍</p>
         </div>
 
         <div className="mb-6 flex gap-4 justify-center text-lg font-bold">
           <div className="bg-white px-8 py-4 rounded-xl shadow-md">
-            <span className="text-indigo-600">🎯 Score:</span> <span className="text-3xl text-indigo-700">{score}/{target}</span>
+            <span className="text-indigo-600">🎯 得分：</span> <span className="text-3xl text-indigo-700">{score}/{target}</span>
           </div>
         </div>
 
@@ -140,7 +140,7 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
             onClick={handleSubmit}
             className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xl sm:text-2xl font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all whitespace-nowrap"
           >
-            ✓ Submit
+            ✓ 提交
           </button>
         </div>
 
@@ -156,7 +156,7 @@ const NumberSequence = ({ level }: NumberSequenceProps): JSX.Element => {
 
         {completed && (
           <div className="mt-6 p-6 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 rounded-xl shadow-lg border-4 border-emerald-300">
-            <div className="text-3xl font-bold text-center mb-2">🎉 Brilliant! Level {level} completed! 🎉</div>
+            <div className="text-3xl font-bold text-center mb-2">🎉 很棒！ 等级 {level} 已完成！ 🎉</div>
             <div className="flex justify-center mt-4">
               <NextLevelButton currentLevel={level} />
             </div>

@@ -7,8 +7,8 @@ export type WordScrambleProps = {
   level: number
 }
 
-const WORDS = ['cat', 'dog', 'sun', 'moon', 'earth', 'brain', 'react', 'vital', 'garden', 'puzzle', 'complex', 'rotation']
-const FAKE_WORDS = ['blorf', 'quazz', 'splick']
+const WORDS = ['注意力', '记忆力', '观察力', '反应力', '判断力', '太阳', '月亮', '森林', '花朵', '星星', '推理', '专注']
+const FAKE_WORDS = ['云火山', '月鱼树', '花石鸟']
 
 const scramble = (word: string): string => {
   return word.split('').sort(() => Math.random() - 0.5).join('')
@@ -58,7 +58,7 @@ const WordScramble = ({ level }: WordScrambleProps): JSX.Element => {
           saved.current = true
         }
         setCompleted(true)
-        return // Stop here, don't pick new word
+        return // 停止 here, don't pick new word
       }
       
       // Only pick new word if not completed
@@ -73,12 +73,12 @@ const WordScramble = ({ level }: WordScrambleProps): JSX.Element => {
       <CelebrationAnimation show={completed} />
       <div className="bg-gradient-to-br from-green-50 via-teal-50 to-cyan-50 p-8 rounded-2xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
-        🔤 Word Scramble (Level {level})
+        🔤 文字重组 (等级 {level})
       </h2>
-      <p className="text-xl text-slate-700 mb-6 font-semibold">Unscramble the letters to form a real word!</p>
+      <p className="text-xl text-slate-700 mb-6 font-semibold">重排文字组成正确的中文词语。</p>
 
       <div className="text-6xl font-mono font-bold mb-8 text-center bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent tracking-widest animate-pulse">
-        {scr.toUpperCase()}
+        {scr}
       </div>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-center mb-6">
         <input
@@ -86,7 +86,7 @@ const WordScramble = ({ level }: WordScrambleProps): JSX.Element => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && submitGuess()}
-          placeholder="Type your answer..."
+          placeholder="输入答案..."
           disabled={completed}
         />
         <button
@@ -94,17 +94,17 @@ const WordScramble = ({ level }: WordScrambleProps): JSX.Element => {
           disabled={completed}
           className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xl sm:text-2xl font-bold rounded-xl hover:from-green-600 hover:to-teal-700 shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
         >
-          ✓ Submit
+          ✓ 提交
         </button>
       </div>
 
       <div className="text-2xl font-bold text-center text-green-600 bg-white/70 p-4 rounded-xl backdrop-blur">
-        Score: {score} / {target}
+        得分： {score} / {target}
       </div>
       
       {completed && (
         <div className="mt-6 p-6 bg-gradient-to-r from-green-100 to-emerald-100 text-emerald-800 rounded-xl border-4 border-green-400 shadow-lg">
-          <div className="text-3xl font-bold mb-2">✅ Level {level} completed!</div>
+          <div className="text-3xl font-bold mb-2">✅ 等级 {level} 已完成！</div>
           <div className="mt-4">
             <NextLevelButton currentLevel={level} />
           </div>

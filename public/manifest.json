@@ -1,7 +1,7 @@
 {
-  "name": "Brain Development Games - Cognitive Training",
-  "short_name": "Brain Games",
-  "description": "21 free cognitive training games to improve memory, attention, and problem-solving skills",
+  "name": "认知训练游戏 - Cognitive Training",
+  "short_name": "认知训练",
+  "description": "16 个可爱认知训练小游戏，用于练习记忆力、注意力和问题解决能力",
   "start_url": "/brain-development-games/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -15,8 +15,9 @@
     }
   ],
   "categories": ["games", "education", "health"],
-  "lang": "en-US",
+  "lang": "zh-CN",
   "dir": "ltr",
   "scope": "/brain-development-games/",
   "screenshots": []
 }
+

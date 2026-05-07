@@ -81,7 +81,7 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
       setScore(newScore)
       
       if (newScore >= target) {
-        // Completed all rounds!
+        // 已完成 all rounds!
         if (!saved.current) {
           const percentageScore = Math.min(100, Math.round((newScore / target) * 100))
           markGameCompletedLevel('working-memory-grid', level, percentageScore, 100)
@@ -89,7 +89,7 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
         }
         setCompleted(true)
       } else {
-        // Start next round after delay
+        // 开始 next round after delay
         setTimeout(() => {
           setRoundNumber(r => r + 1)
           startRound()
@@ -108,18 +108,18 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
       <CelebrationAnimation show={completed} />
       <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-2xl shadow-2xl">
       <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-        🧠 Working Memory Grid (Level {level})
+        🧠 工作记忆网格 (等级 {level})
       </h2>
-      <p className="text-xl text-slate-700 mb-6 font-semibold">Remember the positions and recreate them!</p>
+      <p className="text-xl text-slate-700 mb-6 font-semibold">记住刚才出现的位置，并在网格中复现。</p>
 
       <div className="mb-6 space-y-3">
         <div className="text-2xl font-bold text-center bg-white/70 p-4 rounded-xl backdrop-blur">
-          <span className="text-purple-600">Round: {roundNumber} / {target}</span> •
-          <span className="text-indigo-600 ml-2">Score: {score} / {target}</span>
+          <span className="text-purple-600">轮次： {roundNumber} / {target}</span> •
+          <span className="text-indigo-600 ml-2">得分： {score} / {target}</span>
         </div>
         <div className="text-xl font-bold text-center bg-white/70 p-3 rounded-xl backdrop-blur">
-          <span className="text-blue-600">Items: {count}</span> •
-          <span className="text-teal-600 ml-2">Grid: {size}x{size}</span>
+          <span className="text-blue-600">项目数： {count}</span> •
+          <span className="text-teal-600 ml-2">网格： {size}x{size}</span>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
 
       <div className="flex gap-4 justify-center mb-4">
         {phase === 'show' && (
-          <div className="text-2xl font-bold text-indigo-600 animate-pulse">👀 Memorize the positions...</div>
+          <div className="text-2xl font-bold text-indigo-600 animate-pulse">👀 记住这些位置...</div>
         )}
         {phase === 'recall' && (
           <>
@@ -159,13 +159,13 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
               onClick={handleSubmit}
               className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xl font-bold rounded-xl hover:from-indigo-600 hover:to-purple-700 shadow-lg transform hover:scale-105 transition-all"
             >
-              ✓ Submit ({selected.size}/{count})
+              ✓ 提交 ({selected.size}/{count})
             </button>
             <button
               onClick={startRound}
               className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xl font-bold rounded-xl hover:from-yellow-500 hover:to-orange-500 shadow-lg transform hover:scale-105 transition-all"
             >
-              🔄 Replay
+              🔄 重播
             </button>
           </>
         )}
@@ -173,16 +173,16 @@ const WorkingMemoryGrid = ({ level }: WorkingMemoryGridProps): JSX.Element => {
           <div className={`text-2xl font-bold px-6 py-3 rounded-xl ${
             lastResult === 'correct' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
           }`}>
-            {lastResult === 'correct' ? '✅ Correct! Next round...' : '❌ Wrong! Try again...'}
+            {lastResult === 'correct' ? '✅ 正确！下一轮...' : '❌ 错误！再试一次...'}
           </div>
         )}
       </div>
 
       {completed && (
         <div className="mt-6 p-6 bg-gradient-to-r from-green-100 to-emerald-100 text-emerald-800 rounded-xl border-4 border-green-400 shadow-lg">
-          <div className="text-3xl font-bold mb-2 text-center">🎉 Excellent Memory! Level {level} Complete! 🎉</div>
+          <div className="text-3xl font-bold mb-2 text-center">🎉 记忆表现优秀！ 等级 {level} 已完成！ 🎉</div>
           <div className="text-xl text-center mb-4">
-            Completed {target} rounds successfully!
+            已完成 {target} 轮！
           </div>
           <div className="flex justify-center">
             <NextLevelButton currentLevel={level} />

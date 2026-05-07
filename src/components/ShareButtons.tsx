@@ -9,12 +9,13 @@ export type ShareProps = {
 
 export default function ShareButtons({ gameId, gameName, level, score }: ShareProps): JSX.Element {
   const url = `${location.origin}/brain-development-games/games/${gameId}?level=${level}`
-  const text = `I scored ${score ?? 'a score'} on ${gameName} (Level ${level}) in The Mind Arcade! Try it:`
+  const scoreText = score === undefined ? '一个分数' : `${score} 分`
+  const text = `我在${gameName}（等级 ${level}）中取得了${scoreText}，来试试：`
 
   const copyLink = (): void => {
     navigator.clipboard?.writeText(`${text} ${url}`)
-      .then(() => alert('Link copied to clipboard'))
-      .catch(() => alert('Could not copy link'))
+      .then(() => alert('链接已复制到剪贴板'))
+      .catch(() => alert('无法复制链接'))
   }
 
   const tweet = (): void => {
@@ -25,7 +26,7 @@ export default function ShareButtons({ gameId, gameName, level, score }: SharePr
   const nativeShare = async (): Promise<void> => {
     if ((navigator as any).share) {
       try {
-        await (navigator as any).share({ title: gameName, text: text, url })
+        await (navigator as any).share({ title: gameName, text, url })
       } catch (e) {
         // user cancelled
       }
@@ -36,9 +37,9 @@ export default function ShareButtons({ gameId, gameName, level, score }: SharePr
 
   return (
     <div className="mt-2 flex gap-2">
-      <button onClick={nativeShare} className="px-3 py-1 bg-slate-200 rounded text-sm">Share</button>
-      <button onClick={tweet} className="px-3 py-1 bg-blue-500 text-white rounded text-sm">Tweet</button>
-      <button onClick={copyLink} className="px-3 py-1 bg-slate-50 rounded text-sm">Copy link</button>
+      <button onClick={nativeShare} className="px-3 py-1 bg-slate-200 rounded text-sm">分享</button>
+      <button onClick={tweet} className="px-3 py-1 bg-blue-500 text-white rounded text-sm">发推</button>
+      <button onClick={copyLink} className="px-3 py-1 bg-slate-50 rounded text-sm">复制链接</button>
     </div>
   )
 }

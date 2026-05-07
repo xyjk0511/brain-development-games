@@ -13,16 +13,16 @@ test('disksForLevel maps levels correctly', () => {
   expect(disksForLevel(9)).toBe(5)
 })
 
-test('can perform legal moves and detect win', () => {
-  render(<TowerOfHanoi level={1} />)
+test('can perform legal 步，用时 detect win', () => {
+  const { container } = render(<TowerOfHanoi level={1} />)
 
-  // For level 1 (3 disks), minimal solution exists but we test interactions:
-  // Click rod 1 to select, click rod 3 to move top disk
-  const rods = screen.getAllByRole('button')
-  // rods[0] is rod 1 area, rods[2] is rod 3
+  // Click tower 1 to select top disk, then tower 3 to move it
+  const rods = Array.from(container.querySelectorAll('[role="button"][tabindex="0"]'))
+  expect(rods).toHaveLength(3)
   fireEvent.click(rods[0])
   fireEvent.click(rods[2])
 
-  // moves should increase, and UI should reflect disks moved (a disk "1" will be visible on rod 3)
-  expect(screen.getByText(/Moves: 1/)).toBeInTheDocument()
+  // Moves should increase by one
+  const movesLabel = screen.getByText(/🎮 步数：/i)
+  expect(movesLabel.parentElement?.textContent).toContain('1')
 })
