@@ -9,6 +9,7 @@ export interface GameMetadata {
   id: string
   name: string
   description: string
+  artPath: string
   category: CognitiveDomain
   maxLevel: number
   taskFamily: TaskFamily
@@ -37,10 +38,13 @@ const DESCRIPTIONS: Record<string, string> = {
   'quick-math': '帮小动物完成轻松心算，练习数字流畅性和计算注意。'
 }
 
+const ART_BASE = import.meta.env.BASE_URL
+
 export const GAME_REGISTRY: GameMetadata[] = CANONICAL_GAME_DESIGNS.map(game => ({
   id: game.id,
   name: game.redesignedTitle,
   description: DESCRIPTIONS[game.id],
+  artPath: `${ART_BASE}game-art/${game.id}.png`,
   category: game.domain,
   maxLevel: 10,
   taskFamily: game.taskFamily,

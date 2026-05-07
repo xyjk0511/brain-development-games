@@ -21,11 +21,11 @@ import LogicPuzzlesPage from './pages/games/LogicPuzzlesPage'
 export default function App(): JSX.Element {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-indigo-600 text-white p-3 sm:p-4">
+      <header className="border-b border-amber-200 bg-[#fff8df]/95 p-3 text-slate-950 shadow-sm backdrop-blur sm:p-4">
         <nav className="container mx-auto flex justify-between items-center">
-          <h1 className="text-base sm:text-lg lg:text-xl font-bold">认知训练游戏</h1>
+          <h1 className="text-base font-black sm:text-lg lg:text-xl">认知训练游戏</h1>
           <div className="space-x-2 sm:space-x-4">
-            <Link to="/" className="underline text-sm sm:text-base hover:text-indigo-200">
+            <Link to="/" className="rounded-full bg-white px-3 py-1 text-sm font-bold text-slate-800 shadow-sm hover:bg-amber-100 sm:text-base">
               首页
             </Link>
           </div>
@@ -55,7 +55,7 @@ export default function App(): JSX.Element {
         </Routes>
       </main>
 
-      <footer className="bg-slate-200 text-slate-700 p-3 sm:p-4 text-center">
+      <footer className="border-t border-amber-200 bg-[#fff8df] p-3 text-center text-slate-700 sm:p-4">
         <div className="text-xs sm:text-sm">
           © 认知训练游戏 — <a href="https://xyjk0511.github.io/brain-development-games" className="underline hover:text-indigo-600">在线演示</a>
         </div>
