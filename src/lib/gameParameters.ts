@@ -4,6 +4,7 @@ export type CognitiveDomain = 'memory' | 'logic' | 'attention' | 'speed' | 'spat
 export type TaskFamily =
   | 'visual-search'
   | 'sequence-memory'
+  | 'strong-memory'
   | 'matching-memory'
   | 'go-nogo'
   | 'schulte-table'
@@ -100,6 +101,7 @@ export const VISUAL_SEARCH_LEVELS: LevelParameterTable<VisualSearchConfig> = [
 export const CANONICAL_GAME_DESIGNS: CanonicalGameDesign[] = [
   { id: 'visual-search', redesignedTitle: '小鱼侦探队', taskFamily: 'visual-search', domain: 'attention', beginnerFriendly: true, howToPlay: '看清目标图案，在一群可爱图案里把它找出来。', goal: '尽量准确地找齐目标，速度可以慢慢提升。', trains: '训练视觉搜索、选择性注意和目标识别。' },
   { id: 'simon-says', redesignedTitle: '彩虹水母灯灯岛', taskFamily: 'sequence-memory', domain: 'memory', beginnerFriendly: true, howToPlay: '观察灯光顺序，再按同样顺序点回来。', goal: '稳定记住越来越长的颜色序列。', trains: '训练顺序记忆和工作记忆。' },
+  { id: 'strong-memory', redesignedTitle: '强力记忆', taskFamily: 'strong-memory', domain: 'memory', beginnerFriendly: true, howToPlay: '记住翻出的绿色方块，方块翻回灰色后点回原来的位置。', goal: '连续完成每个难度的三关记忆挑战。', trains: '训练视觉记忆、位置记忆和注意保持。' },
   { id: 'card-matching', redesignedTitle: '小动物找朋友', taskFamily: 'matching-memory', domain: 'memory', beginnerFriendly: true, howToPlay: '翻开卡片，找到一样的小动物朋友。', goal: '用更少尝试找出全部配对。', trains: '训练视觉记忆和位置记忆。' },
   { id: 'reaction-time', redesignedTitle: '小动物过马路', taskFamily: 'go-nogo', domain: 'attention', beginnerFriendly: true, howToPlay: '看到可以通行的信号再点击，先别抢跑。', goal: '在安全信号出现后快速准确反应。', trains: '训练反应速度和抑制控制。' },
   { id: 'schulte-table', redesignedTitle: '星星数字广场', taskFamily: 'schulte-table', domain: 'attention', beginnerFriendly: true, howToPlay: '按顺序找到数字星星。', goal: '完整点完数字序列。', trains: '训练视觉扫描、专注和周边视觉。' },
@@ -119,6 +121,7 @@ export const CANONICAL_GAME_DESIGNS: CanonicalGameDesign[] = [
 const primaryLoadByFamily: Record<TaskFamily, GenericGameConfig['primaryLoad']> = {
   'visual-search': 'item-count',
   'sequence-memory': 'sequence-length',
+  'strong-memory': 'item-count',
   'matching-memory': 'item-count',
   'go-nogo': 'inhibition',
   'schulte-table': 'item-count',

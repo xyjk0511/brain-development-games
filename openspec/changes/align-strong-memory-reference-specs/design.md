@@ -20,12 +20,12 @@ The supplied reference package contains multiple sources of truth:
 - Resolve source conflicts with an explicit priority order instead of implicit guesses.
 - Implement missing flows from the test workbook and design workbook.
 - Add tests/validation that prove the data, formulas, and core user flows stay aligned.
-- Keep the existing canonical 16-game homepage boundary unchanged.
+- Follow the latest product boundary: Strong Memory is now included in the homepage registry while preserving its standalone playable implementation.
 
 **Non-Goals:**
 
 - Rebuild the app in Axure or embed the `.rp` runtime.
-- Add Strong Memory to the canonical 16-game homepage list.
+- Rewrite Strong Memory as a React-native game; the current integration keeps the standalone playable inside the registry route.
 - Implement management-platform integration that is not present in this standalone GitHub Pages app. Where the reference mentions manager/admin state, the standalone app will expose equivalent local state only when possible and mark true admin parity as unsupported.
 - Add new runtime dependencies.
 

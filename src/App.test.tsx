@@ -14,8 +14,9 @@ const NON_CANONICAL_ROUTES = [
 ]
 
 describe('canonical game routes', () => {
-  test('the registry exposes exactly the canonical 16 ids', () => {
-    expect(getAllGameIds()).toHaveLength(16)
+  test('the registry exposes exactly the canonical 17 ids', () => {
+    expect(getAllGameIds()).toHaveLength(17)
+    expect(getAllGameIds()).toContain('strong-memory')
     for (const id of NON_CANONICAL_ROUTES) {
       expect(getAllGameIds()).not.toContain(id)
     }
@@ -29,7 +30,7 @@ describe('canonical game routes', () => {
     )
 
     expect(screen.getAllByRole('heading', { name: /认知训练游戏/i }).length).toBeGreaterThan(0)
-    expect(screen.getByText(/16 个可爱认知训练游戏/i)).toBeInTheDocument()
+    expect(screen.getByText(/17 个可爱认知训练游戏/i)).toBeInTheDocument()
     expect(screen.queryByText(/彩球分类/i)).not.toBeInTheDocument()
   })
 
@@ -43,5 +44,16 @@ describe('canonical game routes', () => {
     const frame = screen.getByTitle(/小动物找朋友 可玩游戏/i)
     expect(frame).toHaveAttribute('src', '/playable-games/card-matching/index.html')
     expect(screen.queryByRole('link', { name: /返回首页/i })).not.toBeInTheDocument()
+  })
+
+  test('strong memory canonical route loads the playable frame', () => {
+    render(
+      <MemoryRouter initialEntries={['/games/strong-memory']}>
+        <App />
+      </MemoryRouter>
+    )
+
+    const frame = screen.getByTitle(/强力记忆 可玩游戏/i)
+    expect(frame).toHaveAttribute('src', '/playable-games/strong-memory/index.html')
   })
 })

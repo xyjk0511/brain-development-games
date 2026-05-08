@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">强力记忆插画</title>
+  <desc id="desc">柔和花园中的记忆方块和小伙伴插画</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dff7ff"/>
+      <stop offset="1" stop-color="#fff5d8"/>
+    </linearGradient>
+    <linearGradient id="path" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe9a6"/>
+      <stop offset="1" stop-color="#ffd36f"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#8b5e34" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="960" height="720" fill="url(#sky)"/>
+  <circle cx="150" cy="120" r="70" fill="#fff" opacity=".8"/>
+  <circle cx="210" cy="125" r="48" fill="#fff" opacity=".8"/>
+  <circle cx="760" cy="116" r="58" fill="#fff" opacity=".75"/>
+  <circle cx="810" cy="123" r="42" fill="#fff" opacity=".75"/>
+  <path d="M0 548c128-48 224-30 321 4 105 38 202 48 330 4 118-40 223-60 309-18v182H0z" fill="#dff6d7"/>
+  <path d="M360 720c28-82 88-143 178-181 102-43 183-20 245 72 24 36 45 73 60 109z" fill="url(#path)" opacity=".82"/>
+  <g opacity=".82">
+    <path d="M85 520h76l-38-79z" fill="#ffe17d" stroke="#fff8d7" stroke-width="12"/>
+    <path d="M797 520h76l-38-79z" fill="#ffe17d" stroke="#fff8d7" stroke-width="12"/>
+    <rect x="98" y="535" width="48" height="150" rx="24" fill="#bedde0"/>
+    <rect x="811" y="535" width="48" height="150" rx="24" fill="#bedde0"/>
+  </g>
+  <g filter="url(#soft)">
+    <rect x="248" y="118" width="464" height="400" rx="48" fill="#fffdf6" stroke="#f4dfbd" stroke-width="4"/>
+    <rect x="314" y="180" width="332" height="252" rx="38" fill="#fff8e8" stroke="#ffd36f" stroke-width="10"/>
+    <g>
+      <rect x="358" y="224" width="70" height="70" rx="18" fill="#47d486"/>
+      <rect x="445" y="224" width="70" height="70" rx="18" fill="#e8f3fa"/>
+      <rect x="532" y="224" width="70" height="70" rx="18" fill="#47d486"/>
+      <rect x="358" y="310" width="70" height="70" rx="18" fill="#e8f3fa"/>
+      <rect x="445" y="310" width="70" height="70" rx="18" fill="#47d486"/>
+      <rect x="532" y="310" width="70" height="70" rx="18" fill="#e8f3fa"/>
+    </g>
+  </g>
+  <g transform="translate(633 373)" filter="url(#soft)">
+    <ellipse cx="60" cy="110" rx="82" ry="30" fill="#9bd89b" opacity=".52"/>
+    <path d="M25 75c-15-14-29-35-37-62 31 9 55 21 74 37 20-15 45-27 76-36-9 28-25 50-43 64z" fill="#fff"/>
+    <circle cx="63" cy="75" r="54" fill="#fff"/>
+    <circle cx="42" cy="72" r="7" fill="#3d2b21"/>
+    <circle cx="84" cy="72" r="7" fill="#3d2b21"/>
+    <path d="M43 101c15 18 39 18 55 0" fill="none" stroke="#3d2b21" stroke-width="8" stroke-linecap="round"/>
+    <path d="M34 128c38 26 72 26 105 0v52c0 27-22 49-49 49h-7c-27 0-49-22-49-49z" fill="#86dfb1"/>
+  </g>
+  <g fill="#7bd3ff" opacity=".42">
+    <circle cx="228" cy="278" r="10"/>
+    <circle cx="748" cy="322" r="8"/>
+    <circle cx="181" cy="390" r="7"/>
+    <circle cx="801" cy="244" r="6"/>
+  </g>
+</svg>

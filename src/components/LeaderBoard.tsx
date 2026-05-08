@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getLeaderboard, resetLeaderboard, LeaderboardEntry } from '../lib/leaderboard'
-import { getGameName, getTotalGames, getMaxLevel } from '../lib/gameRegistry'
+import { getGameName, getTotalGames, getMaxLevel, getTotalLevels } from '../lib/gameRegistry'
 
 type Statistics = {
   totalGames: number
@@ -34,7 +34,7 @@ export default function LeaderBoard(): JSX.Element {
 
   const totalGames = getTotalGames()
   const maxLevel = getMaxLevel()
-  const totalPossibleCompletions = totalGames * maxLevel
+  const totalPossibleCompletions = getTotalLevels()
 
   useEffect(() => {
     const handler = () => setEntries(getLeaderboard(10))
@@ -176,7 +176,7 @@ export default function LeaderBoard(): JSX.Element {
         </div>
       </div>
       <p className="text-sm text-slate-500 mb-4 italic">
-        完成全部 {totalGames} 个游戏、每个游戏 {maxLevel} 个等级，即可获得最佳综合成绩。
+        完成全部 {totalGames} 个游戏的递进等级挑战，即可获得最佳综合成绩。
       </p>
 
       {entries.length === 0 ? (

@@ -33,6 +33,7 @@ export default function App(): JSX.Element {
           <Route path="/games/quick-math" element={<PlayableGameFrame gameId="quick-math" />} />
           <Route path="/games/word-scramble" element={<PlayableGameFrame gameId="word-scramble" />} />
           <Route path="/games/simon-says" element={<PlayableGameFrame gameId="simon-says" />} />
+          <Route path="/games/strong-memory" element={<PlayableGameFrame gameId="strong-memory" />} />
           <Route path="/games/card-matching" element={<PlayableGameFrame gameId="card-matching" />} />
           <Route path="/games/reaction-time" element={<PlayableGameFrame gameId="reaction-time" />} />
           <Route path="/games/number-sequence" element={<PlayableGameFrame gameId="number-sequence" />} />

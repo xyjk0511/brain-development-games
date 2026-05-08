@@ -9,11 +9,12 @@ import {
 } from './gameParameters'
 
 describe('game parameter tables', () => {
-  test('defines the canonical sixteen-game set', () => {
-    expect(CANONICAL_GAME_DESIGNS).toHaveLength(16)
+  test('defines the canonical seventeen-game set', () => {
+    expect(CANONICAL_GAME_DESIGNS).toHaveLength(17)
     expect(CANONICAL_GAME_DESIGNS.map(game => game.id)).toEqual([
       'visual-search',
       'simon-says',
+      'strong-memory',
       'card-matching',
       'reaction-time',
       'schulte-table',

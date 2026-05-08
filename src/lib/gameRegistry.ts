@@ -1,5 +1,5 @@
 /**
- * Central registry for the 16 redesigned games in the application.
+ * Central registry for the redesigned games in the application.
  * This is the single source of truth for homepage ordering and copy.
  */
 
@@ -24,6 +24,7 @@ export interface GameMetadata {
 const DESCRIPTIONS: Record<string, string> = {
   'visual-search': '在一群可爱图案中找出指定目标，练习视觉搜索和选择性注意。',
   'simon-says': '记住彩虹水母亮灯顺序，再按同样顺序点回来，练习顺序记忆。',
+  'strong-memory': '记住绿色方块的位置，方块翻回灰色后点回原处，练习视觉记忆。',
   'card-matching': '翻开卡片寻找小动物朋友，练习视觉记忆和位置记忆。',
   'reaction-time': '等待安全信号再帮助小动物过马路，练习反应和抑制控制。',
   'schulte-table': '按顺序找到数字星星，练习专注、扫描和周边视觉。',
@@ -41,16 +42,21 @@ const DESCRIPTIONS: Record<string, string> = {
 }
 
 const ART_BASE = import.meta.env.BASE_URL
+const MAX_LEVEL_BY_ID: Record<string, number> = {
+  'strong-memory': 60
+}
 
 export const GAME_REGISTRY: GameMetadata[] = CANONICAL_GAME_DESIGNS.map(game => ({
   id: game.id,
   name: game.redesignedTitle,
   description: DESCRIPTIONS[game.id],
-  artPath: `${ART_BASE}game-art/${game.id}.png`,
+  artPath: game.id === 'strong-memory'
+    ? `${ART_BASE}game-art/strong-memory.svg`
+    : `${ART_BASE}game-art/${game.id}.png`,
   scenePath: `${ART_BASE}game-scenes/${game.id}-scene.png`,
   characterPath: `${ART_BASE}game-scenes/${game.id}-character.png`,
   category: game.domain,
-  maxLevel: 10,
+  maxLevel: MAX_LEVEL_BY_ID[game.id] ?? 10,
   taskFamily: game.taskFamily,
   beginnerFriendly: game.beginnerFriendly,
   howToPlay: game.howToPlay,
@@ -80,6 +86,10 @@ export const getTotalGames = (): number => {
 
 export const getMaxLevel = (): number => {
   return GAME_REGISTRY[0]?.maxLevel ?? 10
+}
+
+export const getTotalLevels = (): number => {
+  return GAME_REGISTRY.reduce((sum, game) => sum + game.maxLevel, 0)
 }
 
 export const GAME_MAP = new Map(GAME_REGISTRY.map(game => [game.id, game]))

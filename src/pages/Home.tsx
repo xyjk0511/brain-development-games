@@ -32,12 +32,12 @@ export default function Home(): JSX.Element {
         <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
           <div className="p-5 sm:p-7 lg:p-10">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3 py-1 text-sm font-semibold text-amber-700">
-              16 个可爱认知训练小游戏
+              {getTotalGames()} 个可爱认知训练小游戏
             </div>
             <h1 className="mb-3 max-w-2xl text-3xl font-black leading-tight text-slate-950 sm:text-4xl lg:text-5xl">认知训练游戏</h1>
             <p className="mb-4 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg">
               体验 <strong>{getTotalGames()} 个可爱认知训练游戏</strong>，练习<strong>记忆力</strong>、<strong>计划能力</strong>、<strong>注意力</strong>和<strong>问题解决能力</strong>。
-              每个游戏提供 {getMaxLevel()} 个递进难度等级，系统会根据表现推荐下一局节奏。
+              多数游戏提供 {getMaxLevel()} 个递进难度等级，强力记忆提供 60 级专项挑战，系统会根据表现推荐下一局节奏。
             </p>
             <p className="mb-5 max-w-2xl text-sm text-slate-500">
               说明：这些小游戏用于日常练习和个人记录，不提供专业评估或健康干预建议。
@@ -66,7 +66,7 @@ export default function Home(): JSX.Element {
 
             <div className="mt-5 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
               <span className="rounded-full bg-emerald-100 px-3 py-1 font-semibold text-emerald-800">本机保存进度</span>
-              <span className="rounded-full bg-sky-100 px-3 py-1 font-semibold text-sky-800">10 个递进等级</span>
+              <span className="rounded-full bg-sky-100 px-3 py-1 font-semibold text-sky-800">递进等级训练</span>
               <button className="text-red-600 underline hover:text-red-800" onClick={handleReset}>重置进度</button>
             </div>
           </div>

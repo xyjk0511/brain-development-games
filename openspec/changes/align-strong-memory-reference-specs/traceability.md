@@ -64,7 +64,7 @@ Status values:
 | REQ-VIS-001 | `最强记忆文档.xlsx` animation | Opening scale-in locks input | tile opening animation | implemented |
 | REQ-VIS-002 | `最强记忆文档.xlsx` animation | Flip/state transition communicates block state | tile transition classes | implemented |
 | REQ-VIS-003 | `最强记忆文档.xlsx` asset list | Gray, green, red X states exist | CSS tile states | implemented |
-| REQ-BND-001 | project boundary | Do not add Strong Memory to canonical 16 homepage | App/home tests and unchanged registry | validated |
+| REQ-BND-001 | project boundary | Add Strong Memory to the homepage registry after follow-up product request | App/home tests and Strong Memory route test | validated |
 
 ## Verification Evidence
 
@@ -75,7 +75,7 @@ Status values:
 | Full regression suite | passed | `npm test -- --run` -> 24 files / 62 tests passed |
 | Build output | passed | `npm run build`; `docs/playable-games/strong-memory/` contains `index.html`, `data.json`, `rules.mjs` |
 | Whitespace check | passed | `git diff --check`; only LF-to-CRLF working-copy warning for `index.html` |
-| Canonical 16 boundary | passed | `src/App.test.tsx`, `src/pages/Home.test.tsx`, and `src/lib/gameParameters.test.ts` passed in full test suite; no Strong Memory registry entry added |
+| Canonical 17 boundary | passed | `src/App.test.tsx`, `src/pages/Home.test.tsx`, and `src/lib/gameParameters.test.ts` cover the Strong Memory registry entry and route |
 | Local browser smoke | passed | Headless Chrome smoke loaded 60 levels, completed first-time tutorial, paused without timer drift, passed a difficulty, failed a difficulty, and reached both result states |
 | GitHub Pages asset check | passed | `index.html`, `data.json`, and `rules.mjs` returned HTTP 200 from `https://xyjk0511.github.io/brain-development-games/playable-games/strong-memory/` |
 | Online browser smoke | passed | Headless Chrome against the deployed URL loaded 60 levels, completed first-time tutorial, paused without timer drift, passed a difficulty, failed a difficulty, and reached both result states |

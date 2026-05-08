@@ -60,7 +60,7 @@
 - [x] 7.3 Run the full existing test suite with `npm test -- --run`.
 - [x] 7.4 Run `npm run build` and verify the Strong Memory files are present in `docs/playable-games/strong-memory/`.
 - [x] 7.5 Run local browser smoke tests for first-time tutorial, successful difficulty, failed difficulty, pause/resume, and result flows.
-- [x] 7.6 Confirm the homepage still exposes only the existing canonical sixteen-game list.
+- [x] 7.6 Confirm the homepage exposes Strong Memory as the seventeenth canonical playable after the follow-up product request.
 - [x] 7.7 Deploy to `xyjk` GitHub Pages and verify the online Strong Memory URL plus `data.json` return 200.
 - [x] 7.8 Run online browser smoke tests against the deployed URL.
 - [x] 7.9 Update the traceability matrix with final evidence and ensure no actionable reference item remains unreviewed.

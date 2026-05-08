@@ -215,9 +215,10 @@ The Strong Memory playable SHALL implement the reference visual states and anima
 - **WHEN** a round ends
 - **THEN** the board end transition completes without accepting additional player input
 
-### Requirement: Canonical homepage boundary
-The Strong Memory playable SHALL remain direct-linked and SHALL NOT be added to the canonical 16-game homepage list as part of this alignment change.
+### Requirement: Canonical homepage inclusion
+The Strong Memory playable SHALL be exposed through the main homepage registry after the follow-up product request, while continuing to load its standalone playable implementation.
 
-#### Scenario: Homepage still lists sixteen canonical games
+#### Scenario: Homepage lists Strong Memory as a canonical playable
 - **WHEN** the homepage is rendered after the alignment change
-- **THEN** it still exposes the existing canonical sixteen-game list only
+- **THEN** it exposes Strong Memory as an available game
+- **AND** `/games/strong-memory` loads `playable-games/strong-memory/index.html`
