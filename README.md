@@ -1,294 +1,154 @@
-# 🧠 Brain Development Games
+# Brain Development Games
 
-> **Sharpen your mind with 21 scientifically-inspired cognitive training games**
+> A cute browser-based cognitive training collection with 17 playable games.
 
-<div align="center">
+## Play
 
-## 🎮 [**PLAY NOW →**](https://xyjk0511.github.io/brain-development-games)
+[Open the live site](https://xyjk0511.github.io/brain-development-games/)
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://xyjk0511.github.io/brain-development-games)
-[![React](https://img.shields.io/badge/React-18.2-blue)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8)](https://tailwindcss.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Strong Memory can also be opened directly:
 
-</div>
+[Strong Memory](https://xyjk0511.github.io/brain-development-games/games/strong-memory)
 
-A collection of engaging cognitive training games built with React, TypeScript, and Tailwind CSS. Challenge your memory, enhance your problem-solving skills, and track your progress across 10 levels of increasing difficulty in each of the 21 games.
+## Current Game Set
 
----
+The homepage registry is the source of truth. It currently exposes 17 games:
 
-## 🎮 All 21 Games
+### Memory
 
-### 🧩 Logic & Problem Solving
-- **💧 Water Jugs** - Master resource management and logical thinking
-- **🗼 Tower of Hanoi** - Perfect your recursive planning skills
-- **🌀 Pathway Maze** - Navigate complex mazes with strategic forecasting
-- **🔗 Trail Making** - Connect nodes in sequence (numbers and letters)
-- **🧩 Logic Puzzles** - Step-by-step reasoning challenges with multiple variations
-- **🔢 Number Sequence** - Identify patterns in number sequences
-- **🎨 Ball Sort Puzzle** - Logical sorting challenge with colored balls
+- **彩虹水母灯灯岛** (`simon-says`) - sequence memory
+- **强力记忆** (`strong-memory`) - position memory, backed by the supplied 60-level reference data
+- **小动物找朋友** (`card-matching`) - matching memory
+- **记忆小侦探** (`n-back`) - working-memory updating
 
-### 🧠 Memory & Attention
-- **🔢 N-Back** - Train your working memory with sequence matching (scientifically proven)
-- **🎨 Stroop Test** - Improve inhibition control and focus
-- **🔲 Pattern Matrix** - Enhance visual memory recognition
-- **📊 Schulte Table** - Boost peripheral vision and processing speed
-- **🎵 Simon Says** - Remember and repeat color sequences
-- **🃏 Card Matching** - Classic concentration game with increasing difficulty
-- **🧩 Working Memory Grid** - Remember positions on a grid
+### Attention
 
-### 🎯 Cognitive Flexibility & Speed
-- **🔄 Mental Rotation** - Develop spatial reasoning abilities
-- **➕ Quick Math** - Sharpen numerical agility under pressure
-- **📝 Word Scramble** - Enhance verbal fluency and pattern recognition
-- **⚡ Reaction Time** - Test and improve your reflexes
-- **🔍 Visual Search** - Find target shapes among distractors
-- **🎯 Anagram Solver** - Unscramble words under time pressure
+- **小鱼侦探队** (`visual-search`) - visual search
+- **小动物过马路** (`reaction-time`) - Go/No-Go style reaction control
+- **星星数字广场** (`schulte-table`) - visual scanning and attention
+- **小鱼队长看方向** (`stroop`) - Flanker-style inhibition
+- **宝藏小路** (`trail-making`) - attention switching and ordered connection
 
-### 🧪 Advanced Cognitive Skills
-- **🎭 Dual Task Challenge** - Multitask with simultaneous shape counting and math
+### Logic And Planning
 
----
+- **字字小乐园** (`word-scramble`) - language and semantic flexibility
+- **森林小侦探** (`logic-puzzles`) - logical reasoning
+- **甜甜圈收纳架** (`tower-of-hanoi`) - planning
+- **规律小火车** (`number-sequence`) - pattern reasoning
+- **小熊果汁铺** (`water-jugs`) - step planning
+- **果果心算铺** (`quick-math`) - numerical fluency
 
-## ✨ Features
+### Spatial
 
-- 🎯 **21 Different Games** - Diverse cognitive challenges
-- 📊 **10 Levels Per Game** - Progressive difficulty scaling (210 total levels!)
-- 💾 **Progress Tracking** - Automatic save to browser localStorage
-- 🏆 **Local Leaderboard** - Track your best performances
-- 📱 **Responsive Design** - Play on any device (desktop, tablet, mobile)
-- 🚀 **Fast & Lightweight** - Built with Vite for optimal performance
-- 🎨 **Modern UI** - Clean interface with Tailwind CSS
-- 📊 **Performance Metrics** - Score tracking and completion times
-- 🔗 **Share Results** - Share your achievements on social media
-- 🔒 **Privacy-First** - All data stored locally, no tracking
+- **萤火虫路线** (`maze`) - route planning
+- **转转积木伙伴** (`mental-rotation`) - mental rotation
 
----
+Most games use 10 levels. **Strong Memory** is a standalone playable integrated into the registry and uses the supplied 60-level `data.json` / workbook contract.
 
-## 🧪 Scientific Basis
+## Strong Memory Reference Alignment
 
-These games are based on established cognitive training principles:
+Strong Memory lives under `public/playable-games/strong-memory/` and is loaded by `/games/strong-memory` through the app shell.
 
-- **Working Memory Training** (N-Back) - Research shows potential for improving fluid intelligence
-- **Stroop Effect** - Classic psychological phenomenon for attention training
-- **Spatial Reasoning** - Mental rotation tasks improve visualization skills
-- **Executive Function** - Tower of Hanoi and similar puzzles enhance planning abilities
-- **Cognitive Flexibility** - Trail Making and dual-task exercises improve mental switching
+Its runtime data file is:
 
-### Benefits of Regular Brain Training
+- `public/playable-games/strong-memory/data.json`
 
-- ✅ Improve working memory capacity
-- ✅ Enhance attention and focus
-- ✅ Boost problem-solving skills
-- ✅ Increase processing speed
-- ✅ Develop strategic thinking
-- ✅ Strengthen mental flexibility
+The current checked-in JSON is intended to match the reference package:
 
----
+- `data.json`
+- `最强记忆数值(3).xlsm`
+- `游戏关卡设置-难度配置表.xlsx`
+- `强力记忆测试用例.xlsx`
+- `游戏策划-强力记忆.docx`
+- `最强记忆文档.xlsx`
+- `强力记忆.rp`
 
-## 🚀 Quick Start
+The OpenSpec traceability record is in:
+
+- `openspec/changes/align-strong-memory-reference-specs/traceability.md`
+
+## Local Development
 
 ### Prerequisites
-- Node.js 22+ 
-- npm or yarn
 
-### Installation
+- Node.js 22+
+- npm
+
+### Install
 
 ```bash
-# Clone the repository
-git clone https://github.com/xyjk0511/brain-development-games.git
-
-# Navigate to project directory
-cd brain-development-games
-
-# Install dependencies
 npm install
+```
 
-# Start development server
+### Run
+
+```bash
 npm run dev
 ```
 
-Visit `http://localhost:5173/brain-development-games/` to start playing!
+Open:
 
-### Building for Production
+```text
+http://localhost:5173/brain-development-games/
+```
+
+### Test
 
 ```bash
-# Build the project
+npm test -- --run
+```
+
+### Build
+
+```bash
 npm run build
-
-# Preview the production build
-npm run preview
 ```
 
-The build output will be in the `docs/` directory, ready for deployment.
+The production build is written to `docs/`. The build also copies `docs/index.html` to `docs/404.html` so GitHub Pages can serve client-side routes.
 
----
+## Deployment
 
-## 🎯 How to Play
+The project is deployed to the user's own GitHub repository:
 
-1. **Select a Game** - Choose from 21 different cognitive challenges
-2. **Pick Your Level** - Start at Level 1 or jump to any unlocked level
-3. **Complete Challenges** - Solve puzzles, match patterns, or beat the clock
-4. **Track Progress** - Your best scores are automatically saved
-5. **Level Up** - Click "Next Level" after completing each challenge
-6. **Compete** - Check the leaderboard to see your rankings
-
----
-
-## 🏗️ Project Structure
-
+```text
+https://github.com/xyjk0511/brain-development-games
 ```
+
+Use the `xyjk` remote when pushing source or deploying:
+
+```bash
+git push xyjk main
+npm run deploy -- -r https://github.com/xyjk0511/brain-development-games.git
+```
+
+The deployed site is:
+
+```text
+https://xyjk0511.github.io/brain-development-games/
+```
+
+## Project Structure
+
+```text
 brain-development-games/
 ├── src/
-│   ├── components/       # Reusable UI components
-│   │   ├── LeaderBoard.tsx
-│   │   ├── LevelSelector.tsx
-│   │   ├── NextLevelButton.tsx
-│   │   └── ShareButtons.tsx
-│   ├── games/           # Game implementations (21 games)
-│   │   ├── WaterJugs.tsx
-│   │   ├── TowerOfHanoi.tsx
-│   │   ├── NBack.tsx
-│   │   ├── LogicPuzzles.tsx
-│   │   └── ... (17 more games)
-│   ├── pages/           # Page components
-│   │   ├── Home.tsx
-│   │   └── games/       # Individual game pages
-│   ├── lib/             # Utilities
-│   │   ├── progress.ts  # Progress tracking
-│   │   └── leaderboard.ts
-│   ├── App.tsx          # Main app component
-│   └── main.tsx         # Entry point
-├── public/              # Static assets
-│   ├── robots.txt       # SEO: Search engine instructions
-│   ├── sitemap.xml      # SEO: Site structure
-│   └── manifest.json    # PWA manifest
-├── .github/
-│   └── workflows/       # CI/CD automation
-└── docs/                # Built files for GitHub Pages
+│   ├── components/       # Shared React UI
+│   ├── games/            # React game implementations
+│   ├── lib/              # Registry, parameters, progress, leaderboard, tests
+│   ├── pages/            # Home and route surfaces
+│   ├── App.tsx
+│   └── main.tsx
+├── public/
+│   ├── game-art/         # Homepage art assets
+│   ├── playable-games/   # Standalone playable bundles such as Strong Memory
+│   ├── manifest.json
+│   ├── robots.txt
+│   └── sitemap.xml
+├── openspec/             # Change specs and traceability
+├── design/               # Design and adaptive-difficulty notes
+└── scripts/              # Validation helpers
 ```
 
----
+## Claim Boundary
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run tests with coverage
-npm test -- --coverage
-```
-
----
-
-## 🌐 Deployment
-
-This project is configured for GitHub Pages deployment:
-
-1. **Automatic Deployment** - Push to `main` branch triggers automatic deployment
-2. **Manual Deployment** - Run `npm run deploy` locally
-3. **GitHub Actions** - Configured workflow in `.github/workflows/deploy.yml`
-
-### GitHub Pages Setup
-1. Go to repository Settings → Pages
-2. Set Source to "GitHub Actions"
-3. Push to main branch to trigger deployment
-
----
-
-## 🎨 Customization
-
-### Adding New Games
-
-1. Create game component in `src/games/YourGame.tsx`
-2. Create page component in `src/pages/games/YourGamePage.tsx`
-3. Add route in `src/App.tsx`
-4. Add game metadata in `src/pages/Home.tsx`
-
-See `GAME_SUGGESTIONS.md` for ideas on new games to implement!
-
-### Styling
-
-The project uses Tailwind CSS v4. Customize styles in:
-- `src/main.css` - Global styles
-- Component files - Inline Tailwind classes
-
----
-
-## 📊 SEO & Performance
-
-This project includes comprehensive SEO optimizations:
-
-- ✅ **Meta Tags** - Title, description, keywords, Open Graph, Twitter Cards
-- ✅ **Structured Data** - JSON-LD schema for rich search results
-- ✅ **Sitemap** - XML sitemap for all 21 game pages
-- ✅ **Robots.txt** - Search engine crawling instructions
-- ✅ **PWA Support** - Manifest.json for mobile installation
-- ✅ **Semantic HTML** - Proper heading hierarchy and ARIA labels
-
-See `SEO_DEPLOYMENT_GUIDE.md` for detailed SEO setup and monitoring instructions.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. 🐛 **Report Bugs** - Open an issue with details
-2. 💡 **Suggest Features** - Share your ideas for new games or improvements
-3. 🔧 **Submit PRs** - Fix bugs or add features
-4. 📖 **Improve Docs** - Help others understand the project
-5. 🎮 **Add Games** - Create new cognitive training games
-
----
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
----
-
-## 🙏 Acknowledgments
-
-- Inspired by cognitive psychology research
-- Game mechanics based on established neuropsychological tests
-- Built with modern web technologies
-- Designed for accessibility and performance
-
----
-
-## 📞 Contact
-
-- **GitHub**: [@xyjk0511](https://github.com/xyjk0511)
-- **Issues**: [Report a bug](https://github.com/xyjk0511/brain-development-games/issues)
-- **Pull Requests**: [Contribute](https://github.com/xyjk0511/brain-development-games/pulls)
-
----
-
-## 📊 Project Stats
-
-- 21 unique games
-- 210 total levels (10 per game)
-- 100% free and open source
-- No ads, no tracking
-- Fully responsive design
-- Comprehensive test coverage
-
----
-
-<div align="center">
-
-## 🎮 [**PLAY NOW →**](https://xyjk0511.github.io/brain-development-games)
-
-**⭐ Star this repo if you find it helpful!**
-
-Made with ❤️ for cognitive development
-
-**Start training your brain today!** 🧠💪
-
-</div>
+These games are training and practice activities. Product copy should describe memory, attention, planning, problem solving, and cognitive challenge. Do not claim diagnosis, treatment, cure, disease improvement, or guaranteed IQ improvement.

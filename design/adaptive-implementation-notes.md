@@ -15,7 +15,7 @@ The default target band is centered around ~85% successful performance because `
 
 ## Task-family mapping
 
-The canonical 16 games are mapped in `src/lib/gameParameters.ts` with cognitive task families such as visual search, sequence memory, Go/No-Go, Schulte table, N-back, mental rotation, Flanker-style inhibition, Trail Making, water-jug planning, and quick math.
+The canonical 17 games are mapped in `src/lib/gameParameters.ts` with cognitive task families such as visual search, sequence memory, Strong Memory position memory, matching memory, Go/No-Go, Schulte table, N-back, mental rotation, Flanker-style inhibition, Trail Making, water-jug planning, and quick math. Strong Memory is the only canonical entry with a 60-level standalone playable contract; most other registry games use the standard 10-level React flow.
 
 ## Claim boundary
 
