@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>新增认知训练任务</title>
+    <link rel="stylesheet" href="./cognitive-three.css">
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="game-header">
+        <a class="back-link" href="/brain-development-games/">返回首页</a>
+        <div>
+          <p>新增认知训练任务</p>
+          <h1 id="game-title">幻色图形</h1>
+        </div>
+        <nav class="game-tabs" aria-label="新增游戏">
+          <a href="#color-shape-stroop" data-game="color-shape-stroop">幻色图形</a>
+          <a href="#flash-shape" data-game="flash-shape">快闪图形</a>
+          <a href="#eye-quick" data-game="eye-quick">眼疾手快</a>
+        </nav>
+      </header>
+
+      <section class="game-card">
+        <div class="hud">
+          <span>进度 <strong id="round">1/8</strong></span>
+          <span>得分 <strong id="score">0</strong></span>
+          <span>连击 <strong id="streak">0</strong></span>
+        </div>
+        <div class="prompt" id="prompt">根据规则作答</div>
+        <div class="stage" id="stage"></div>
+        <div class="feedback" id="feedback">准备开始</div>
+        <button class="next-button" id="next-button" type="button">下一题</button>
+      </section>
+    </main>
+
+    <script src="./cognitive-three.js"></script>
+  </body>
+</html>
