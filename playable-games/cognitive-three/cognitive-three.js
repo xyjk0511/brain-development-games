@@ -164,12 +164,19 @@ function renderStroop() {
   const correct = rule === 'color'
     ? { shape: otherShapes[round % otherShapes.length], color: targetColor, correct: true }
     : { shape: targetShape, color: shifted(2), correct: true };
-  const options = shuffle([
-    correct,
-    { shape: targetShape, color: shifted(1), correct: false },
-    { shape: otherShapes[0], color: shifted(3), correct: false },
-    { shape: otherShapes[1], color: shifted(5), correct: false },
-  ]);
+  const options = shuffle(rule === 'color'
+    ? [
+      correct,
+      { shape: targetShape, color: shifted(1), correct: false },
+      { shape: otherShapes[0], color: shifted(3), correct: false },
+      { shape: otherShapes[1], color: shifted(5), correct: false },
+    ]
+    : [
+      correct,
+      { shape: otherShapes[0], color: shifted(1), correct: false },
+      { shape: otherShapes[1], color: shifted(3), correct: false },
+      { shape: otherShapes[(round + 1) % otherShapes.length], color: shifted(5), correct: false },
+    ]);
 
   const grid = document.createElement('div');
   grid.className = 'choice-grid';
