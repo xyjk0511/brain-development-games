@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>表情小剧场｜Emotion Recognition</title>
+  <link rel="stylesheet" href="../shared/unified.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../shared/unified.js"></script>
+  <script src="../shared/domain-gap-game.js"></script>
+  <script>
+    CognitiveDomainGame.mount({
+      gameId: 'emotion-match',
+      title: '表情小剧场',
+      subtitle: '观察表情，判断它最像哪一种心情。',
+      domain: 'social-cognition',
+      domainLabel: '社会认知',
+      taskFamily: 'emotion-recognition',
+      primaryParadigm: 'Facial Emotion Recognition',
+      basis: '参考 Ekman 基础情绪研究、面部情绪识别任务和 jsPsych 图像/按钮反应结构；本版使用原创表情符号，不复制临床量表材料。',
+      instructions: '每题看一个表情，选择它表达的心情。这里是训练小游戏，不是临床情绪测验。',
+      mascot: '🎭',
+      tone1: '#ffd6e7',
+      tone2: '#d9e8ff',
+      accent: '#bb4f86',
+      accent2: '#ff9ac2',
+      rounds: 10,
+      trials: [
+        { kind: 'face', face: '😀', prompt: '这个表情最像哪种心情？', correct: '开心', options: ['开心','害怕','生气'], condition: { emotion: 'happy' } },
+        { kind: 'face', face: '😢', prompt: '这个表情最像哪种心情？', correct: '难过', options: ['难过','惊讶','开心'], condition: { emotion: 'sad' } },
+        { kind: 'face', face: '😠', prompt: '这个表情最像哪种心情？', correct: '生气', options: ['生气','放松','好奇'], condition: { emotion: 'angry' } },
+        { kind: 'face', face: '😮', prompt: '这个表情最像哪种心情？', correct: '惊讶', options: ['惊讶','困倦','得意'], condition: { emotion: 'surprised' } },
+        { kind: 'face', face: '😨', prompt: '这个表情最像哪种心情？', correct: '害怕', options: ['害怕','开心','骄傲'], condition: { emotion: 'fear' } },
+        { kind: 'face', face: '🤢', prompt: '这个表情最像哪种心情？', correct: '厌恶', options: ['厌恶','惊喜','平静'], condition: { emotion: 'disgust' } },
+        { kind: 'face', face: '😐', prompt: '这个表情最像哪种心情？', correct: '平静', options: ['平静','生气','害怕'], condition: { emotion: 'neutral' } },
+        { kind: 'face', face: '🤔', prompt: '这个表情最像哪种心情？', correct: '思考', options: ['思考','难过','厌恶'], condition: { emotion: 'thinking' } },
+        { kind: 'face', face: '😳', prompt: '这个表情最像哪种心情？', correct: '害羞', options: ['害羞','开心','愤怒'], condition: { emotion: 'shy' } },
+        { kind: 'face', face: '😴', prompt: '这个表情最像哪种状态？', correct: '困倦', options: ['困倦','惊讶','生气'], condition: { emotion: 'sleepy' } }
+      ]
+    });
+  </script>
+</body>
+</html>

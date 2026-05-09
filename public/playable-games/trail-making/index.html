@@ -696,7 +696,10 @@
         misTaps: 0,
         hints: 0,
         rounds: 0,
+        trials: [],
+        events: [],
         startTime: Date.now(),
+        currentMapStartedAt: Date.now(),
         timeLeft: config.timeLimit || 0,
         finished: false
       };
@@ -713,6 +716,8 @@
       next.rounds = g.rounds + 1;
       next.startTime = g.startTime;
       next.timeLeft = g.timeLeft;
+      next.trials = g.trials;
+      next.events = g.events;
       return next;
     }
 
@@ -794,6 +799,18 @@
         lastResult: result,
         history: [result, ...((loadStore().history || []).slice(0, 7))]
       });
+      window.CognitiveGameRecorder?.record('trail-making', {
+        domain:'executive',
+        taskFamily:'trail-making',
+        mode:'training',
+        level:g.level,
+        startedAt:new Date(g.startTime).toISOString(),
+        completedAt:new Date().toISOString(),
+        summary:result,
+        trials:g.trials,
+        events:g.events,
+        adaptive:{recommendedLevel:rec.next, reason:rec.reason, settings:{...state.settings}}
+      });
       state.screen = 'result';
       state.game = null;
       render();
@@ -850,10 +867,19 @@
       tapDistractor() {
         const g = state.game;
         if (!g || state.paused) return;
+        const now = Date.now();
         g.totalTaps += 1;
         g.misTaps += 1;
         g.hints += 1;
         const current = g.nodes.find(n => n.order === g.currentIndex);
+        g.events.push({
+          eventId:`trail-making-event-${now}-${g.events.length+1}`,
+          type:'distractor_tap',
+          targetOrder:g.currentIndex,
+          response:'distractor',
+          correct:false,
+          rtMs:now - g.currentMapStartedAt
+        });
         setToast('先找发光的路标', current && current.id);
       },
       tapNode(id) {
@@ -861,8 +887,19 @@
         if (!g || g.finished || state.paused) return;
         const node = g.nodes.find(n => n.id === id);
         if (!node) return;
+        const now = Date.now();
         g.totalTaps += 1;
-        state.lastActionAt = Date.now();
+        state.lastActionAt = now;
+        g.events.push({
+          eventId:`trail-making-event-${now}-${g.events.length+1}`,
+          type:'node_tap',
+          nodeId:id,
+          targetOrder:g.currentIndex,
+          responseOrder:node.order,
+          responseLabel:node.token.label,
+          correct:node.order === g.currentIndex,
+          rtMs:now - g.currentMapStartedAt
+        });
         if (node.order !== g.currentIndex) {
           g.misTaps += 1;
           g.hints += 1;
@@ -880,6 +917,23 @@
         if (g.currentIndex >= g.sequence.length) {
           g.chests += 1;
           g.score += 30;
+          g.trials.push({
+            trialId:`trail-making-${Date.now()}-${g.chests}`,
+            gameId:'trail-making',
+            domain:'executive',
+            taskFamily:'trail-making',
+            mode:g.mode,
+            level:g.level,
+            mapIndex:g.rounds,
+            stimulus:{sequence:g.sequence, nodes:g.nodes.map(n=>({order:n.order, token:n.token, x:n.x, y:n.y}))},
+            condition:{nodeCount:g.sequence.length, distractorCount:g.distractors.length, timeLimit:g.config.timeLimit, advanced:g.config.advanced},
+            correctAnswer:g.sequence.map((_, i)=>i),
+            response:g.connectedOrders.slice(),
+            correct:true,
+            rtMs:Date.now() - g.currentMapStartedAt,
+            errorCount:g.misTaps,
+            difficultyParams:{level:g.level, passChests:g.config.passChests, nodeSize:g.config.nodeSize}
+          });
           if (g.mode === 'practice') {
             window.setTimeout(completePracticeRoute, 700);
             return;

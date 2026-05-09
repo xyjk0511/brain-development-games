@@ -1062,9 +1062,12 @@
       active = {
         mode,
         state: 'idle',
+        startedAt: Date.now(),
         level,
         roundIndex: 0,
         outcomes: [],
+        trials: [],
+        clickEvents: [],
         score: 0,
         found: new Set(),
         wrong: 0,
@@ -1094,6 +1097,8 @@
       active.found = new Set();
       active.roundRemaining = active.mode === 'practice' ? Math.max(25, active.level.time + 8) : active.level.time;
       active.round = chooseFloor(active.level.floorPool);
+      active.round.trialId = `strong-memory-${Date.now()}-${active.roundIndex}`;
+      active.round.startedAt = Date.now();
       active.state = 'opening';
       renderBoard('opening');
       updateHud();
@@ -1174,6 +1179,7 @@
       if (!active || active.state !== 'recall') return;
       if (active.found.has(key)) return;
       const target = active.round.targets.find((item) => `${item.row},${item.col}` === key);
+      active.clickEvents.push({ type: 'click', trialId: active.round.trialId, key, target: Boolean(target), elapsedMs: Date.now() - active.round.startedAt });
       if (target) {
         active.found.add(key);
         tile.classList.remove('is-pending');
@@ -1193,6 +1199,48 @@
       }
     }
 
+    function buildTrialResult(outcome, gainedScore, message) {
+      const targetKeys = active.round.targets.map((item) => `${item.row},${item.col}`);
+      const foundKeys = Array.from(active.found);
+      const events = active.clickEvents.filter((event) => event.trialId === active.round.trialId);
+      const falseAlarms = events.filter((event) => !event.target).map((event) => event.key);
+      const misses = targetKeys.filter((key) => !active.found.has(key));
+      return {
+        trialId: active.round.trialId,
+        gameId: 'strong-memory',
+        domain: 'memory',
+        taskFamily: 'spatial-recall',
+        mode: active.mode === 'practice' ? 'training-practice' : 'training',
+        level: active.level.level,
+        round: active.roundIndex,
+        floorId: active.round.floorId,
+        gridSize: `${active.round.cols}x${active.round.rows}`,
+        stimulus: { floorId: active.round.floorId, rows: active.round.rows, cols: active.round.cols, targets: targetKeys },
+        condition: { targetCount: targetKeys.length, previewMs: previewDuration(active.round, active.mode), recallTimeMs: active.level.time * 1000, faultAllowance: active.level.fault, blockTypeNum: active.level.blockTypeNum },
+        targets: targetKeys,
+        clicked: events.map((event) => event.key),
+        correctAnswer: targetKeys,
+        response: events.map((event) => event.key),
+        hits: foundKeys,
+        falseAlarms,
+        misses,
+        orderErrors: 0,
+        previewMs: previewDuration(active.round, active.mode),
+        recallTimeMs: active.level.time * 1000,
+        rtMs: Date.now() - active.round.startedAt,
+        perfect: outcome === 'pass' && falseAlarms.length === 0,
+        correct: outcome === 'pass',
+        errorType: outcome === 'pass' ? null : message || 'round_failed',
+        score: gainedScore || 0,
+        difficultyParams: {
+          level: active.level.level,
+          faultAllowance: active.level.fault,
+          missionNum: active.level.missionNum,
+          blockTypeNum: active.level.blockTypeNum
+        }
+      };
+    }
+
     function passRound(lastTile) {
       if (!active || active.state === 'ending') return;
       clearIntervalOnly();
@@ -1200,6 +1248,7 @@
       lastTile?.classList.add('is-success');
       const gained = roundScore(active.level.level, active.roundRemaining, active.level.time);
       active.score += gained;
+      active.trials.push(buildTrialResult('pass', gained));
       active.outcomes.push('pass');
       renderProgressMarkers();
       updateHud();
@@ -1211,6 +1260,7 @@
       if (!active || active.state === 'ending') return;
       clearIntervalOnly();
       active.state = 'ending';
+      active.trials.push(buildTrialResult('fail', 0, message));
       active.outcomes.push('fail');
       renderProgressMarkers();
       updateHud();
@@ -1248,6 +1298,36 @@
           progress.consecutiveFailures = 0;
         }
         saveProgress();
+      }
+      if (window.CognitiveGameRecorder) {
+        window.CognitiveGameRecorder.record('strong-memory', {
+          domain: 'memory',
+          taskFamily: 'spatial-recall',
+          mode: active.mode === 'practice' ? 'training-practice' : 'training',
+          level: active.level.level,
+          startedAt: new Date(active.startedAt).toISOString(),
+          completedAt: new Date().toISOString(),
+          summary: {
+            passed: result.passed,
+            passedRounds,
+            missionNum: result.missionNum,
+            score: result.score,
+            brain: result.brain,
+            nextLevel: result.nextLevel,
+            trend: result.trend,
+            maxCompleted: result.maxCompleted
+          },
+          trials: active.trials,
+          events: active.clickEvents,
+          adaptive: {
+            previousLevel: active.level.level,
+            recommendedLevel: result.nextLevel,
+            passed: result.passed,
+            passedRounds,
+            missionNum: result.missionNum,
+            trend: result.trend
+          }
+        });
       }
       populateLevelSelect();
       showResult(result);

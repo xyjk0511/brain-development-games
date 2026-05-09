@@ -40,6 +40,12 @@ export default function App(): JSX.Element {
           <Route path="/games/visual-search" element={<PlayableGameFrame gameId="visual-search" />} />
           <Route path="/games/trail-making" element={<PlayableGameFrame gameId="trail-making" />} />
           <Route path="/games/logic-puzzles" element={<PlayableGameFrame gameId="logic-puzzles" />} />
+          <Route path="/games/global-local" element={<PlayableGameFrame gameId="global-local" />} />
+          <Route path="/games/visual-discrimination" element={<PlayableGameFrame gameId="visual-discrimination" />} />
+          <Route path="/games/category-fluency" element={<PlayableGameFrame gameId="category-fluency" />} />
+          <Route path="/games/emotion-match" element={<PlayableGameFrame gameId="emotion-match" />} />
+          <Route path="/games/gaze-follow" element={<PlayableGameFrame gameId="gaze-follow" />} />
+          <Route path="/games/social-scenario" element={<PlayableGameFrame gameId="social-scenario" />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

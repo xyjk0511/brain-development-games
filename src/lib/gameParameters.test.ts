@@ -9,8 +9,8 @@ import {
 } from './gameParameters'
 
 describe('game parameter tables', () => {
-  test('defines the canonical seventeen-game set', () => {
-    expect(CANONICAL_GAME_DESIGNS).toHaveLength(17)
+  test('defines the canonical twenty-three-game set', () => {
+    expect(CANONICAL_GAME_DESIGNS).toHaveLength(23)
     expect(CANONICAL_GAME_DESIGNS.map(game => game.id)).toEqual([
       'visual-search',
       'simon-says',
@@ -28,9 +28,26 @@ describe('game parameter tables', () => {
       'trail-making',
       'number-sequence',
       'water-jugs',
-      'quick-math'
+      'quick-math',
+      'global-local',
+      'visual-discrimination',
+      'category-fluency',
+      'emotion-match',
+      'gaze-follow',
+      'social-scenario'
     ])
     expect(CANONICAL_GAME_DESIGNS.every(game => game.howToPlay && game.goal && game.trains)).toBe(true)
+  })
+
+  test('covers each requested product domain with at least three games', () => {
+    const counts = CANONICAL_GAME_DESIGNS.reduce<Record<string, number>>((acc, game) => {
+      acc[game.domain] = (acc[game.domain] ?? 0) + 1
+      return acc
+    }, {})
+
+    expect(counts.perception).toBeGreaterThanOrEqual(3)
+    expect(counts.language).toBeGreaterThanOrEqual(3)
+    expect(counts['social-cognition']).toBeGreaterThanOrEqual(3)
   })
 
   test('defines ten adaptive parameter levels for every canonical game', () => {

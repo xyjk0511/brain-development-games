@@ -14,9 +14,17 @@ const NON_CANONICAL_ROUTES = [
 ]
 
 describe('canonical game routes', () => {
-  test('the registry exposes exactly the canonical 17 ids', () => {
-    expect(getAllGameIds()).toHaveLength(17)
+  test('the registry exposes exactly the canonical 23 ids', () => {
+    expect(getAllGameIds()).toHaveLength(23)
     expect(getAllGameIds()).toContain('strong-memory')
+    expect(getAllGameIds()).toEqual(expect.arrayContaining([
+      'global-local',
+      'visual-discrimination',
+      'category-fluency',
+      'emotion-match',
+      'gaze-follow',
+      'social-scenario'
+    ]))
     for (const id of NON_CANONICAL_ROUTES) {
       expect(getAllGameIds()).not.toContain(id)
     }
@@ -30,7 +38,7 @@ describe('canonical game routes', () => {
     )
 
     expect(screen.getAllByRole('heading', { name: /认知训练游戏/i }).length).toBeGreaterThan(0)
-    expect(screen.getByText(/17 个可爱认知训练游戏/i)).toBeInTheDocument()
+    expect(screen.getByText(/23 个可爱认知训练游戏/i)).toBeInTheDocument()
     expect(screen.queryByText(/彩球分类/i)).not.toBeInTheDocument()
   })
 

@@ -521,7 +521,28 @@
       const trial = state.currentTrial;
       const reactionMs = Date.now() - trial.startedAt;
       const correct = (trial.answer === 'same' && isSame) || (trial.answer === 'different' && !isSame);
-      state.session.results.push({correct,reactionMs,answer:trial.answer,choice:isSame?'same':'different',level:state.session.level});
+      const params = levelMeta(state.session.level);
+      const choice = isSame ? 'same' : 'different';
+      state.session.results.push({
+        trialId:`mental-rotation-${Date.now()}-${state.session.trialIndex+1}`,
+        gameId:'mental-rotation',
+        domain:'perception',
+        taskFamily:'mental-rotation',
+        mode:'training',
+        level:state.session.level,
+        trialIndex:state.session.trialIndex,
+        stimulus:{target:trial.target,candidate:trial.candidate,angle:trial.angle,mirrored:!!trial.mirrored},
+        condition:{angle:trial.angle,mirrored:!!trial.mirrored,sameDifferent:trial.answer,timeLimitSeconds:params.time,trialLimit:params.trials},
+        correctAnswer:trial.answer,
+        response:choice,
+        answer:trial.answer,
+        choice,
+        correct,
+        rtMs:reactionMs,
+        reactionMs,
+        errorType:correct ? null : 'wrong_choice',
+        difficultyParams:{level:state.session.level,angles:params.angles,sameRatio:params.sameRatio,mirrorRatio:params.mirrorRatio}
+      });
       if(correct) state.session.score += 1;
       state.session.feedback = correct ? '找对啦，星星 +1。' : '看到了一个小变化，继续看星星贴纸。';
       renderPlaying();
@@ -544,6 +565,17 @@
       const nextLevel = computeNextRecommendedLevel(s.level, accuracy, avgSeconds, total, correct);
       const summary = {reason,level:s.level,total,correct,accuracy,avgSeconds,score:s.score,finishedAt:new Date().toLocaleString(),nextLevel};
       const saved = saveAdaptiveState(summary,nextLevel);
+      window.CognitiveGameRecorder?.record('mental-rotation', {
+        domain:'perception',
+        taskFamily:'mental-rotation',
+        mode:'training',
+        level:s.level,
+        startedAt:new Date(s.startedAt).toISOString(),
+        completedAt:new Date().toISOString(),
+        summary,
+        trials:s.results,
+        adaptive:{recommendedLevel:nextLevel, previousLevel:s.level}
+      });
       state.result = {...summary,saved};
       state.screen = 'result';
       renderResult();
@@ -630,12 +662,14 @@
       const same = Math.random() < params.sameRatio;
       let candidate = rotateShape(target, angle);
       let answer = 'same';
+      let mirrored = false;
       if(!same){
         answer = 'different';
         const useMirror = Math.random() < params.mirrorRatio;
+        mirrored = useMirror;
         candidate = useMirror ? mirrorShape(candidate) : mutateShape(candidate, level, false);
       }
-      return {target,candidate,angle,answer,startedAt:Date.now()};
+      return {target,candidate,angle,answer,mirrored,startedAt:Date.now()};
     }
     function renderBuddy(shape, opts={}){
       const small = !!opts.small;

@@ -38,10 +38,25 @@ const DESCRIPTIONS: Record<string, string> = {
   'trail-making': '按顺序连接宝藏点，练习任务切换和视觉搜索。',
   'number-sequence': '观察规律小火车编号，练习模式识别和逻辑推理。',
   'water-jugs': '帮小熊调出刚好的果汁容量，练习分步计划和执行控制。',
-  'quick-math': '帮小动物完成轻松心算，练习数字流畅性和计算注意。'
+  'quick-math': '帮小动物完成轻松心算，练习数字流畅性和计算注意。',
+  'global-local': '根据提示看整体或细节，练习整体-局部知觉和干扰控制。',
+  'visual-discrimination': '在相似贝壳里找出不同细节，练习视觉辨别和特征比较。',
+  'category-fluency': '把词语放进正确类别，练习语义分类和词汇理解。',
+  'emotion-match': '观察表情选择心情，练习情绪识别和社会线索理解。',
+  'gaze-follow': '跟随眼神方向找到礼物，练习共同注意和视线线索判断。',
+  'social-scenario': '读懂小镇情境，判断人物感受或合适做法。'
 }
 
 const ART_BASE = import.meta.env.BASE_URL
+const SVG_ART_IDS = new Set([
+  'strong-memory',
+  'global-local',
+  'visual-discrimination',
+  'category-fluency',
+  'emotion-match',
+  'gaze-follow',
+  'social-scenario'
+])
 const MAX_LEVEL_BY_ID: Record<string, number> = {
   'strong-memory': 60
 }
@@ -50,9 +65,7 @@ export const GAME_REGISTRY: GameMetadata[] = CANONICAL_GAME_DESIGNS.map(game => 
   id: game.id,
   name: game.redesignedTitle,
   description: DESCRIPTIONS[game.id],
-  artPath: game.id === 'strong-memory'
-    ? `${ART_BASE}game-art/strong-memory.svg`
-    : `${ART_BASE}game-art/${game.id}.png`,
+  artPath: `${ART_BASE}game-art/${game.id}.${SVG_ART_IDS.has(game.id) ? 'svg' : 'png'}`,
   scenePath: `${ART_BASE}game-scenes/${game.id}-scene.png`,
   characterPath: `${ART_BASE}game-scenes/${game.id}-character.png`,
   category: game.domain,

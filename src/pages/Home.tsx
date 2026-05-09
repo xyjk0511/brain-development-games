@@ -3,10 +3,33 @@ import { useNavigate } from 'react-router-dom'
 import { getAllProgress, resetAllProgress, type ProgressState } from '../lib/progress'
 import { GAME_REGISTRY, getTotalGames, getMaxLevel } from '../lib/gameRegistry'
 
+interface SessionRecordPreview {
+  id?: string
+  gameId?: string
+  domain?: string
+  taskFamily?: string
+  completedAt?: string
+  validation?: { ok?: boolean, errors?: string[] }
+  summary?: Record<string, unknown>
+}
+
+const SESSION_RECORD_KEY = 'cognitive-training-session-records-v1'
+
+const loadSessionRecordPreviews = (): SessionRecordPreview[] => {
+  if (typeof window === 'undefined') return []
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(SESSION_RECORD_KEY) ?? '[]')
+    return Array.isArray(parsed) ? parsed.slice(-5).reverse() : []
+  } catch {
+    return []
+  }
+}
+
 export default function Home(): JSX.Element {
   const [selected, setSelected] = useState<string>(GAME_REGISTRY[0].id)
   const navigate = useNavigate()
   const [progress, setProgress] = useState<ProgressState>(() => getAllProgress())
+  const [sessionRecords, setSessionRecords] = useState<SessionRecordPreview[]>(() => loadSessionRecordPreviews())
 
   const LeaderboardComponent = React.lazy(() => import('../components/LeaderBoard'))
   const selectedGame = GAME_REGISTRY.find(game => game.id === selected) ?? GAME_REGISTRY[0]
@@ -24,6 +47,21 @@ export default function Home(): JSX.Element {
   const handleReset = (): void => {
     resetAllProgress()
     setProgress({})
+  }
+
+  const refreshSessionRecords = (): void => {
+    setSessionRecords(loadSessionRecordPreviews())
+  }
+
+  const exportSessionRecords = (): void => {
+    const raw = window.localStorage.getItem(SESSION_RECORD_KEY) ?? '[]'
+    const blob = new Blob([raw], { type: 'application/json;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'cognitive-training-session-records.json'
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -104,6 +142,34 @@ export default function Home(): JSX.Element {
             <p className="text-sm sm:text-base text-slate-600">用低压力任务练习逻辑推理、策略规划和分析思维。</p>
           </div>
         </div>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6" aria-label="本地测试记录">
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-xl font-black text-slate-900 sm:text-2xl">本地测试记录</h2>
+            <p className="mt-1 text-sm text-slate-500">最近 5 条游戏 session，用于产品测试时核对 recorder 字段和导出 JSON。</p>
+          </div>
+          <div className="flex gap-2">
+            <button className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50" onClick={refreshSessionRecords}>刷新</button>
+            <button className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-slate-800" onClick={exportSessionRecords}>导出 JSON</button>
+          </div>
+        </div>
+        {sessionRecords.length === 0 ? (
+          <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-500">还没有记录。进入任意游戏完成一局后，这里会显示最近 session。</div>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {sessionRecords.map((record, index) => (
+              <div key={record.id ?? index} className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm">
+                <div className="font-black text-slate-900">{record.gameId ?? 'unknown'} · {record.domain ?? 'unknown'}</div>
+                <div className="mt-1 text-slate-500">{record.taskFamily ?? 'unknown'} · {record.completedAt ?? '未完成时间'}</div>
+                <div className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-bold ${record.validation?.ok === false ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                  {record.validation?.ok === false ? `字段异常 ${record.validation.errors?.length ?? 0}` : '字段通过'}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
