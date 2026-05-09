@@ -12,8 +12,8 @@
     {
       id: 'flash-shape',
       name: '快闪图形',
-      desc: '短暂记住闪现图形的位置，遮住后把位置点回来。',
-      tag: '瞬时记忆',
+      desc: '先记住上一张图形，下一张出现后判断两张图形是否相同。',
+      tag: '即刻记忆',
       art: 'training-assets/image2/flash/badge_large_01.png',
       hash: '#flash-shape',
     },

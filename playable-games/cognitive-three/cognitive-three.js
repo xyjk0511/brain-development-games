@@ -28,8 +28,8 @@ const gameCopy = {
     rule: '训练目标：干扰抑制与规则切换。每轮先看左侧目标，再按提示选择右侧正确图形。',
   },
   'flash-shape': {
-    copy: '短暂记住亮起的格子，遮住后按原位置点回。',
-    rule: '训练目标：瞬时视觉记忆。先观察亮起徽章，遮住后只点刚才出现过的位置。',
+    copy: '先记住上一张图形，下一张出现后判断两张图形是否相同。',
+    rule: '训练目标：即刻视觉记忆。先观察上一张图形，1 秒后判断当前图形与上一张是否相同。',
   },
   'eye-quick': {
     copy: '地鼠出现要快速点击，干扰物出现要忍住。',
@@ -192,52 +192,49 @@ function renderStroop() {
 }
 
 function renderFlash() {
-  promptEl.textContent = '记住亮起图形的位置，遮住后点回来';
-  const targets = shuffle(Array.from({ length: 16 }, (_, index) => index)).slice(0, 3 + (round % 2));
-  const selected = [];
-  let recall = false;
+  promptEl.textContent = '记住这张图形';
+  const previousIndex = (round * 5 + 2) % 16;
+  const isSame = [false, true, false, false, true, true, false, true][round % 8];
+  const currentIndex = isSame ? previousIndex : (previousIndex + 5 + round * 3) % 16;
   const board = document.createElement('div');
-  board.className = 'flash-board';
-  const grid = document.createElement('div');
-  grid.className = 'flash-grid';
+  board.className = 'flash-compare-board';
 
-  Array.from({ length: 16 }, (_, index) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.append(flashBadge(index));
-    if (!targets.includes(index)) button.classList.add('hidden');
-    button.onclick = () => {
-      if (!recall || answered || selected.includes(index)) return;
-      selected.push(index);
-      button.classList.remove('hidden');
-      if (!targets.includes(index)) {
-        answer(false);
-        return;
-      }
-      if (targets.every((item) => selected.includes(item))) answer(true);
-    };
-    grid.append(button);
-  });
+  const card = document.createElement('div');
+  card.className = 'flash-card';
+  card.append(flashBadge(previousIndex));
+  const cardLabel = document.createElement('strong');
+  cardLabel.textContent = '上一张';
+  card.append(cardLabel);
 
-  const preview = document.createElement('div');
-  preview.className = 'flash-preview';
-  preview.append(flashBadge(round + 12));
-  const copy = document.createElement('span');
-  copy.textContent = '观察 0.9 秒后开始回忆';
-  preview.append(copy);
-  board.append(grid, preview);
+  const actions = document.createElement('div');
+  actions.className = 'flash-actions';
+  const sameButton = document.createElement('button');
+  sameButton.type = 'button';
+  sameButton.textContent = '相同';
+  sameButton.disabled = true;
+  const differentButton = document.createElement('button');
+  differentButton.type = 'button';
+  differentButton.textContent = '不同';
+  differentButton.disabled = true;
+  sameButton.onclick = () => answer(isSame);
+  differentButton.onclick = () => answer(!isSame);
+  actions.append(sameButton, differentButton);
+
+  board.append(card, actions);
   stage.append(board);
-  feedback.textContent = '正在展示';
+  feedback.textContent = '正在记忆上一张';
 
   window.setTimeout(() => {
-    recall = true;
     startedAt = Date.now();
-    feedback.textContent = '回忆位置';
-    copy.textContent = '点回刚才亮起的格子';
-    Array.from(grid.children).forEach((button, index) => {
-      if (targets.includes(index)) button.classList.add('hidden');
-    });
-  }, 900);
+    promptEl.textContent = '当前图形和上一张是否相同？';
+    feedback.textContent = '判断同或不同';
+    card.innerHTML = '';
+    card.append(flashBadge(currentIndex));
+    cardLabel.textContent = '当前张';
+    card.append(cardLabel);
+    sameButton.disabled = false;
+    differentButton.disabled = false;
+  }, 1000);
 }
 
 function renderEye() {
