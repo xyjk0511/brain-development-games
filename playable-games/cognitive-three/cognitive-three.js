@@ -45,13 +45,18 @@ const flashLevels = [
 ].map(([ID, Level, Rate, Type, MissionNum, MissionPass, Fault, Time, Brains, Score, Scores, Reward, RewardNum, Limit]) => ({
   ID, Level, Rate, Type, MissionNum, MissionPass, Fault, Time, Brains, Score, Scores, Reward, RewardNum, Limit,
 }));
-const flashCatalog = Array.from({ length: 28 }, (_, index) => ({
-  index,
-  color: (index % 7) + 1,
-  shape: (Math.floor(index / 7) % 2) + 1,
-  texture: (Math.floor(index / 14) % 2) + 1,
-  src: `flash/badge_r${String(Math.floor(index / 7) + 1).padStart(2, '0')}_c${String((index % 7) + 1).padStart(2, '0')}.png`,
-}));
+const flashCatalog = Array.from({ length: 120 }, (_, index) => {
+  const color = Math.floor(index / 15) + 1;
+  const shape = Math.floor((index % 15) / 3) + 1;
+  const texture = (index % 3) + 1;
+  return {
+    index,
+    color,
+    shape,
+    texture,
+    src: `../../training-assets/flash/core/flash_c${String(color).padStart(2, '0')}_s${String(shape).padStart(2, '0')}_t${String(texture).padStart(2, '0')}.svg`,
+  };
+});
 
 const gameNames = {
   'color-shape-stroop': '幻色图形',
@@ -97,7 +102,13 @@ function gemShape(shape, colorIndex, label = '') {
 
 function flashBadge(index) {
   const icon = flashCatalog[index % flashCatalog.length];
-  return imageAsset(icon.src, `记忆徽章 ${icon.index + 1}`);
+  const image = document.createElement('img');
+  image.src = icon.src;
+  image.alt = `记忆图形 ${icon.index + 1}`;
+  image.decoding = 'async';
+  image.loading = 'eager';
+  image.className = 'sprite-shadow';
+  return image;
 }
 
 function eyeSprite(kind, helmetHits = 0) {
