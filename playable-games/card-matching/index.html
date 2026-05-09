@@ -426,6 +426,9 @@
           currentStreak: 0,
           maxStreak: 0,
           attemptLog: [],
+          trials: [],
+          events: [],
+          firstSeenMap: {},
           hintsLeft: hints,
           usedHints: 0,
           locked: false,
@@ -605,6 +608,10 @@
         if (!game || game.finished || game.locked || game.showAll) return;
         const card = game.deck.find((item) => item.uid === uid);
         if (!card || card.open || card.matched) return;
+        if (!game.firstSeenMap[card.animalId]) {
+          game.firstSeenMap[card.animalId] = { uid: card.uid, move: game.moves + 1, elapsedMs: game.startedAt ? Date.now() - game.startedAt : 0 };
+        }
+        game.events.push({ type: "card-open", uid: card.uid, animalId: card.animalId, move: game.moves + 1, elapsedMs: game.startedAt ? Date.now() - game.startedAt : 0 });
         card.open = true;
         game.opened.push(card.uid);
         renderBoard(game);
@@ -620,10 +627,31 @@
         const second = game.deck.find((item) => item.uid === secondUid);
         if (!first || !second) return;
         game.locked = true;
+        const attemptStartedAt = Date.now();
+        const attempt = {
+          trialId: `card-matching-${game.internalId}-${game.moves}`,
+          gameId: "card-matching",
+          domain: "memory",
+          taskFamily: "paired-associate",
+          mode: game.mode === "practice" ? "training-practice" : "training",
+          level: game.level,
+          pairCount: game.pairCount,
+          stimulus: [firstUid, secondUid],
+          condition: { pairCount: game.pairCount, hintsLeft: game.hintsLeft, flipCount: game.moves * 2 },
+          correctAnswer: first.animalId,
+          response: [first.animalId, second.animalId],
+          correct: first.animalId === second.animalId,
+          rtMs: game.startedAt ? attemptStartedAt - game.startedAt : 0,
+          errorType: first.animalId === second.animalId ? null : "mismatch",
+          flipCount: game.moves * 2,
+          mismatchCount: game.mismatches + (first.animalId === second.animalId ? 0 : 1),
+          difficultyParams: { level: game.level, pairCount: game.pairCount, hintsLeft: game.hintsLeft }
+        };
         if (first.animalId === second.animalId) {
           game.currentStreak += 1;
           game.maxStreak = Math.max(game.maxStreak, game.currentStreak);
           game.attemptLog.push(true);
+          game.trials.push(attempt);
           setFeedback(game.mode, `找到了：${first.name}和朋友在一起啦。`, "good");
           setTimeout(() => {
             if (!isCurrent(game) || game.finished) return;
@@ -641,6 +669,7 @@
           game.mismatches += 1;
           game.currentStreak = 0;
           game.attemptLog.push(false);
+          game.trials.push(attempt);
           setFeedback(game.mode, "没关系，它们还不是同一对朋友。记住位置，再找找。", "kind");
           setTimeout(() => {
             if (!isCurrent(game) || game.finished) return;
@@ -695,6 +724,7 @@
           mismatches: game.mismatches,
           pairCount,
           level: game.level,
+          startedAt: game.startedAt,
           usedHints: game.usedHints,
           maxStreak: game.maxStreak,
           moves,
@@ -715,6 +745,9 @@
           pairSuccessRate,
           maxStreak: game.maxStreak,
           usedHints: game.usedHints,
+          firstSeenMap: game.firstSeenMap,
+          trials: game.trials,
+          events: game.events,
           stars,
           recommend
         };
@@ -848,6 +881,38 @@
             nextPairs: result.recommend.nextPairs,
             nextPreviewMs: result.recommend.nextPreviewMs
           }));
+          if (window.CognitiveGameRecorder) {
+            window.CognitiveGameRecorder.record("card-matching", {
+              domain: "memory",
+              taskFamily: "paired-associate",
+              mode: "training",
+              level: result.level,
+              startedAt: result.startedAt ? new Date(result.startedAt).toISOString() : new Date().toISOString(),
+              completedAt: new Date().toISOString(),
+              summary: {
+                pairCount: result.pairCount,
+                flips: result.moves * 2,
+                moves: result.moves,
+                mismatches: result.mismatches,
+                matchedPairs: result.correctPairs,
+                elapsedMs: result.elapsedSeconds * 1000,
+                accuracy: result.accuracy,
+                efficiencyScore: result.accuracy,
+                stars: result.stars,
+                nextLevel: result.recommend.nextLevel
+              },
+              firstSeenMap: result.firstSeenMap,
+              trials: result.trials,
+              events: result.events,
+              adaptive: {
+                previousLevel: result.level,
+                recommendedLevel: result.recommend.nextLevel,
+                nextPairs: result.recommend.nextPairs,
+                nextPreviewMs: result.recommend.nextPreviewMs,
+                rule: result.recommend.ruleText
+              }
+            });
+          }
         } catch (error) {}
       }
 

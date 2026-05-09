@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>贝壳找不同｜Visual Discrimination</title>
+  <link rel="stylesheet" href="../shared/unified.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../shared/unified.js"></script>
+  <script src="../shared/domain-gap-game.js"></script>
+  <script>
+    CognitiveDomainGame.mount({
+      gameId: 'visual-discrimination',
+      title: '贝壳找不同',
+      subtitle: '在相似图案里找出唯一不一样的细节。',
+      domain: 'perception',
+      domainLabel: '感知觉',
+      taskFamily: 'visual-discrimination',
+      primaryParadigm: 'Visual Discrimination / Odd-One-Out',
+      basis: '参考视觉辨别、same-different 判断和 odd-one-out 搜索任务；实现结构参考 jsPsych 视觉刺激与按钮反应、PsyToolkit 视觉任务的数据字段。',
+      instructions: '每题会出现一组相似图案。找出形状、方向或颜色上唯一不同的那个。',
+      mascot: '🐚',
+      tone1: '#b7f3e4',
+      tone2: '#c8dcff',
+      accent: '#20817a',
+      accent2: '#63c7b2',
+      rounds: 10,
+      trials: [
+        { kind: 'grid', prompt: '哪一个贝壳方向不同？', items: ['🐚','🐚','🐚','🌀'], correct: '🌀', options: ['🐚','🌀','⭐'], condition: { feature: 'shape', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个图案颜色/类别不同？', items: ['🟦','🟦','🟩','🟦'], correct: '🟩', options: ['🟦','🟩','🟨'], condition: { feature: 'color', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个不是海洋朋友？', items: ['🐟','🐟','🐠','🐟'], correct: '🐠', options: ['🐟','🐠','🐡'], condition: { feature: 'identity', setSize: 4 } },
+        { kind: 'grid', prompt: '找出唯一不同的星星。', items: ['⭐','⭐','🌟','⭐'], correct: '🌟', options: ['⭐','🌟','✨'], condition: { feature: 'detail', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个形状不同？', items: ['🔵','🔵','🔷','🔵'], correct: '🔷', options: ['🔵','🔷','🟣'], condition: { feature: 'shape', setSize: 4 } },
+        { kind: 'grid', prompt: '找出不同的方向线索。', items: ['⬆️','⬆️','➡️','⬆️'], correct: '➡️', options: ['⬆️','➡️','⬇️'], condition: { feature: 'orientation', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个不是同一种水果？', items: ['🍎','🍎','🍐','🍎'], correct: '🍐', options: ['🍎','🍐','🍊'], condition: { feature: 'identity', setSize: 4 } },
+        { kind: 'grid', prompt: '找出唯一不同的叶子。', items: ['🍃','🍃','🌿','🍃'], correct: '🌿', options: ['🍃','🌿','☘️'], condition: { feature: 'detail', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个颜色不同？', items: ['🟨','🟨','🟧','🟨'], correct: '🟧', options: ['🟨','🟧','🟥'], condition: { feature: 'color', setSize: 4 } },
+        { kind: 'grid', prompt: '哪一个图案不同？', items: ['🌙','🌙','☀️','🌙'], correct: '☀️', options: ['🌙','☀️','⭐'], condition: { feature: 'identity', setSize: 4 } }
+      ]
+    });
+  </script>
+</body>
+</html>

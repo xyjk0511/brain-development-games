@@ -297,7 +297,7 @@
     </section></div></main>`;
     bindCommon();
   }
-  function newStats(level){ return {level,timeLeft:60,score:0,taps:0,correct:0,wrong:0,rounds:0,replays:0,roundStart:Date.now(),started:Date.now(),roundTimes:[],streak:0,route:[],step:0,replayUsedThisRound:0}; }
+  function newStats(level){ return {level,timeLeft:60,score:0,taps:0,correct:0,wrong:0,rounds:0,replays:0,roundStart:Date.now(),started:Date.now(),roundTimes:[],streak:0,route:[],step:0,replayUsedThisRound:0,trials:[],events:[],currentTrial:null}; }
   function startTraining(level){
     clearInterval(timer); clearDemoTimers(); toast=''; paused=false; const lv=clampLevel(level || nextLevelFromStorage()); training=newStats(lv); state='training'; phase='demo'; startTimer(); startRound();
   }
@@ -305,7 +305,7 @@
   function currentConfig(){ let c={...DIFF[training.level]}; if(lowStim){ c.demo=Math.round(c.demo*1.25); c.dist=Math.max(0,c.dist-1); c.replay=Math.max(1,c.replay); if(training.level<=4)c.showFull=true; } return c; }
   function startRound(){
     clearDemoTimers(); if(!training || training.timeLeft<=0) return finishTraining();
-    const c=currentConfig(); training.route=makeRoute(c.len,c.nodes); training.step=0; training.replayUsedThisRound=0; doneNodes=new Set(); highlight=null; phase='demo'; render(); demoRoute(training.route, c.demo, ()=>{phase='recall'; highlight=null; training.roundStart=Date.now(); render();}, false);
+    const c=currentConfig(); training.route=makeRoute(c.len,c.nodes); training.step=0; training.replayUsedThisRound=0; training.currentTrial={trialId:`maze-${Date.now()}-${training.trials.length+1}`,route:[...training.route],config:{level:training.level,len:c.len,nodes:c.nodes,demoMs:c.demo,replayLimit:c.replay,distractors:c.dist,lowStim},startedAt:Date.now()}; doneNodes=new Set(); highlight=null; phase='demo'; render(); demoRoute(training.route, c.demo, ()=>{phase='recall'; highlight=null; training.roundStart=Date.now(); render();}, false);
   }
   function makeRoute(len,nodeCount){
     const pool=NODES.slice(0,nodeCount).map(n=>n.id); const r=[];
@@ -329,7 +329,8 @@
   function handleTrainingTap(id){
     if(!training || phase!=='recall' || paused) return;
     const expected=training.route[training.step]; training.taps++;
-    if(id===expected){ training.correct++; doneNodes.add(id); training.step++; training.score += 10; setToast(`亮起来了 ${training.step}/${training.route.length}`, ASSETS.success, 420); if(training.step>=training.route.length){ training.rounds++; training.streak++; training.score += 20 + (training.streak>=3?20:0); training.roundTimes.push((Date.now()-training.roundStart)/1000); phase='feedback'; setTimeout(()=>{ if(state==='training') startRound(); },780); } else { render(); } }
+    training.events.push({type:"route-node-tap",trialId:training.currentTrial&&training.currentTrial.trialId,step:training.step+1,expected,clicked:id,correct:id===expected,elapsedMs:Date.now()-training.roundStart});
+    if(id===expected){ training.correct++; doneNodes.add(id); training.step++; training.score += 10; setToast(`亮起来了 ${training.step}/${training.route.length}`, ASSETS.success, 420); if(training.step>=training.route.length){ training.rounds++; training.streak++; training.score += 20 + (training.streak>=3?20:0); training.roundTimes.push((Date.now()-training.roundStart)/1000); if(training.currentTrial){training.trials.push({trialId:training.currentTrial.trialId,gameId:"maze",domain:"memory",taskFamily:"route-memory",mode:"training",level:training.level,stimulus:{route:training.currentTrial.route},condition:training.currentTrial.config,correctAnswer:training.currentTrial.route,response:training.events.filter(e=>e.trialId===training.currentTrial.trialId).map(e=>e.clicked),correct:true,rtMs:Date.now()-training.roundStart,errorType:null,difficultyParams:training.currentTrial.config,replayCount:training.replayUsedThisRound});} phase='feedback'; setTimeout(()=>{ if(state==='training') startRound(); },780); } else { render(); } }
     else { training.wrong++; training.streak=0; wrongNode=id; hintNode=expected; setToast('这一步换个亮点试试', ASSETS.hint, 820); setTimeout(()=>{wrongNode=null; hintNode=null; render();},330); }
   }
   function finishTraining(){
@@ -341,9 +342,13 @@
     if(accuracy >= .88 && training.rounds >= 3 && avgRound <= 16) next++;
     if(accuracy < .65 || training.rounds === 0 || avgRound > 24) next--;
     next = clampLevel(next);
+    if(training.currentTrial && !training.trials.some(t=>t.trialId===training.currentTrial.trialId)){
+      training.trials.push({trialId:training.currentTrial.trialId,gameId:"maze",domain:"memory",taskFamily:"route-memory",mode:"training",level:training.level,stimulus:{route:training.currentTrial.route},condition:training.currentTrial.config,correctAnswer:training.currentTrial.route,response:training.events.filter(e=>e.trialId===training.currentTrial.trialId).map(e=>e.clicked),correct:false,rtMs:Date.now()-training.roundStart,errorType:training.timeLeft<=0?"timeout":"incomplete",difficultyParams:training.currentTrial.config,replayCount:training.replayUsedThisRound});
+    }
     const last = {level:training.level,nextLevel:next,score:training.score,rounds:training.rounds,correct:training.correct,taps:training.taps,wrong:training.wrong,replays:training.replays,elapsed,accuracy,accuracyText:Math.round(accuracy*100)+'%',avgRound:Math.round(avgRound)};
     localStorage.setItem('fireflyRouteLastRun', JSON.stringify(last));
     localStorage.setItem('fireflyRouteRecommendedLevel', String(next));
+    if(window.CognitiveGameRecorder){window.CognitiveGameRecorder.record("maze",{domain:"memory",taskFamily:"route-memory",mode:"training",level:training.level,startedAt:new Date(training.started).toISOString(),completedAt:new Date().toISOString(),summary:{score:training.score,rounds:training.rounds,correct:training.correct,taps:training.taps,wrong:training.wrong,wrongTurns:training.wrong,replays:training.replays,elapsed,accuracy,nextLevel:next,avgRound:Math.round(avgRound)},trials:training.trials,events:training.events,adaptive:{previousLevel:training.level,nextLevel:next,rule:"increase route length/nodes after accurate recall; reduce after wrong taps or time pressure"}})}
     state='result'; render();
   }
   function renderTraining(){

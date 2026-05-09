@@ -229,7 +229,7 @@
     };
 
     function freshStats(level){
-      return { level, correct: 0, attempts: 0, misses: 0, hints: 0, score: 0, totalReaction: 0, reactionCount: 0, streak: 0, bestStreak: 0, startedAt: Date.now() };
+      return { level, correct: 0, attempts: 0, misses: 0, hints: 0, score: 0, totalReaction: 0, reactionCount: 0, streak: 0, bestStreak: 0, startedAt: Date.now(), trials: [] };
     }
 
     function loadProgress(){
@@ -623,8 +623,25 @@
       if(state.screen !== "training" || state.locked || state.paused) return;
       const item = state.problem.candidates[i];
       state.stats.attempts += 1;
-      if(sameItem(item, state.problem.answer)){
-        const reaction = Math.max(300, Date.now() - (state.roundStart || Date.now()));
+      const reaction = Math.max(300, Date.now() - (state.roundStart || Date.now()));
+      const correctChoice = sameItem(item, state.problem.answer);
+      state.stats.trials.push({
+        trialId:`number-sequence-${Date.now()}-${state.stats.attempts}`,
+        gameId:'number-sequence',
+        domain:'language',
+        taskFamily:'number-series',
+        mode:'training',
+        level:state.level,
+        stimulus:{kind:state.problem.kind, visible:state.problem.visible, candidates:state.problem.candidates, missingIndex:state.problem.visible.length},
+        condition:{ruleType:state.problem.kind, visibleCount:state.problem.visible.length, candidateCount:state.problem.candidates.length, timeLeft:state.timeLeft, passCorrect:(levelConfig[state.level] || levelConfig[1]).passCorrect},
+        correctAnswer:state.problem.answer,
+        response:item,
+        correct:correctChoice,
+        rtMs:reaction,
+        errorType:correctChoice ? null : 'wrong_candidate',
+        difficultyParams:{level:state.level, config:levelConfig[state.level] || levelConfig[1]}
+      });
+      if(correctChoice){
         state.stats.correct += 1;
         state.stats.score += 10;
         state.stats.totalReaction += reaction;
@@ -667,6 +684,17 @@
       progress.tutorialDone = true;
       progress.sessions = [result, ...(progress.sessions || [])].slice(0, 10);
       saveProgress(progress);
+      window.CognitiveGameRecorder?.record('number-sequence', {
+        domain:'language',
+        taskFamily:'number-series',
+        mode:'training',
+        level:state.stats.level,
+        startedAt:new Date(state.stats.startedAt).toISOString(),
+        completedAt:new Date().toISOString(),
+        summary:result,
+        trials:state.stats.trials,
+        adaptive:{recommendedLevel:nextLevel, reason:recommendReason(result)}
+      });
       state.lastResult = result;
       state.screen = "result";
       state.paused = false;
