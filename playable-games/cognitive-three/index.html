@@ -7,30 +7,53 @@
     <link rel="stylesheet" href="./cognitive-three.css">
   </head>
   <body>
+    <header class="platform-bar">
+      <div class="platform-brand">认知功能障碍评估与训练软件</div>
+      <nav class="platform-nav" aria-label="主导航">
+        <span>首页</span>
+        <span>档案管理</span>
+        <span>状态监控</span>
+        <span>方案管理</span>
+        <span class="active">产品体验</span>
+        <span>测评结果</span>
+        <span>设置</span>
+      </nav>
+      <div class="platform-user">jiangsiqi2</div>
+    </header>
+
     <main class="game-shell">
-      <header class="game-header">
+      <div class="mode-strip">
         <a class="back-link" href="/brain-development-games/">返回首页</a>
         <div>
-          <p>新增认知训练任务</p>
-          <h1 id="game-title">幻色图形</h1>
+          <span>训练模式</span>
+          <strong id="game-title">幻色图形</strong>
         </div>
         <nav class="game-tabs" aria-label="新增游戏">
           <a href="#color-shape-stroop" data-game="color-shape-stroop">幻色图形</a>
           <a href="#flash-shape" data-game="flash-shape">快闪图形</a>
           <a href="#eye-quick" data-game="eye-quick">眼疾手快</a>
         </nav>
-      </header>
+      </div>
 
       <section class="game-card">
-        <div class="hud">
-          <span>进度 <strong id="round">1/8</strong></span>
-          <span>得分 <strong id="score">0</strong></span>
-          <span>连击 <strong id="streak">0</strong></span>
+        <aside class="game-sidebar">
+          <div class="side-kicker">规范任务</div>
+          <h1 id="side-title">幻色图形</h1>
+          <p id="side-copy">按规则忽略干扰信息，选择正确目标。</p>
+          <div class="hud">
+            <span>进度 <strong id="round">1/8</strong></span>
+            <span>得分 <strong id="score">0</strong></span>
+            <span>连击 <strong id="streak">0</strong></span>
+          </div>
+          <div class="rule-box" id="rule-box">根据本轮规则作答。</div>
+        </aside>
+
+        <div class="play-panel">
+          <div class="prompt" id="prompt">根据规则作答</div>
+          <div class="stage" id="stage"></div>
+          <div class="feedback" id="feedback">准备开始</div>
+          <button class="next-button" id="next-button" type="button">下一题</button>
         </div>
-        <div class="prompt" id="prompt">根据规则作答</div>
-        <div class="stage" id="stage"></div>
-        <div class="feedback" id="feedback">准备开始</div>
-        <button class="next-button" id="next-button" type="button">下一题</button>
       </section>
     </main>
 
