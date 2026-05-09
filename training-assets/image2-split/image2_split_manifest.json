@@ -1,0 +1,69 @@
+{
+  "kind": "individual-transparent-png-assets",
+  "method": "procedural raster generation from per-asset vector drawing commands; not browser screenshots and not cropped page captures",
+  "canvas": {
+    "width": 256,
+    "height": 256,
+    "format": "png",
+    "background": "transparent"
+  },
+  "stroop": {
+    "circle": [
+      "/training-assets/image2-split/stroop/circle_01.png",
+      "/training-assets/image2-split/stroop/circle_02.png",
+      "/training-assets/image2-split/stroop/circle_03.png",
+      "/training-assets/image2-split/stroop/circle_04.png",
+      "/training-assets/image2-split/stroop/circle_05.png",
+      "/training-assets/image2-split/stroop/circle_06.png",
+      "/training-assets/image2-split/stroop/circle_07.png",
+      "/training-assets/image2-split/stroop/circle_08.png"
+    ],
+    "square": [
+      "/training-assets/image2-split/stroop/square_01.png",
+      "/training-assets/image2-split/stroop/square_02.png",
+      "/training-assets/image2-split/stroop/square_03.png",
+      "/training-assets/image2-split/stroop/square_04.png",
+      "/training-assets/image2-split/stroop/square_05.png",
+      "/training-assets/image2-split/stroop/square_06.png",
+      "/training-assets/image2-split/stroop/square_07.png",
+      "/training-assets/image2-split/stroop/square_08.png"
+    ],
+    "triangle": [
+      "/training-assets/image2-split/stroop/triangle_01.png",
+      "/training-assets/image2-split/stroop/triangle_02.png",
+      "/training-assets/image2-split/stroop/triangle_03.png",
+      "/training-assets/image2-split/stroop/triangle_04.png",
+      "/training-assets/image2-split/stroop/triangle_05.png",
+      "/training-assets/image2-split/stroop/triangle_06.png",
+      "/training-assets/image2-split/stroop/triangle_07.png",
+      "/training-assets/image2-split/stroop/triangle_08.png"
+    ]
+  },
+  "flash": [
+    "/training-assets/image2-split/flash/badge_01.png",
+    "/training-assets/image2-split/flash/badge_02.png",
+    "/training-assets/image2-split/flash/badge_03.png",
+    "/training-assets/image2-split/flash/badge_04.png",
+    "/training-assets/image2-split/flash/badge_05.png",
+    "/training-assets/image2-split/flash/badge_06.png",
+    "/training-assets/image2-split/flash/badge_07.png",
+    "/training-assets/image2-split/flash/badge_08.png",
+    "/training-assets/image2-split/flash/badge_09.png",
+    "/training-assets/image2-split/flash/badge_10.png",
+    "/training-assets/image2-split/flash/badge_11.png",
+    "/training-assets/image2-split/flash/badge_12.png",
+    "/training-assets/image2-split/flash/badge_13.png",
+    "/training-assets/image2-split/flash/badge_14.png",
+    "/training-assets/image2-split/flash/badge_15.png",
+    "/training-assets/image2-split/flash/badge_16.png"
+  ],
+  "eye": {
+    "mole_normal_idle": "/training-assets/image2-split/eye/mole_normal_idle.png",
+    "mole_helmet_idle": "/training-assets/image2-split/eye/mole_helmet_idle.png",
+    "mole_helmet_cracked": "/training-assets/image2-split/eye/mole_helmet_cracked.png",
+    "bomb_fuse": "/training-assets/image2-split/eye/bomb_fuse.png",
+    "cat_guard_idle": "/training-assets/image2-split/eye/cat_guard_idle.png",
+    "rabbit_decoy_idle": "/training-assets/image2-split/eye/rabbit_decoy_idle.png",
+    "panda_decoy_idle": "/training-assets/image2-split/eye/panda_decoy_idle.png"
+  }
+}
