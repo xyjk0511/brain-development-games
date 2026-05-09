@@ -1267,7 +1267,6 @@
       const cfg = getConfig(startLevel);
       state.screen = "training";
       state.training = {
-        startedAt: Date.now(),
         level: startLevel,
         totalRounds: cfg.rounds,
         roundIndex: 0,
@@ -1293,7 +1292,6 @@
         time: cfg.timer,
         stage: "idle",
         seq: [],
-        roundInputSequence: [],
         inputIndex: 0,
         previewIndex: 0,
         highlight: null,
@@ -1332,7 +1330,6 @@
       }
       clearSequenceTimers();
       t.seq = generateSequence(cfg, t.roundIndex);
-      t.roundInputSequence = [];
       t.inputIndex = 0;
       t.previewIndex = 0;
       t.highlight = null;
@@ -1395,7 +1392,6 @@
       const t = state.training;
       if (!t || t.stage !== "input" || t.paused) return;
       const expected = t.seq[t.inputIndex];
-      t.roundInputSequence.push({ color, expected, index: t.inputIndex, correct: color === expected, elapsedMs: Date.now() - t.startedAt });
       t.totalInputs += 1;
       t.roundTotalInputs += 1;
       if (color === expected) {
@@ -1449,7 +1445,7 @@
         t.streak = 0;
       }
       t.maxStreak = Math.max(t.maxStreak, t.streak);
-      t.stats.push({ completed: true, sequence: [...t.seq], responseSequence: t.roundInputSequence.map(item => item.color), inputEvents: [...t.roundInputSequence], replayUsed: t.roundReplayUsed, support: t.roundSupport, length: t.seq.length, level: t.level, rate: roundRate, mode: t.adaptiveMode });
+      t.stats.push({ completed: true, replayUsed: t.roundReplayUsed, support: t.roundSupport, length: t.seq.length, level: t.level, rate: roundRate, mode: t.adaptiveMode });
       t.feedback = { type: "success", text: "灯光接上啦！", sub: "灯塔更亮了一点。" };
       adaptDuringTraining();
       t.message = `这段旋律连得很好。自动调节难度已更新：${t.adaptiveHud}。`;
@@ -1594,54 +1590,6 @@
         recommendation
       };
       saveStoredPerformance(record);
-      if (window.CognitiveGameRecorder) {
-        window.CognitiveGameRecorder.record("simon-says", {
-          domain: "memory",
-          taskFamily: "sequence-memory",
-          mode: "training",
-          level: t.level,
-          startedAt: new Date(t.startedAt || Date.now()).toISOString(),
-          completedAt: new Date().toISOString(),
-          summary: {
-            accuracy,
-            completionRate,
-            completedRounds: t.completedRounds,
-            totalRounds: t.totalRounds,
-            longest: t.longest,
-            maxStreak: t.maxStreak,
-            score: t.score,
-            replayCount: replayTotal,
-            nextLevel,
-            recommendedSequenceLength
-          },
-          trials: t.stats.map((trial, index) => ({
-            trialId: `simon-says-${Date.now()}-${index + 1}`,
-            gameId: "simon-says",
-            domain: "memory",
-            taskFamily: "sequence-memory",
-            mode: "training",
-            level: t.level,
-            sequenceLength: trial.length,
-            stimulus: { sequence: trial.sequence || [] },
-            condition: { sequenceLength: trial.length, replayUsed: trial.replayUsed, support: trial.support, adaptiveMode: trial.mode },
-            correctAnswer: trial.sequence || [],
-            response: trial.responseSequence || [],
-            correct: trial.completed,
-            rtMs: trial.inputEvents && trial.inputEvents.length ? trial.inputEvents[trial.inputEvents.length - 1].elapsedMs : null,
-            replayUsed: trial.replayUsed,
-            support: trial.support,
-            rate: trial.rate,
-            adaptiveMode: trial.mode,
-            errorType: trial.completed ? null : "sequence_error",
-            difficultyParams: {
-              level: trial.level,
-              sequenceLength: trial.length,
-              adaptiveMode: trial.mode
-            }
-          })),
-          adaptive: t.adaptiveHistory
-        });
-      }
 
       state.lastResult = {
         completedRounds: t.completedRounds,

@@ -779,7 +779,7 @@
       const level = state.level;
       const cfg = LEVELS[level];
       state.adaptive = getAdaptiveSettings(level);
-      state.training = {taskIndex:0,taskTotal:cfg.tasks,completed:0,validMoves:0,softMistakes:0,hints:0,totalMoves:0,totalOptimal:0,startAt:Date.now(),elapsed:0,level,roundEnded:false,adaptive:state.adaptive,trials:[],events:[]};
+      state.training = {taskIndex:0,taskTotal:cfg.tasks,completed:0,validMoves:0,softMistakes:0,hints:0,totalMoves:0,totalOptimal:0,startAt:Date.now(),elapsed:0,level,roundEnded:false,adaptive:state.adaptive};
       state.remaining = cfg.time;
       state.paused=false;
       loadTrainingTask();
@@ -800,7 +800,6 @@
       state.target=deepBoard(t.target);
       state.optimal=t.optimal;
       state.moveCount=0;
-      state.currentTrialId=`tower-of-hanoi-${Date.now()}-${state.training ? state.training.taskIndex+1 : 0}`;
       state.history=[];
       state.selectedRack=null;
       state.softMsg="看着目标卡，先想一下要把最小的甜甜圈放到哪里。";
@@ -841,7 +840,6 @@
         state.history.push(deepBoard(state.board));
         state.board=applyMove(state.board,from,to);
         state.moveCount++;
-        if(state.screen === 'training') state.training.events.push({trialId:state.currentTrialId,from,to,valid:true,move:state.moveCount,elapsedMs:Date.now()-state.training.startAt});
         state.selectedRack=null;
         state.hintMove=null;
         state.showHintSticker=false;
@@ -853,7 +851,6 @@
         state.hintMove=null;
         state.softMsg = "这个位置会压到小甜甜圈，换个架子试试。";
         if(state.screen === 'training') state.training.softMistakes++;
-        if(state.screen === 'training') state.training.events.push({trialId:state.currentTrialId,from,to,valid:false,move:state.moveCount+1,elapsedMs:Date.now()-state.training.startAt});
         render();
       }
     }
@@ -899,7 +896,6 @@
         return;
       }
       if(state.screen === 'training'){
-        state.training.trials.push({trialId:state.currentTrialId,gameId:"tower-of-hanoi",domain:"executive",taskFamily:"planning",mode:"training",level:state.training.level,taskIndex:state.training.taskIndex+1,stimulus:{start:state.history[0]||null,target:state.target},condition:{optimalMoves:state.optimal,adaptive:state.training.adaptive},correctAnswer:"target_board",response:deepBoard(state.board),correct:true,rtMs:Date.now()-state.training.startAt,moves:state.moveCount,optimalMoves:state.optimal,errorType:null,difficultyParams:{level:state.training.level,taskTotal:state.training.taskTotal}});
         state.training.completed++;
         state.training.totalMoves += state.moveCount;
         state.training.totalOptimal += state.optimal;
@@ -962,7 +958,6 @@
       state.lastResult = result;
       state.level = nextLevel;
       saveRound(result);
-      if(window.CognitiveGameRecorder){window.CognitiveGameRecorder.record("tower-of-hanoi",{domain:"executive",taskFamily:"planning",mode:"training",level:result.level,startedAt:new Date(state.training.startAt).toISOString(),completedAt:new Date().toISOString(),summary:{completed:result.completed,taskTotal:result.taskTotal,accuracy:result.accuracy,elapsed:result.elapsed,hints:result.hints,softMistakes:result.softMistakes,totalMoves:result.totalMoves,totalOptimal:result.totalOptimal,nextLevel:result.nextLevel,adjustment:result.adjustment,success:result.success,failed:result.failed},trials:state.training.trials,events:state.training.events,adaptive:{nextLevel:result.nextLevel,adjustment:result.adjustment,nextRoundSettings:result.nextRoundSettings}})}
       state.screen='result';
       render();
     }

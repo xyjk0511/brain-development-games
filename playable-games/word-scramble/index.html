@@ -201,7 +201,7 @@
       function nextTask(){
         if(!state.round) return;
         if(state.round.answered>=state.round.total || state.round.remaining<=0) return finishRound();
-        state.task=makeTask(state.level); state.task.trialId=`word-scramble-${Date.now()}-${state.round.answered+1}`; state.taskStart=Date.now(); state.feedback=null; render();
+        state.task=makeTask(state.level); state.taskStart=Date.now(); state.feedback=null; render();
       }
       function startTimer(){
         if(timer) clearInterval(timer);
@@ -239,7 +239,7 @@
       window.enterTraining=function(){clearAll();state.view="countdown";state.countdown=3;render();countdownTimer=setInterval(()=>{state.countdown--; if(state.countdown<=0){clearInterval(countdownTimer);countdownTimer=null;startRound()} else render()},900)};
       function startRound(){
         clearAll(); const cfg=levels[state.level];
-        state.view="playing"; state.round={level:state.level,total:cfg.total,remaining:cfg.time,score:0,correct:0,wrong:0,hints:0,answered:0,times:[],trials:[],started:Date.now()};
+        state.view="playing"; state.round={level:state.level,total:cfg.total,remaining:cfg.time,score:0,correct:0,wrong:0,hints:0,answered:0,times:[],started:Date.now()};
         nextTask(); startTimer();
       }
       window.restartRound=function(){state.view="countdown";state.countdown=3;window.enterTraining()};
@@ -247,7 +247,6 @@
         if(state.view!=="playing" || state.feedback) return;
         const t=state.task, r=state.round, correct=id===t.correctId, response=Date.now()-state.taskStart;
         r.times.push(response); r.answered++;
-        r.trials.push({trialId:t.trialId,gameId:"word-scramble",domain:"language",taskFamily:"semantic-matching",mode:"training",level:state.level,stimulus:{instruction:t.instruction,targetAlt:t.targetAlt,options:t.options.map(o=>({id:o.id,word:o.word,cat:o.cat,tags:o.tags||[]}))},condition:{type:t.type,optionCount:t.options.length,wordPool:"core-object-vocabulary"},correctAnswer:t.correctId,response:id,correct,rtMs:response,errorType:correct?null:"wrong_choice",difficultyParams:{level:state.level,total:r.total,timeLimit:levels[state.level].time}});
         if(correct){r.correct++; r.score+=10; state.feedback={correct:true,picked:id,text:"找到了！星星加一颗。"};}
         else{r.wrong++; r.hints++; state.feedback={correct:false,picked:id,text:"这朵花还在找另一个朋友。"};}
         render();
@@ -260,7 +259,7 @@
         const total=Math.max(1,r.answered); const acc=Math.round(r.correct/total*100); const d=decide({level:state.level,total,correct:r.correct,times:r.times});
         const avgMs=d.avg; const avgText=avgMs>9000?"较慢":(avgMs/1000).toFixed(1)+" 秒";
         const result={level:state.level,total,correct:r.correct,wrong:r.wrong,score:r.score,accuracy:acc,avgMs,avgText,nextLevel:d.next,reason:d.reason,ended:Date.now()};
-        state.result=result; state.view="result"; safeSet("字字小乐园_最近表现",JSON.stringify(result)); safeSet("字字小乐园_推荐难度",String(d.next)); if(window.CognitiveGameRecorder){window.CognitiveGameRecorder.record("word-scramble",{domain:"language",taskFamily:"semantic-matching",mode:"training",level:state.level,startedAt:new Date(r.started).toISOString(),completedAt:new Date().toISOString(),summary:{total,correct:r.correct,wrong:r.wrong,hints:r.hints,score:r.score,accuracy:acc,avgMs,nextLevel:d.next},trials:r.trials||[],adaptive:{nextLevel:d.next,reason:d.reason}})} render();
+        state.result=result; state.view="result"; safeSet("字字小乐园_最近表现",JSON.stringify(result)); safeSet("字字小乐园_推荐难度",String(d.next)); render();
       }
       window.playRecommended=function(){state.level=state.result?state.result.nextLevel:state.level;window.enterTraining()};
       window.playEasy=function(){state.level=Math.max(1,(state.result?state.result.nextLevel:state.level)-1);window.enterTraining()};

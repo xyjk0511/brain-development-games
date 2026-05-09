@@ -60,30 +60,6 @@
     .info-panel{background:rgba(255,255,255,.78);border-radius:24px;padding:18px;border:2px solid rgba(255,255,255,.9);box-shadow:var(--shadow-soft)}
     .scene-wrap{position:relative;border-radius:30px;overflow:hidden;min-height:540px;background:#eaf8ff;box-shadow:var(--shadow);border:2px solid rgba(255,255,255,.9)}
     .scene-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.98)}
-    .market-scene{position:absolute;inset:0;overflow:hidden;background:
-      linear-gradient(180deg,rgba(255,252,238,.92) 0%,rgba(252,236,201,.92) 42%,rgba(202,232,226,.88) 100%),
-      radial-gradient(circle at 16% 20%,rgba(255,211,107,.28),transparent 28%),
-      radial-gradient(circle at 86% 16%,rgba(97,184,167,.26),transparent 30%);
-      isolation:isolate}
-    .market-scene::before{content:"";position:absolute;inset:0;background:
-      linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px),
-      linear-gradient(180deg,rgba(139,107,74,.08) 1px,transparent 1px);
-      background-size:38px 38px;opacity:.45;mix-blend-mode:multiply}
-    .market-awning{position:absolute;left:0;right:0;top:0;height:118px;background:
-      repeating-linear-gradient(90deg,#fff6dc 0 68px,#f9855b 68px 136px,#fff6dc 136px 204px,#61b8a7 204px 272px);
-      box-shadow:0 14px 30px rgba(94,65,32,.16);clip-path:polygon(0 0,100% 0,100% 72%,96% 86%,92% 72%,88% 86%,84% 72%,80% 86%,76% 72%,72% 86%,68% 72%,64% 86%,60% 72%,56% 86%,52% 72%,48% 86%,44% 72%,40% 86%,36% 72%,32% 86%,28% 72%,24% 86%,20% 72%,16% 86%,12% 72%,8% 86%,4% 72%,0 86%);opacity:.95}
-    .market-sign{position:absolute;left:50%;top:28px;transform:translateX(-50%) rotate(-1deg);z-index:1;background:#fffaf0;border:3px solid rgba(139,107,74,.18);border-radius:999px;padding:10px 28px;box-shadow:var(--shadow-soft);font-size:22px;font-weight:900;color:#356a61;letter-spacing:.04em}
-    .market-shelves{position:absolute;left:54px;right:54px;top:136px;height:190px;border-radius:26px;background:linear-gradient(180deg,rgba(99,128,104,.35),rgba(69,98,83,.30));box-shadow:inset 0 0 0 3px rgba(255,255,255,.38),0 18px 34px rgba(74,82,60,.16);overflow:hidden}
-    .market-shelves::before,.market-shelves::after{content:"";position:absolute;left:24px;right:24px;height:16px;border-radius:999px;background:linear-gradient(180deg,#9a6d3f,#724925);box-shadow:0 10px 20px rgba(57,36,20,.20)}
-    .market-shelves::before{top:58px}.market-shelves::after{top:128px}
-    .market-bin{position:absolute;top:26px;width:150px;height:54px;border-radius:0 0 26px 26px;background:linear-gradient(180deg,#c89150,#9d6331);box-shadow:inset 0 6px 0 rgba(255,255,255,.18),0 8px 14px rgba(59,35,17,.16)}
-    .market-bin:nth-child(1){left:8%}.market-bin:nth-child(2){left:30%;top:92px}.market-bin:nth-child(3){right:30%}.market-bin:nth-child(4){right:8%;top:92px}
-    .market-fruit{position:absolute;width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(65,43,22,.22))}
-    .market-fruit.f1{left:10%;top:28px}.market-fruit.f2{left:16%;top:38px}.market-fruit.f3{left:32%;top:100px}.market-fruit.f4{left:39%;top:108px}.market-fruit.f5{right:35%;top:30px}.market-fruit.f6{right:29%;top:40px}.market-fruit.f7{right:16%;top:104px}.market-fruit.f8{right:10%;top:114px}
-    .market-board{position:absolute;left:50%;top:214px;transform:translateX(-50%) rotate(.4deg);width:min(640px,72%);height:210px;border-radius:34px;background:linear-gradient(180deg,rgba(255,252,238,.94),rgba(255,239,200,.88));box-shadow:0 18px 40px rgba(96,70,37,.18),inset 0 0 0 4px rgba(255,255,255,.62);border:2px solid rgba(155,102,42,.16)}
-    .market-board::before{content:"今日订单";position:absolute;left:32px;top:20px;background:#61b8a7;color:#fff;border-radius:999px;padding:6px 16px;font-weight:900;box-shadow:var(--shadow-soft)}
-    .market-counter{position:absolute;left:36px;right:36px;bottom:20px;height:162px;border-radius:34px;background:linear-gradient(180deg,#d89b57,#a86833);box-shadow:0 -8px 0 rgba(255,255,255,.28) inset,0 -22px 42px rgba(93,58,28,.16) inset,0 20px 34px rgba(68,45,26,.16)}
-    .market-counter::before{content:"";position:absolute;left:28px;right:28px;top:22px;height:22px;border-radius:999px;background:rgba(255,245,219,.42)}
     .scene-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,232,.15),rgba(255,248,232,.25));pointer-events:none}
     .top-target{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:min(640px,calc(100% - 240px));min-height:92px;border-radius:24px;background:rgba(255,248,232,.94);border:3px solid rgba(255,224,138,.95);box-shadow:var(--shadow-soft);display:flex;align-items:center;justify-content:center;padding:13px 22px;text-align:center;font-size:clamp(20px,2.6vw,30px);font-weight:900;line-height:1.35;z-index:5}
     .target-label{position:absolute;left:16px;top:-14px;background:#ffad66;color:#fff;border-radius:999px;padding:5px 12px;font-size:16px}
@@ -106,69 +82,8 @@
     .choice-count{background:#fff;border-radius:999px;padding:6px 14px;font-size:24px;box-shadow:inset 0 0 0 2px rgba(139,107,74,.12)}
     .number-grid{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
     .number-btn{min-width:86px;min-height:78px;font-size:30px;font-weight:900;background:#fff8e8}
-    .number-challenge{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:18px}
-    .rule-chip{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:rgba(255,255,255,.88);border:2px solid rgba(255,224,138,.70);box-shadow:var(--shadow-soft);padding:9px 16px;font-size:20px;font-weight:900}
-    .equation-strip{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;background:rgba(255,255,255,.68);border:2px solid rgba(255,255,255,.86);border-radius:30px;padding:18px 22px;box-shadow:var(--shadow-soft)}
-    .equation-arrow{font-size:34px;font-weight:900;color:#ef7f47}
-    .star-token{width:38px;height:38px;border-radius:15px;display:inline-flex;align-items:center;justify-content:center;font-size:25px;background:linear-gradient(180deg,#fff8d7,#ffd46e);box-shadow:inset 0 0 0 2px rgba(139,107,74,.08),0 7px 14px rgba(90,72,45,.10)}
-    .token-pack{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:260px}
     .feedback{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);z-index:20;background:rgba(255,255,255,.95);border:3px solid rgba(255,224,138,.9);border-radius:999px;padding:12px 22px;font-size:22px;font-weight:900;box-shadow:var(--shadow);animation:pop .24s ease-out}
-    .feedback.good{border-color:rgba(107,189,110,.72);background:rgba(239,255,238,.96);color:#347a3c}
-    .feedback.bad{border-color:rgba(255,155,122,.76);background:rgba(255,242,237,.97);color:#a24b30}
     @keyframes pop{from{transform:translateX(-50%) scale(.82);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
-    .training-stage{animation:stageIn .28s ease-out both}
-    .training-stage .top-target{top:82px;width:min(700px,calc(100% - 72px))}
-    .training-stage .task-area{top:188px;bottom:84px}
-    .stage-progress{position:absolute;left:50%;top:152px;transform:translateX(-50%);z-index:8;width:min(520px,calc(100% - 72px));height:13px;background:rgba(255,255,255,.82);border:2px solid rgba(255,255,255,.9);border-radius:999px;box-shadow:var(--shadow-soft);overflow:hidden}
-    .stage-progress span{display:block;height:100%;width:var(--progress,0%);background:linear-gradient(90deg,#7ed88a,#ffd36b,#ff9b7a);border-radius:999px;transition:width .28s ease}
-    .objective-cue{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:40;width:min(560px,calc(100% - 42px));background:rgba(255,248,232,.97);border:3px solid rgba(255,255,255,.95);border-radius:28px;padding:22px;text-align:center;box-shadow:var(--shadow);animation:cuePop .32s ease-out both;pointer-events:none}
-    .objective-cue h2{margin:0;color:#ef7f47;font-size:clamp(28px,4vw,44px)}
-    .objective-cue p{margin:8px 0 0;font-size:clamp(17px,2vw,22px);font-weight:900;line-height:1.45}
-    .choice-btn.answer-good,.number-btn.answer-good,.fruit-btn.answer-good{outline:5px solid rgba(107,189,110,.82);background:rgba(239,255,238,.96);animation:answerPop .25s ease-out}
-    .choice-btn.answer-bad,.number-btn.answer-bad,.fruit-btn.answer-bad{outline:5px solid rgba(255,155,122,.86);background:rgba(255,242,237,.97);animation:shake .34s ease-in-out}
-    .game-shell{--max:1280px;background:rgba(255,251,240,.92)}
-    .game-shell .scene-wrap{min-height:min(720px,calc(100vh - 36px));background:#f9f4df}
-    .focus-stage{position:absolute;inset:0;overflow:hidden;background:
-      radial-gradient(circle at 18% 18%,rgba(255,209,102,.30),transparent 26%),
-      radial-gradient(circle at 84% 18%,rgba(97,184,167,.30),transparent 28%),
-      linear-gradient(135deg,#fff4db 0%,#f9f3df 48%,#d8eee9 100%)}
-    .focus-stage::before{content:"";position:absolute;inset:0;background:
-      linear-gradient(90deg,rgba(70,96,86,.055) 1px,transparent 1px),
-      linear-gradient(180deg,rgba(70,96,86,.055) 1px,transparent 1px);
-      background-size:44px 44px;mask-image:linear-gradient(180deg,transparent 0%,#000 16%,#000 78%,transparent 100%)}
-    .focus-stage::after{content:"";position:absolute;left:4%;right:4%;bottom:28px;height:40%;border-radius:44px;background:linear-gradient(180deg,rgba(255,255,255,.46),rgba(255,232,180,.55));box-shadow:inset 0 0 0 3px rgba(255,255,255,.72),0 26px 60px rgba(90,72,45,.12)}
-    .focus-orbit{position:absolute;border-radius:999px;border:2px solid rgba(255,255,255,.52);box-shadow:inset 0 0 50px rgba(255,255,255,.34)}
-    .focus-orbit.one{left:-80px;top:100px;width:280px;height:280px;background:rgba(255,157,103,.11)}
-    .focus-orbit.two{right:-100px;top:86px;width:330px;height:330px;background:rgba(84,174,159,.12)}
-    .focus-dock{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);width:min(760px,70%);height:112px;border-radius:999px;background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 2px rgba(255,255,255,.72)}
-    .training-stage .scene-overlay{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.22))}
-    .training-stage .hud{top:24px;left:28px;right:28px}
-    .training-stage .hud .hud-box{background:rgba(255,255,255,.88);border-color:rgba(255,255,255,.95);backdrop-filter:blur(8px)}
-    .training-stage .top-target{top:104px;width:min(780px,calc(100% - 120px));min-height:106px;background:rgba(255,255,255,.92);border-color:rgba(255,208,102,.85);box-shadow:0 18px 44px rgba(94,72,42,.14);z-index:9}
-    .training-stage .target-label{background:#ef8a55}
-    .training-stage .stage-progress{top:222px;width:min(620px,calc(100% - 160px));height:11px}
-    .training-stage .task-area{top:264px;bottom:144px;z-index:8;gap:22px}
-    .stage-actions{position:absolute;left:28px;bottom:28px;z-index:12;display:flex;gap:10px;flex-wrap:wrap}
-    .training-stage .squirrel{left:34px;bottom:42px;width:104px;height:104px;background:rgba(255,255,255,.58);border:3px solid rgba(255,255,255,.78)}
-    .training-stage .abacus{right:34px;bottom:42px;width:132px;background:rgba(255,255,255,.58);border:3px solid rgba(255,255,255,.78)}
-    .fruit-row,.choice-row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center}
-    .fruit-row.search-grid{width:min(720px,100%);display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
-    .fruit-token{width:54px;height:54px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(180deg,#fff,#fff4d7);box-shadow:inset 0 0 0 2px rgba(139,107,74,.08),0 7px 14px rgba(90,72,45,.10);line-height:1}
-    .fruit-token.lg{width:86px;height:86px;border-radius:28px;font-size:54px}
-    .fruit-token.sm{width:40px;height:40px;border-radius:15px;font-size:25px;margin:-1px}
-    .fruit-btn{min-width:128px;min-height:132px;background:rgba(255,255,255,.90);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-    .fruit-btn img{display:none}
-    .fruit-btn strong{font-size:20px}
-    .fruit-btn.clicked{opacity:.45;transform:scale(.94)}
-    .fruit-btn.distractor-hit{outline:5px solid rgba(255,155,122,.86);background:rgba(255,242,237,.97);animation:shake .34s ease-in-out}
-    .choice-btn{min-width:190px;min-height:154px;background:rgba(255,255,255,.91);border-radius:32px}
-    .choice-fruits{gap:4px;max-width:230px}
-    .choice-fruits img{display:none}
-    .choice-count{background:#fff9ea;font-size:25px}
-    .number-btn{background:rgba(255,255,255,.92);border-radius:24px}
-    @keyframes stageIn{from{opacity:.72;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
-    @keyframes cuePop{from{opacity:0;transform:translate(-50%,-44%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-    @keyframes answerPop{from{transform:scale(.96)}to{transform:scale(1)}}
     .progress-dots{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
     .dot{width:12px;height:12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.08)}
     .dot.on{background:#ffad66}
@@ -180,7 +95,6 @@
     .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
     .metric{background:#fff;border-radius:18px;padding:16px;border:2px solid rgba(139,107,74,.12)}
     .metric strong{display:block;font-size:28px;color:#ef7f47;margin-top:4px}
-    .result-screen .title{font-size:42px}
     .wide{grid-column:1/-1}
     .stage-title{display:flex;align-items:center;gap:14px;margin-bottom:16px}
     .stage-title img{width:76px;height:76px;border-radius:50%;box-shadow:var(--shadow-soft)}
@@ -191,8 +105,6 @@
     .star-dot{width:18px;height:18px;border-radius:50%;background:#ffd36b;box-shadow:0 1px 0 rgba(0,0,0,.08)}
     .lowstim *{animation:none !important;transition:none !important}
     .lowstim .scene-img{filter:saturate(.72) contrast(.92) brightness(1.05)}
-    .lowstim .market-scene{filter:saturate(.72) contrast(.92) brightness(1.03)}
-    .lowstim .market-scene::before{opacity:.22}
     .lowstim .soft-bg{background:linear-gradient(180deg,#fffaf0,#f3fbf5)}
     .asset-check{position:absolute;right:10px;bottom:8px;font-size:12px;opacity:.56}
     .hidden{display:none !important}
@@ -201,33 +113,13 @@
       .home-grid,.row,.result-grid{grid-template-columns:1fr;display:grid}
       .lobby-image,.hero-img{height:230px}
       .scene-wrap{min-height:620px}
-      .game-shell .scene-wrap{min-height:calc(100vh - 36px)}
-      .focus-stage::after{left:18px;right:18px;bottom:18px;height:43%;border-radius:34px}
-      .focus-dock{bottom:32px;width:70%;height:88px}
-      .top-target,.training-stage .top-target{top:82px;width:calc(100% - 30px);min-height:112px;font-size:20px}
-      .stage-progress,.training-stage .stage-progress{top:208px;width:calc(100% - 38px)}
+      .top-target{top:76px;width:calc(100% - 30px);font-size:20px}
       .task-area{top:190px;left:14px;right:14px;bottom:84px;gap:12px}
-      .training-stage .task-area{top:236px;bottom:122px}
       .hud{left:10px;right:10px;top:10px}
-      .training-stage .hud{left:10px;right:10px;top:10px}
       .hud .hud-box{font-size:14px;padding:8px;min-height:44px}
-      .stage-actions{left:18px;right:18px;bottom:20px}
-      .fruit-row,.choice-row{gap:12px}
-      .fruit-row.search-grid{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
-      .fruit-token.lg{width:72px;height:72px;border-radius:24px;font-size:44px}
-      .fruit-token.sm{width:34px;height:34px;border-radius:13px;font-size:22px}
-      .fruit-btn{min-width:112px;min-height:118px}
-      .choice-btn{min-width:132px;min-height:132px;padding:12px}
-      .number-btn{min-width:72px;min-height:68px;font-size:25px}
-      .number-challenge{gap:12px}
-      .rule-chip{font-size:17px;padding:8px 13px}
-      .equation-strip{padding:14px;gap:10px;border-radius:24px}
-      .token-pack{max-width:180px}
-      .star-token{width:32px;height:32px;border-radius:12px;font-size:21px}
-      .result-screen .title{font-size:34px !important;line-height:1.12}
-      .result-screen .subtitle{font-size:22px;line-height:1.35}
-      .training-stage .squirrel{width:78px;height:78px;left:18px;bottom:82px}
-      .training-stage .abacus{width:104px;right:18px;bottom:82px}
+      .choice-btn{min-width:132px;min-height:132px}
+      .squirrel{width:92px;height:92px}
+      .abacus{width:112px}
       .btn{width:100%}
       .lobby-info{grid-template-columns:1fr}
     }
@@ -281,20 +173,14 @@
       strawberry:'草莓',
       banana:'香蕉',
       orange:'橙子',
-      pear:'梨'
-    };
-    const fruitEmoji = {
-      apple:'🍎',
-      strawberry:'🍓',
-      banana:'🍌',
-      orange:'🍊',
-      pear:'🍐'
+      pear:'梨',
+      grape:'葡萄'
     };
 
     const levelDefs = {
-      1:{name:'找目标水果', max:7, tasks:3, time:null, advanced:false, desc:'不限时，在混合水果里找出目标水果，练视觉搜索和计数。'},
-      2:{name:'轻松添水果', max:5, tasks:4, time:null, advanced:false, desc:'不限时，先看目标卡，再在多个答案里选正确数量。'},
-      3:{name:'轻松拿走水果', max:5, tasks:5, time:null, advanced:false, desc:'不限时，练小数字减法和篮子选择。'},
+      1:{name:'轻松数水果', max:3, tasks:3, time:null, advanced:false, desc:'不限时，只数 1 到 3 个水果。'},
+      2:{name:'轻松添水果', max:5, tasks:4, time:null, advanced:false, desc:'不限时，只做很小的添水果订单。'},
+      3:{name:'轻松拿走水果', max:5, tasks:5, time:null, advanced:false, desc:'不限时，水果会清楚地放回货架。'},
       4:{name:'小店正式营业', max:8, tasks:6, time:90, advanced:false, desc:'有倒计时，但仍然是小数字。'},
       5:{name:'谁的篮子更多', max:9, tasks:7, time:75, advanced:false, desc:'比较两个或三个篮子的水果数量。'},
       6:{name:'星星算盘结账', max:10, tasks:8, time:70, advanced:false, desc:'把水果数量换成星星算盘。'},
@@ -329,8 +215,6 @@
       tutorialStep:0,
       lowStim:false,
       feedback:'',
-      feedbackKind:'',
-      stageCue:null,
       practiceIndex:0,
       practiceClicked:0,
       selectedDifficulty:loadProgress().nextLevel || 1,
@@ -356,15 +240,13 @@
     function setScreen(screen, extra){
       state = Object.assign({}, state, {screen}, extra || {});
       if(screen !== 'training') stopTimer();
-      if(screen !== 'training') state.stageCue = null;
       render();
     }
 
-    function playFeedback(text, ms, kind){
+    function playFeedback(text, ms){
       state.feedback = text;
-      state.feedbackKind = kind || '';
       render();
-      window.setTimeout(()=>{ state.feedback=''; state.feedbackKind=''; render(); }, ms || 760);
+      window.setTimeout(()=>{ state.feedback=''; render(); }, ms || 760);
     }
 
     function layoutShell(inner){
@@ -402,7 +284,7 @@
             <div class="lobby-image">${imgTag(A.lobby,'img-cover','果果心算铺大厅卡片')}</div>
             <div class="pad">
               <h1 class="title">果果心算铺</h1>
-              <p class="subtitle">看目标卡，帮松鼠快速完成水果订单。</p>
+              <p class="subtitle">帮松鼠收银员数水果、装篮子、拨亮星星算盘。</p>
               <div style="margin-top:12px">
                 <span class="badge">快速心算</span>
                 <span class="badge">数量感</span>
@@ -410,8 +292,8 @@
                 ${def.advanced?'<span class="badge adv">进阶挑战</span>':''}
               </div>
               <div class="btns">
-                <button class="btn primary" data-action="trainingStartRecommended">开始第 ${nextLevel} 级</button>
-                <button class="btn ghost" data-action="detail">玩法帮助</button>
+                <button class="btn primary" data-action="detail">查看说明</button>
+                <button class="btn green" data-action="cover">直接进入小店</button>
               </div>
             </div>
           </div>
@@ -426,16 +308,16 @@
             <div class="lobby-info">
               <div class="mini-panel">
                 <h3>怎么玩</h3>
-                <p class="body">目标一直在上方，直接点水果或选答案。</p>
+                <p class="body">先看目标卡，再点击水果、选择正确篮子，或帮星星算盘结账。</p>
               </div>
               <div class="mini-panel">
                 <h3>目标是什么</h3>
-                <p class="body">准确完成订单，结算本轮表现。</p>
+                <p class="body">把小动物要的水果装对，让松鼠收银员顺利完成订单。</p>
               </div>
             </div>
             <div class="info-panel" style="margin-top:16px">
-              <h3>当前推荐</h3>
-              <p class="body">第 ${nextLevel} 级｜${def.name}。一键进入舞台，先玩再看反馈。</p>
+              <h3>本版包含</h3>
+              <p class="body">首页卡片、详情说明、封面页、6 屏场景内教学、低压练习、准备开始弹窗、正式训练 HUD、自适应难度和结算推荐。</p>
               <div class="btns">
                 <button class="btn ghost" data-action="toggleLow">${state.lowStim?'关闭柔和模式':'开启柔和模式'}</button>
                 <button class="btn ghost" data-action="clearRecord">清除难度记录</button>
@@ -475,8 +357,7 @@
               <span class="badge adv">难题标进阶挑战</span>
             </div>
             <div class="btns">
-              <button class="btn primary" data-action="trainingStartRecommended">直接开始推荐难度</button>
-              <button class="btn ghost" data-action="tutorial">看互动演示</button>
+              <button class="btn primary" data-action="cover">进入封面页</button>
               <button class="btn ghost" data-action="home">返回首页</button>
             </div>
           </div>
@@ -603,7 +484,7 @@
     }
 
     const practiceTasks = [
-      makeSearchTask(1, 'apple', 2, 5),
+      {type:'count', target:'请找到 2 个苹果', fruit:'apple', answer:2, choices:null, hint:'每发现一个苹果，就点一次。'},
       {type:'choice', target:'小兔先要 2 个苹果，又添 1 个，选装好的篮子', fruit:'apple', answer:3, choices:[2,3,4], hint:'2 个再添 1 个，就是 3 个。'},
       {type:'choice', target:'5 个草莓放回 2 个，选剩下的篮子', fruit:'strawberry', answer:3, choices:[2,3,4], hint:'5 个拿走 2 个，还剩 3 个。'},
       {type:'compare', target:'小鸟想要水果更多的篮子', fruit:'banana', answer:'B', choices:[{id:'A',count:3},{id:'B',count:5}], hint:'看哪个篮子里的水果更多。'}
@@ -634,69 +515,34 @@
     }
 
     function renderTaskControls(task, mode){
-      const feedbackClass = (value) => choiceFeedbackClass(task, mode, value);
       if(task.type === 'count'){
-        const items = task.items || makeCountItems(task.fruit, task.answer, task.answer);
-        return `<div class="fruit-row search-grid">${items.map((item,i)=>`
-          <button class="fruit-btn ${item.clicked?'clicked':''} ${item.wrong?'distractor-hit':''} ${feedbackClass('count')}" data-index="${i}" data-fruit="${item.fruit}" data-action="${mode==='practice'?'practiceFruit':'trainingFruit'}">
-            ${fruitTokenHtml(item.fruit,'lg')}<strong>${fruitNames[item.fruit]}</strong>
+        const total = task.answer;
+        return `<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center">${Array.from({length:total}).map((_,i)=>`
+          <button class="fruit-btn ${i < (mode==='practice'?state.practiceClicked:(state.training?.clicked||0))?'clicked':''}" data-action="${mode==='practice'?'practiceFruit':'trainingFruit'}">
+            <img src="${A.fruits[task.fruit]}" alt="${fruitNames[task.fruit]}"><strong>${fruitNames[task.fruit]}</strong>
           </button>`).join('')}</div>`;
       }
       if(task.type === 'compare'){
-        return `<div class="choice-row">${task.choices.map(c=>`
-          <button class="choice-btn ${feedbackClass(c.id)}" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${c.id}">
+        return `<div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center">${task.choices.map(c=>`
+          <button class="choice-btn" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${c.id}">
             <div class="choice-fruits">${fruitImgs(task.fruit,c.count)}</div>
             <span class="choice-count">${c.id} 篮｜${c.count} 个</span>
           </button>`).join('')}</div>`;
       }
       if(task.type === 'number'){
-        return `<div class="number-challenge">
-          ${numberVisualHtml(task)}
-          <div class="number-grid">${task.choices.map(n=>`
-            <button class="number-btn ${feedbackClass(n)}" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${n}">${n}</button>`).join('')}</div>
-        </div>`;
+        return `<div class="number-grid">${task.choices.map(n=>`
+          <button class="number-btn" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${n}">${n}</button>`).join('')}</div>`;
       }
-      return `<div class="choice-row">${task.choices.map(n=>`
-        <button class="choice-btn ${feedbackClass(n)}" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${n}">
+      return `<div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center">${task.choices.map(n=>`
+        <button class="choice-btn" data-action="${mode==='practice'?'practiceChoice':'trainingChoice'}" data-value="${n}">
           <div class="choice-fruits">${fruitImgs(task.fruit,n)}</div>
           <span class="choice-count">${n} 个</span>
         </button>`).join('')}</div>`;
     }
 
-    function choiceFeedbackClass(task, mode, value){
-      if(mode !== 'training' || !state.training || !task.feedbackValue) return '';
-      if(String(task.feedbackValue) !== String(value)) return '';
-      return task.feedbackCorrect ? 'answer-good' : 'answer-bad';
-    }
-
     function fruitImgs(fruit, count){
       const max = Math.min(count, 12);
-      return Array.from({length:max}).map(()=>fruitTokenHtml(fruit,'sm')).join('');
-    }
-
-    function numberVisualHtml(task){
-      if(task.visual === 'stars'){
-        return `<div class="number-visual">
-          <div class="rule-chip">1 个水果 = 1 颗星星</div>
-          <div class="equation-strip">
-            <div class="token-pack">${fruitImgs(task.fruit, task.answer)}</div>
-            <span class="equation-arrow">=</span>
-            <div class="token-pack">${starImgs(task.answer)}</div>
-          </div>
-        </div>`;
-      }
-      return `<div class="rule-chip">选出目标卡的计算结果</div>`;
-    }
-
-    function starImgs(count){
-      const max = Math.min(count, 12);
-      return Array.from({length:max}).map(()=>`<span class="star-token" role="img" aria-label="星星">⭐</span>`).join('');
-    }
-
-    function fruitTokenHtml(fruit, size){
-      const label = fruitNames[fruit] || '水果';
-      const mark = fruitEmoji[fruit] || '●';
-      return `<span class="fruit-token ${size || ''}" role="img" aria-label="${label}">${mark}</span>`;
+      return Array.from({length:max}).map(()=>`<img src="${A.fruits[fruit]}" alt="${fruitNames[fruit]}">`).join('');
     }
 
     function renderReady(){
@@ -723,7 +569,6 @@
     }
 
     function startTraining(level){
-      stopTimer();
       const lv = clamp(Number(level || loadProgress().nextLevel || 1),1,10);
       const def = levelDefs[lv];
       state.training = {
@@ -736,9 +581,6 @@
         wrong:0,
         hintUsed:0,
         clicked:0,
-        trials:[],
-        events:[],
-        lastResponse:null,
         reactionTimes:[],
         startedAt:Date.now(),
         taskStartedAt:Date.now(),
@@ -746,22 +588,10 @@
         finished:false
       };
       state.feedback = '';
-      state.feedbackKind = '';
-      state.stageCue = {
-        title:'订单开始',
-        text:`第 ${lv} 级｜${def.name}`,
-        prompt:'看上方目标卡，直接完成第一张订单。'
-      };
       state.screen = 'training';
       nextTrainingTask();
+      startTimer();
       render();
-      window.setTimeout(()=>{
-        if(state.screen === 'training' && state.stageCue){
-          state.stageCue = null;
-          startTimer();
-          render();
-        }
-      }, 950);
     }
 
     function startTimer(){
@@ -790,7 +620,6 @@
       }
       state.training.currentTask = generateTask(state.training.level);
       state.training.clicked = 0;
-      state.training.lastResponse = null;
       state.training.taskStartedAt = Date.now();
     }
 
@@ -799,8 +628,8 @@
       const fruit = pick(Object.keys(fruitNames));
       let task;
       if(level === 1){
-        const n = rand(2,4);
-        task = makeSearchTask(level, fruit, n, n + rand(2,4));
+        const n = rand(1,3);
+        task = {type:'count', target:`请帮松鼠找到 ${n} 个${fruitNames[fruit]}`, fruit, answer:n, choices:null, hint:`每发现一个${fruitNames[fruit]}，就点一次。`};
       }else if(level === 2){
         const a = rand(1,2), b = rand(1,3);
         const ans = Math.min(a+b,5);
@@ -823,7 +652,7 @@
         if(a===b){ task.choices[1].count = clamp(b+1,1,9); task.answer = task.choices[0].count >= task.choices[1].count ? 'A':'B'; }
       }else if(level === 6){
         const n = rand(3,10);
-        task = {type:'number', target:`${n} 个${fruitNames[fruit]} = 几颗星星？`, fruit, answer:n, choices:numberChoices(n,10), hint:'1 个水果对应 1 颗星星。', visual:'stars'};
+        task = {type:'number', target:`${n} 个${fruitNames[fruit]}要拨亮几颗星星？`, fruit, answer:n, choices:numberChoices(n,10), hint:'1 个水果对应 1 颗星星。'};
       }else if(level === 7){
         const f2 = pick(Object.keys(fruitNames).filter(x=>x!==fruit));
         const a = rand(2,6), b = rand(2,6), ans=a+b;
@@ -856,30 +685,6 @@
       return {type:'choice', target, fruit, answer, choices:numberChoices(answer,max), hint:'看目标卡，把数字和篮子里的水果对上。'};
     }
 
-    function makeSearchTask(level, fruit, answer, total){
-      return {
-        type:'count',
-        target:`找出 ${answer} 个${fruitNames[fruit]}，不要点其他水果`,
-        fruit,
-        answer,
-        choices:null,
-        items:makeCountItems(fruit, answer, total),
-        hint:`只点${fruitNames[fruit]}，其他水果是干扰项。`
-      };
-    }
-
-    function makeCountItems(targetFruit, answer, total){
-      const pool = Object.keys(fruitNames).filter(x=>x!==targetFruit);
-      const items = [];
-      for(let i=0;i<answer;i++) items.push({fruit:targetFruit, target:true, clicked:false, wrong:false});
-      const distractors = Math.max(0, total - answer);
-      for(let i=0;i<distractors;i++){
-        const fruit = pool[i % pool.length];
-        items.push({fruit, target:false, clicked:false, wrong:false});
-      }
-      return shuffle(items).map((item, index)=>Object.assign({id:`fruit-${index}-${item.fruit}`}, item));
-    }
-
     function numberChoices(answer, max){
       const set = new Set([answer]);
       const deltas = shuffle([-2,-1,1,2,3,-3]);
@@ -901,68 +706,22 @@
       const task = tr.currentTask;
       const timerText = def.time === null ? '不限时' : `${String(Math.floor(tr.secondsLeft/60)).padStart(2,'0')}:${String(tr.secondsLeft%60).padStart(2,'0')}`;
       const left = `第 ${tr.level} 级｜${def.name}`;
-      app.innerHTML = `<div class="shell game-shell ${state.lowStim?'lowstim':''}">
-        <div class="scene-wrap training-stage">
-          ${focusStageHtml()}
+      app.innerHTML = `<div class="shell ${state.lowStim?'lowstim':''}">
+        <div class="scene-wrap">
+          ${imgTag(state.lowStim?A.lowScene:A.training,'scene-img','正式训练背景')}
           <div class="scene-overlay"></div>
           ${hudHtml(left, timerText, `星星 ${tr.stars}`)}
           <div class="top-target"><span class="target-label">目标卡</span>${escapeHtml(task.target)}</div>
-          ${stageProgressHtml(tr, def)}
           ${imgTag(A.squirrel,'squirrel','松鼠收银员')}
           ${imgTag(A.abacus,'abacus','星星算盘')}
           <div class="task-area">${renderTrainingSceneTask(task)}</div>
-          <div class="stage-actions">
+          <div style="position:absolute;left:18px;bottom:20px;z-index:10;display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn ghost" data-action="hint">提示一下</button>
             <button class="btn ghost" data-action="toggleLow">${state.lowStim?'关闭柔和模式':'柔和模式'}</button>
           </div>
-          ${state.feedback?`<div class="feedback ${state.feedbackKind||''}">${escapeHtml(state.feedback)}</div>`:''}
-          ${state.stageCue?objectiveCueHtml(state.stageCue):''}
+          ${state.feedback?`<div class="feedback">${escapeHtml(state.feedback)}</div>`:''}
           ${state.paused?pauseModalHtml():''}
         </div>
-      </div>`;
-    }
-
-    function focusStageHtml(){
-      return `<div class="focus-stage" aria-hidden="true">
-        <div class="focus-orbit one"></div>
-        <div class="focus-orbit two"></div>
-        <div class="focus-dock"></div>
-      </div>`;
-    }
-
-    function marketSceneHtml(){
-      const fruits = [
-        ['fruit-apple.png','f1','苹果'], ['fruit-orange.png','f2','橙子'],
-        ['fruit-pear.png','f3','梨'], ['fruit-banana.png','f4','香蕉'],
-        ['fruit-strawberry.png','f5','草莓'], ['fruit-pear.png','f6','梨'],
-        ['fruit-apple.png','f7','苹果'], ['fruit-orange.png','f8','橙子']
-      ];
-      return `<div class="market-scene" aria-hidden="true">
-        <div class="market-awning"></div>
-        <div class="market-sign">果果心算铺</div>
-        <div class="market-shelves">
-          <div class="market-bin"></div>
-          <div class="market-bin"></div>
-          <div class="market-bin"></div>
-          <div class="market-bin"></div>
-          ${fruits.map(([file, cls, alt]) => `<img class="market-fruit ${cls}" src="assets/${file}" alt="${alt}">`).join('')}
-        </div>
-        <div class="market-board"></div>
-        <div class="market-counter"></div>
-      </div>`;
-    }
-
-    function stageProgressHtml(tr, def){
-      const total = Math.max(1, def.tasks);
-      const pct = Math.min(100, Math.round((tr.taskIndex / total) * 100));
-      return `<div class="stage-progress" aria-label="本轮进度" style="--progress:${pct}%"><span></span></div>`;
-    }
-
-    function objectiveCueHtml(cue){
-      return `<div class="objective-cue">
-        <h2>${escapeHtml(cue.title)}</h2>
-        <p>${escapeHtml(cue.text)}</p>
-        <p>${escapeHtml(cue.prompt)}</p>
       </div>`;
     }
 
@@ -1005,7 +764,6 @@
       const result = {
         level:tr.level,
         levelName:levelDefs[tr.level].name,
-        timedOut:tr.secondsLeft <= 0 && tr.taskIndex < taskCount,
         correct:tr.correct,
         taskCount,
         attempts:tr.attempts,
@@ -1020,18 +778,6 @@
         advanced:levelDefs[nextLevel].advanced
       };
       saveProgress(nextLevel, result);
-      window.CognitiveGameRecorder?.record('quick-math', {
-        domain:'language',
-        taskFamily:'mental-arithmetic',
-        mode:'training',
-        level:tr.level,
-        startedAt:new Date(tr.startedAt).toISOString(),
-        completedAt:new Date().toISOString(),
-        summary:result,
-        trials:tr.trials,
-        events:tr.events,
-        adaptive:{recommendedLevel:nextLevel, reason:recommendText(result)}
-      });
       state.result = result;
       state.selectedDifficulty = nextLevel;
       state.screen = 'result';
@@ -1059,7 +805,7 @@
       };
       const accText = `${Math.round(r.accuracy*100)}%`;
       app.innerHTML = layoutShell(`
-        <div class="row result-screen">
+        <div class="row">
           <div class="card col">
             <div style="height:260px">${imgTag(A.result,'img-cover','结算页背景')}</div>
             <div class="pad">
@@ -1093,7 +839,7 @@
               <h3>下轮推荐难度</h3>
               <p class="body"><strong>第 ${r.nextLevel} 级｜${escapeHtml(r.nextName)}</strong>${r.advanced?' <span class="badge adv">进阶挑战</span>':''}</p>
               <p class="body">${recommendText(r)}</p>
-              <div class="footer-note">已写入 localStorage。下次进入本轮练习，会优先按这个推荐难度开始。</div>
+              <div class="footer-note">已写入 localStorage。下次进入正式训练，会优先按这个推荐难度开始。</div>
             </div>
           </div>
         </div>
@@ -1106,32 +852,9 @@
       return '保持这个节奏继续训练。';
     }
 
-    function countSelected(task){
-      return (task.items || []).filter(item=>item.target && item.clicked).length;
-    }
-
-    function resetPracticeTasks(){
-      practiceTasks.forEach(task=>{
-        if(task.type === 'count'){
-          task.items = makeCountItems(task.fruit, task.answer, task.items?.length || task.answer + 3);
-        }
-      });
-    }
-
-    function handlePracticeFruit(target){
+    function handlePracticeFruit(){
       const task = practiceTasks[state.practiceIndex];
-      const index = Number(target?.dataset?.index ?? -1);
-      const item = task.items?.[index];
-      if(!item || item.clicked) return;
-      if(!item.target){
-        item.wrong = true;
-        playFeedback(`只点${fruitNames[task.fruit]}，这个先不要`);
-        window.setTimeout(()=>{ item.wrong = false; render(); },520);
-        render();
-        return;
-      }
-      item.clicked = true;
-      state.practiceClicked = countSelected(task);
+      state.practiceClicked++;
       if(state.practiceClicked >= task.answer){
         completePracticeTask();
       }else{
@@ -1162,119 +885,45 @@
       }
     }
 
-    function handleTrainingFruit(target){
+    function handleTrainingFruit(){
       const tr = state.training;
       const task = tr.currentTask;
-      const index = Number(target?.dataset?.index ?? -1);
-      const item = task.items?.[index];
-      if(!item || item.clicked) return;
-      const rtMs = Date.now() - tr.taskStartedAt;
-      if(!item.target){
-        item.wrong = true;
-        tr.wrong++;
-        tr.attempts++;
-        tr.events.push({
-          eventId:`quick-math-event-${Date.now()}-${tr.events.length+1}`,
-          type:'fruit_distractor_click',
-          taskId:task.id,
-          fruit:item.fruit,
-          targetFruit:task.fruit,
-          correct:false,
-          rtMs
-        });
-        window.CognitiveGameUI?.markAnswer?.(target, false, '这个不是目标水果');
-        state.feedback = `只找${fruitNames[task.fruit]}`;
-        state.feedbackKind = 'bad';
-        render();
-        window.setTimeout(()=>{ item.wrong=false; state.feedback=''; state.feedbackKind=''; render(); },650);
-        return;
-      }
-      item.clicked = true;
-      tr.clicked = countSelected(task);
-      tr.events.push({
-        eventId:`quick-math-event-${Date.now()}-${tr.events.length+1}`,
-        type:'fruit_click',
-        taskId:task.id,
-        fruit:item.fruit,
-        clicked:tr.clicked,
-        target:task.answer,
-        correct:tr.clicked >= task.answer,
-        rtMs
-      });
+      tr.clicked++;
       if(tr.clicked >= task.answer){
-        task.feedbackValue = 'count';
-        task.feedbackCorrect = true;
-        window.CognitiveGameUI?.markAnswer?.(target, true, '装好啦！');
         handleTrainingCorrect();
       }else{
         state.feedback = `已经找到 ${tr.clicked}/${task.answer} 个`;
-        state.feedbackKind = '';
         render();
-        window.setTimeout(()=>{ state.feedback=''; state.feedbackKind=''; render(); },500);
+        window.setTimeout(()=>{ state.feedback=''; render(); },500);
       }
     }
 
-    function handleTrainingChoice(value, target){
+    function handleTrainingChoice(value){
       const tr = state.training;
       const task = tr.currentTask;
       const v = /^\d+$/.test(String(value)) ? Number(value) : value;
-      tr.lastResponse = v;
       tr.attempts++;
-      tr.events.push({
-        eventId:`quick-math-event-${Date.now()}-${tr.events.length+1}`,
-        type:'choice',
-        taskId:task.id,
-        response:v,
-        correct:v === task.answer,
-        rtMs:Date.now() - tr.taskStartedAt
-      });
       if(v === task.answer){
-        task.feedbackValue = v;
-        task.feedbackCorrect = true;
-        window.CognitiveGameUI?.markAnswer?.(target, true, '答对了');
-        handleTrainingCorrect(false);
+        handleTrainingCorrect();
       }else{
         tr.wrong++;
-        task.feedbackValue = v;
-        task.feedbackCorrect = false;
-        window.CognitiveGameUI?.markAnswer?.(target, false, '再看目标卡');
         state.feedback = '再看一眼目标卡';
-        state.feedbackKind = 'bad';
         render();
-        window.setTimeout(()=>{ state.feedback=''; state.feedbackKind=''; task.feedbackValue=null; render(); },650);
+        window.setTimeout(()=>{ state.feedback=''; render(); },650);
       }
     }
 
-    function handleTrainingCorrect(countAttempt = true){
+    function handleTrainingCorrect(){
       const tr = state.training;
       const rt = Date.now() - tr.taskStartedAt;
-      tr.trials.push({
-        trialId:`quick-math-${Date.now()}-${tr.taskIndex+1}`,
-        gameId:'quick-math',
-        domain:'language',
-        taskFamily:'mental-arithmetic',
-        mode:'training',
-        level:tr.level,
-        taskIndex:tr.taskIndex,
-        stimulus:{type:tr.currentTask.type, target:tr.currentTask.target, fruit:tr.currentTask.fruit, choices:tr.currentTask.choices || null, secondaryFruit:tr.currentTask.secondaryFruit || null},
-        condition:{operationType:tr.currentTask.type,timeLimit:levelDefs[tr.level].time,tasks:levelDefs[tr.level].tasks,advanced:levelDefs[tr.level].advanced},
-        correctAnswer:tr.currentTask.answer,
-        response:tr.currentTask.type === 'count' ? tr.clicked : tr.lastResponse,
-        correct:true,
-        rtMs:rt,
-        errorType:null,
-        difficultyParams:{level:tr.level, def:levelDefs[tr.level]}
-      });
       tr.reactionTimes.push(rt);
       tr.correct++;
-      if(countAttempt) tr.attempts++;
+      tr.attempts++;
       tr.stars += levelDefs[tr.level].advanced ? 2 : 1;
       state.feedback = pick(['装好啦！','星星算盘亮起来了！','这篮水果正合适！']);
-      state.feedbackKind = 'good';
       render();
       window.setTimeout(()=>{
         state.feedback='';
-        state.feedbackKind='';
         tr.taskIndex++;
         nextTrainingTask();
         render();
@@ -1284,17 +933,9 @@
     function showHint(){
       if(!state.training) return;
       state.training.hintUsed++;
-      state.training.events.push({
-        eventId:`quick-math-event-${Date.now()}-${state.training.events.length+1}`,
-        type:'hint',
-        taskId:state.training.currentTask.id,
-        hint:state.training.currentTask.hint || '',
-        rtMs:Date.now() - state.training.taskStartedAt
-      });
       state.feedback = state.training.currentTask.hint || '先看目标卡，再数一数。';
-      state.feedbackKind = '';
       render();
-      window.setTimeout(()=>{ state.feedback=''; state.feedbackKind=''; render(); },1500);
+      window.setTimeout(()=>{ state.feedback=''; render(); },1500);
     }
 
     function handleAction(action, target){
@@ -1304,19 +945,19 @@
       if(action === 'toggleLow'){ state.lowStim=!state.lowStim; render(); }
       if(action === 'clearRecord'){ localStorage.removeItem(storageKey); state.selectedDifficulty=1; playFeedback('记录已清除'); setTimeout(()=>setScreen('home'),400); }
       if(action === 'tutorial'){ state.tutorialStep=0; setScreen('tutorial'); }
-      if(action === 'tutorialRestart'){ resetPracticeTasks(); state.tutorialStep=0; state.practiceIndex=0; state.practiceClicked=0; setScreen('tutorial', {paused:false}); }
+      if(action === 'tutorialRestart'){ state.tutorialStep=0; state.practiceIndex=0; state.practiceClicked=0; setScreen('tutorial', {paused:false}); }
       if(action === 'tutorialWrong'){ playFeedback('再看一眼目标卡'); }
       if(action === 'tutorialNext'){
         if(state.tutorialStep < 5){ state.tutorialStep++; render(); }
       }
-      if(action === 'practiceStart'){ resetPracticeTasks(); state.practiceIndex=0; state.practiceClicked=0; setScreen('practice'); }
-      if(action === 'practiceFruit') handlePracticeFruit(target);
+      if(action === 'practiceStart'){ state.practiceIndex=0; state.practiceClicked=0; setScreen('practice'); }
+      if(action === 'practiceFruit') handlePracticeFruit();
       if(action === 'practiceChoice') handlePracticeChoice(target.dataset.value);
       if(action === 'trainingStart') startTraining(loadProgress().nextLevel || 1);
       if(action === 'trainingStartRecommended') startTraining(loadProgress().nextLevel || state.selectedDifficulty || 1);
       if(action === 'trainingStartSame') startTraining(state.result?.level || state.training?.level || 1);
-      if(action === 'trainingFruit') handleTrainingFruit(target);
-      if(action === 'trainingChoice') handleTrainingChoice(target.dataset.value, target);
+      if(action === 'trainingFruit') handleTrainingFruit();
+      if(action === 'trainingChoice') handleTrainingChoice(target.dataset.value);
       if(action === 'hint') showHint();
       if(action === 'pause'){ state.paused=true; render(); }
       if(action === 'resume'){ state.paused=false; render(); startTimer(); }

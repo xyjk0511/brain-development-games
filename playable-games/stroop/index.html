@@ -813,7 +813,6 @@
       results: [],
       trialIndex: 0,
       supportLevel: 0,
-      startedAt: Date.now(),
       sessionStart: performance.now(),
       sessionEnd: performance.now() + c.duration * 1000,
       remainingMs: c.duration * 1000
@@ -869,7 +868,6 @@
       teammateDirections: buildTeammates(mode, captainDirection, c.teammateCount),
       responseWindowMs: c.responseWindowMs,
       captainGlow: c.glow || tr.supportLevel > 0 || tr.level <= 3,
-      difficultyParams:{teammateCount:c.teammateCount,incongruentRatio:c.incongruentRatio,mixedRatio:c.mixedRatio,neutralRatio:c.neutralRatio,responseWindowMs:c.responseWindowMs,supportLevel:tr.supportLevel},
       startedAt: performance.now()
     };
   }
@@ -1012,25 +1010,7 @@
     const rtMs = performance.now() - t.startedAt;
     const correct = dir === t.captainDirection;
     const kind = correct ? 'correct' : (dir ? 'nonTarget' : 'timeout');
-    const result = {
-      trialId:t.id,
-      gameId:'stroop',
-      domain:'attention',
-      taskFamily:'stroop',
-      mode:'training',
-      kind,
-      level:tr.level,
-      stimulus:{captainDirection:t.captainDirection, teammateDirections:t.teammateDirections,centralTarget:'captain-fish',flankers:t.teammateDirections},
-      condition:{flankerMode:t.flankerMode, congruency:t.flankerMode, responseWindowMs:t.responseWindowMs, supportLevel:tr.supportLevel, captainGlow:t.captainGlow},
-      correctAnswer:t.captainDirection,
-      response:dir,
-      correct,
-      rtMs,
-      flankerMode:t.flankerMode,
-      captainDirection:t.captainDirection,
-      errorType:correct ? null : (dir ? 'wrong_direction' : 'timeout'),
-      difficultyParams:t.difficultyParams || {}
-    };
+    const result = { kind, rtMs, flankerMode: t.flankerMode, captainDirection: t.captainDirection, response: dir, level: tr.level };
     tr.results.push(result);
     if (correct) {
       tr.streak += 1;
@@ -1092,14 +1072,11 @@
     const accuracy = results.length ? correct.length / results.length : 0;
     const avgRt = avg(correct.map(r => r.rtMs));
     const incong = results.filter(r => r.flankerMode === 'incongruent' || r.flankerMode === 'mixed');
-    const incongAcc = incong.length ? incong.filter(r => r.kind === 'correct').length / incong.length : null;
+    const incongAcc = incong.length ? incong.filter(r => r.kind === 'correct').length / incong.length : accuracy;
     let rec = tr.level;
-    if (accuracy >= .9 && (avgRt === 0 || avgRt < 2600) && (incongAcc ?? accuracy) >= .82) rec = Math.min(10, tr.level + 1);
+    if (accuracy >= .9 && (avgRt === 0 || avgRt < 2600) && incongAcc >= .82) rec = Math.min(10, tr.level + 1);
     else if (accuracy < .65 || (avgRt > 4600 && tr.level > 1)) rec = Math.max(1, tr.level - 1);
     else rec = tr.level;
-    const congruent = results.filter(r => r.flankerMode === 'congruent');
-    const mixed = results.filter(r => r.flankerMode === 'mixed');
-    const errorCounts = results.reduce((acc,r)=>{const k=r.errorType||'none';acc[k]=(acc[k]||0)+1;return acc;},{});
     const payload = {
       level: tr.level,
       score: tr.score,
@@ -1107,27 +1084,10 @@
       correct: correct.length,
       accuracy,
       avgRt,
-      congruentTrials: congruent.length,
-      congruentAccuracy: congruent.length ? congruent.filter(r => r.kind === 'correct').length / congruent.length : null,
-      incongruentTrials: incong.length,
-      incongruentAccuracy: incongAcc,
-      mixedTrials: mixed.length,
-      errorCounts,
       bestStreak: maxStreak(results),
       recommendedLevel: rec,
       endedAt: new Date().toISOString()
     };
-    window.CognitiveGameRecorder?.record('stroop', {
-      domain:'attention',
-      taskFamily:'stroop',
-      mode:'training',
-      level:tr.level,
-      startedAt:new Date(tr.startedAt).toISOString(),
-      completedAt:payload.endedAt,
-      summary:payload,
-      trials:results,
-      adaptive:{recommendedLevel:rec, supportLevel:tr.supportLevel, settings:{...state.settings}}
-    });
     localStorage.setItem('fishCaptain.lastResult', JSON.stringify(payload));
     localStorage.setItem('fishCaptain.nextLevel', String(rec));
     state.result = payload;
