@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>小鱼队长看方向</title>
+<style>
+  :root {
+    --cream: #fff8e9;
+    --cream-2: #fff1c9;
+    --blue: #4eb7dc;
+    --deep: #0b6e92;
+    --mint: #8bd6b5;
+    --coral: #ff8f7a;
+    --yellow: #ffd96d;
+    --purple: #b7a8ee;
+    --text: #18506a;
+    --soft-shadow: 0 18px 44px rgba(13, 80, 110, .22);
+    --card-shadow: 0 10px 24px rgba(10, 74, 100, .22);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+    color: var(--text);
+    background: radial-gradient(circle at 20% 0%, #78d7ef 0, #35aad4 36%, #087ca4 100%);
+    overflow: hidden;
+  }
+  button, input { font-family: inherit; }
+  button { touch-action: manipulation; }
+  .app {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+  }
+  .screen {
+    width: min(1060px, 100%);
+    height: min(760px, 100%);
+    min-height: 560px;
+    border-radius: 34px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 248, 233, .92);
+    box-shadow: var(--soft-shadow);
+  }
+  .scene-screen {
+    background-image: linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04)), url('assets/scene-bg.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .scene-screen.low {
+    background-image: linear-gradient(rgba(255,255,255,.10), rgba(255,255,255,.10)), url('assets/low-bg.png');
+  }
+  .home-grid {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 22px;
+    padding: 26px;
+  }
+  .hero-card {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    min-height: 100%;
+    background: #c7f0f7 url('assets/lobby-card.png') center/cover no-repeat;
+    box-shadow: var(--card-shadow);
+  }
+  .hero-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,68,96,.05), rgba(0,78,110,.58));
+  }
+  .hero-copy {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 24px;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,.18);
+  }
+  h1 { font-size: clamp(34px, 6vw, 60px); margin: 0 0 10px; line-height: 1.05; letter-spacing: .02em; }
+  h2 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 14px; }
+  h3 { font-size: 26px; margin: 0 0 10px; }
+  p { font-size: 20px; line-height: 1.55; margin: 8px 0; }
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+  }
+  .info-card, .glass-card {
+    background: rgba(255, 250, 236, .94);
+    border: 2px solid rgba(255,255,255,.75);
+    border-radius: 28px;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+  }
+  .small-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(139, 214, 181, .35);
+    font-weight: 800;
+    color: #216e64;
+    font-size: 18px;
+  }
+  .pill-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .pill { padding: 8px 13px; background: #e7f9f3; border-radius: 999px; font-weight: 800; color: #226e67; }
+  .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: auto; }
+  .btn {
+    border: 0;
+    min-height: 58px;
+    padding: 0 24px;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+    color: #174a5e;
+    background: #eef9ff;
+    box-shadow: 0 7px 0 rgba(37, 114, 147, .20), 0 14px 24px rgba(0,0,0,.10);
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(37, 114, 147, .20), 0 8px 16px rgba(0,0,0,.10); }
+  .btn.primary { background: linear-gradient(#ffe48d, #ffc75a); }
+  .btn.secondary { background: linear-gradient(#dff4ff, #a8daf2); }
+  .btn.coral { background: linear-gradient(#ffb6aa, #ff8c7b); color: white; text-shadow: 0 1px 1px rgba(0,0,0,.12); }
+  .btn.ghost { background: rgba(255,255,255,.72); box-shadow: none; border: 2px solid rgba(24,80,106,.18); }
+  .modal-like {
+    width: min(900px, calc(100% - 36px));
+    max-height: calc(100% - 36px);
+    margin: 18px auto;
+    overflow: auto;
+    border-radius: 30px;
+    padding: 22px;
+    background: rgba(255,250,236,.96);
+    box-shadow: var(--soft-shadow);
+  }
+  .two-col { display: grid; grid-template-columns: .9fr 1.1fr; gap: 20px; align-items: center; }
+  .cover-img, .detail-img { width: 100%; border-radius: 24px; box-shadow: var(--card-shadow); display: block; }
+  .rule-box {
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: #e9fbf5;
+    border: 2px solid rgba(77, 177, 159, .22);
+    margin: 10px 0;
+  }
+  .cover-layout {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 28px;
+  }
+  .cover-art { width: 100%; border-radius: 32px; box-shadow: var(--soft-shadow); }
+  .top-hud {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 12;
+    pointer-events: none;
+  }
+  .hud-group { display: flex; align-items: center; gap: 8px; pointer-events: auto; flex-wrap: wrap; }
+  .hud-chip {
+    min-height: 42px;
+    padding: 8px 12px;
+    border-radius: 16px;
+    background: rgba(255,250,236,.92);
+    border: 2px solid rgba(255,255,255,.72);
+    box-shadow: 0 4px 12px rgba(0,0,0,.09);
+    font-size: 19px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .hud-btn {
+    width: 46px; height: 46px;
+    border-radius: 16px;
+    border: 0;
+    background: rgba(255,250,236,.92);
+    font-size: 24px;
+    font-weight: 900;
+    box-shadow: 0 4px 12px rgba(0,0,0,.10);
+    cursor: pointer;
+  }
+  .target-card {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(760px, calc(100% - 32px));
+    padding: 13px 18px;
+    background: rgba(255,250,236,.94);
+    border: 2px solid rgba(255,255,255,.78);
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .target-card img { width: 52px; height: 52px; object-fit: cover; border-radius: 50%; }
+  .target-text strong { font-size: 23px; display: block; }
+  .target-text span { font-size: 17px; font-weight: 700; opacity: .86; }
+  .tutorial-layout {
+    height: 100%;
+    padding: 134px 24px 24px;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 18px;
+  }
+  .tutorial-panel {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    background: rgba(255,255,255,.5);
+    box-shadow: var(--card-shadow);
+    min-height: 300px;
+  }
+  .tutorial-panel img.scene-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tutorial-badge {
+    position: absolute;
+    left: 16px; top: 16px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--yellow);
+    font-size: 20px;
+    font-weight: 900;
+    color: #7b5d00;
+  }
+  .speech {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 18px;
+    background: rgba(255,250,236,.92);
+    border-radius: 22px;
+    padding: 14px 18px;
+    font-size: 22px;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(0,0,0,.13);
+  }
+  .demo-hand {
+    position: absolute;
+    width: 115px;
+    height: auto;
+    z-index: 8;
+    animation: handMove 1.35s ease-in-out infinite alternate;
+    filter: drop-shadow(0 8px 8px rgba(0,0,0,.18));
+  }
+  @keyframes handMove { from { transform: translate(-10px, -8px) scale(.96); } to { transform: translate(16px, 12px) scale(1.04); } }
+  .plus-one {
+    position: absolute;
+    right: 42px;
+    top: 72px;
+    padding: 15px 22px;
+    border-radius: 999px;
+    background: rgba(255,238,132,.95);
+    color: #8a5e00;
+    font-size: 34px;
+    font-weight: 1000;
+    box-shadow: var(--card-shadow);
+    animation: pop .8s ease both;
+  }
+  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  .scene-content {
+    position: absolute;
+    inset: 0;
+    padding-top: 138px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .fish-lane {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 2vw, 18px);
+    padding: 12px 20px 0;
+  }
+  .fish-slot { width: clamp(58px, 12vw, 118px); height: clamp(58px, 12vw, 118px); display: flex; align-items: center; justify-content: center; position: relative; }
+  .fish-slot.empty { opacity: .25; border: 2px dashed rgba(255,255,255,.55); border-radius: 50%; }
+  .fish-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(0, 80, 110, .18)); }
+  .fish-img.captain { width: 130%; height: 130%; z-index: 3; }
+  .fish-img.dim { opacity: .48; filter: saturate(.55) drop-shadow(0 5px 6px rgba(0,80,110,.10)); }
+  .glow {
+    position: absolute;
+    width: 142%;
+    height: 142%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,231,112,.76), rgba(255,231,112,.18) 54%, transparent 72%);
+    animation: glowPulse 1.4s ease-in-out infinite alternate;
+  }
+  .low .glow { animation: none; opacity: .76; }
+  @keyframes glowPulse { from { transform: scale(.96); opacity:.7; } to { transform: scale(1.05); opacity: .98; } }
+  .shell-row {
+    width: min(680px, calc(100% - 24px));
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(24px, 8vw, 80px);
+    padding: 0 18px 26px;
+  }
+  .shell-btn {
+    min-height: 126px;
+    border: 0;
+    background: rgba(255,250,236,.55);
+    border-radius: 32px;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.5), 0 12px 24px rgba(0, 73, 100, .16);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .shell-btn img { width: min(140px, 42vw); height: min(140px, 42vw); object-fit: contain; display: block; margin: auto; }
+  .shell-btn:active { transform: translateY(3px) scale(.98); }
+  .shell-btn.flash { outline: 6px solid rgba(255,231,112,.75); }
+  .feedback {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .feedback img { width: min(340px, 68vw); border-radius: 22px; filter: drop-shadow(0 14px 22px rgba(0,0,0,.18)); }
+  .feedback-text {
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: rgba(255,250,236,.96);
+    font-size: 24px;
+    font-weight: 1000;
+    box-shadow: var(--card-shadow);
+  }
+  .bottom-caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: rgba(255,250,236,.93);
+    border-radius: 26px;
+    padding: 16px 18px;
+    box-shadow: var(--card-shadow);
+  }
+  .bottom-caption p { margin: 0; font-weight: 900; }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: rgba(8, 82, 110, .42);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+  }
+  .dialog {
+    width: min(680px, 100%);
+    background: rgba(255,250,236,.98);
+    border-radius: 32px;
+    padding: 26px;
+    box-shadow: var(--soft-shadow);
+    border: 2px solid rgba(255,255,255,.8);
+  }
+  .dialog .dialog-img { width: 160px; height: 120px; object-fit: cover; border-radius: 22px; float: right; margin-left: 18px; box-shadow: var(--card-shadow); }
+  .result-layout {
+    height: 100%;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: .92fr 1.08fr;
+    gap: 22px;
+    align-items: stretch;
+  }
+  .result-art { width: 100%; height: 100%; object-fit: cover; border-radius: 30px; box-shadow: var(--soft-shadow); }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .stat {
+    border-radius: 20px;
+    background: #eefaf7;
+    padding: 14px;
+    font-weight: 900;
+  }
+  .stat small { display: block; font-size: 15px; opacity: .75; margin-bottom: 4px; }
+  .stat b { font-size: 28px; }
+  .recommend {
+    border-radius: 24px;
+    background: linear-gradient(180deg, #fff8da, #e8f9ec);
+    padding: 18px;
+    border: 2px solid rgba(122, 180, 80, .22);
+    margin: 12px 0 14px;
+  }
+  .settings-line { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .toggle {
+    border: 2px solid rgba(24,80,106,.16);
+    background: rgba(255,255,255,.72);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .toggle.on { background: #dff8ed; border-color: rgba(66,160,124,.45); color: #20725c; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  @media (max-width: 760px) {
+    body { overflow: auto; }
+    .app { min-height: 100vh; height: auto; padding: 10px; align-items: flex-start; }
+    .screen { min-height: 720px; height: auto; border-radius: 24px; }
+    .home-grid, .cover-layout, .two-col, .result-layout { grid-template-columns: 1fr; }
+    .home-grid { padding: 16px; }
+    .hero-card { min-height: 330px; }
+    .cover-layout { padding: 16px; }
+    .modal-like { margin: 10px; width: calc(100% - 20px); }
+    .top-hud { top: 8px; left: 8px; right: 8px; }
+    .hud-chip { font-size: 15px; min-height: 36px; padding: 6px 9px; }
+    .hud-btn { width: 42px; height: 42px; }
+    .target-card { top: 62px; padding: 10px 12px; }
+    .target-text strong { font-size: 19px; }
+    .target-text span { font-size: 14px; }
+    .scene-content { padding-top: 128px; }
+    .fish-lane { gap: 2px; padding: 0 6px; }
+    .fish-slot { width: 58px; height: 58px; }
+    .shell-row { gap: 16px; padding-bottom: 16px; }
+    .shell-btn { min-height: 118px; }
+    .tutorial-layout { padding: 126px 12px 14px; }
+    .bottom-caption { flex-direction: column; align-items: stretch; }
+    h1 { font-size: 40px; } h2 { font-size: 30px; } p { font-size: 18px; }
+    .btn { width: 100%; }
+    .dialog .dialog-img { float: none; display: block; margin: 0 auto 12px; }
+  }
+</style>
+  <link rel="stylesheet" href="../shared/unified.css">
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+(() => {
+  'use strict';
+
+  const A = {
+    lobby: 'assets/lobby-card.png',
+    detail: 'assets/detail-cover.png',
+    cover: 'assets/game-cover.png',
+    tutorial1: 'assets/tutorial-1.png',
+    tutorial2: 'assets/tutorial-2.png',
+    tutorial3: 'assets/tutorial-3.png',
+    tutorial4: 'assets/tutorial-4.png',
+    tutorial5: 'assets/tutorial-5.png',
+    tutorial6: 'assets/tutorial-6.png',
+    scene: 'assets/scene-bg.png',
+    low: 'assets/low-bg.png',
+    captainLeft: 'assets/captain-left.png',
+    captainRight: 'assets/captain-right.png',
+    teammateLeft: 'assets/teammate-left.png',
+    teammateRight: 'assets/teammate-right.png',
+    teammateGreenLeft: 'assets/teammate-green-left.png',
+    teammateGreenRight: 'assets/teammate-green-right.png',
+    shellLeft: 'assets/shell-left.png',
+    shellRight: 'assets/shell-right.png',
+    hand: 'assets/hand.png',
+    success: 'assets/success-sticker.png',
+    hint: 'assets/hint-sticker.png',
+    targetCard: 'assets/target-card.png',
+    result: 'assets/result-badge.png',
+    ready: 'assets/ready-card.png',
+    stars: 'assets/progress-stars.png'
+  };
+
+  const levelConfigs = [
+    { level: 1, name: '轻松起步', tag: '轻松', duration: 45, targetTrials: 8, teammateCount: 0, incongruentRatio: 0, mixedRatio: 0, neutralRatio: 0, responseWindowMs: 7000, glow: true },
+    { level: 2, name: '跟着队长', tag: '轻松', duration: 45, targetTrials: 10, teammateCount: 2, incongruentRatio: 0, mixedRatio: 0, neutralRatio: 0, responseWindowMs: 6500, glow: true },
+    { level: 3, name: '稳稳看中间', tag: '轻松', duration: 50, targetTrials: 12, teammateCount: 2, incongruentRatio: 0, mixedRatio: 0, neutralRatio: .35, responseWindowMs: 6000, glow: true },
+    { level: 4, name: '队友小调皮', tag: '进阶挑战', duration: 60, targetTrials: 14, teammateCount: 2, incongruentRatio: .20, mixedRatio: 0, neutralRatio: .10, responseWindowMs: 5200, glow: false },
+    { level: 5, name: '小队变调皮', tag: '进阶挑战', duration: 60, targetTrials: 16, teammateCount: 4, incongruentRatio: .35, mixedRatio: .05, neutralRatio: .10, responseWindowMs: 4800, glow: false },
+    { level: 6, name: '看准队长', tag: '进阶挑战', duration: 65, targetTrials: 18, teammateCount: 4, incongruentRatio: .45, mixedRatio: .10, neutralRatio: .10, responseWindowMs: 4200, glow: false },
+    { level: 7, name: '海草岔路', tag: '进阶挑战', duration: 65, targetTrials: 20, teammateCount: 4, incongruentRatio: .50, mixedRatio: .20, neutralRatio: .05, responseWindowMs: 3600, glow: false },
+    { level: 8, name: '快速领航', tag: '进阶挑战', duration: 70, targetTrials: 22, teammateCount: 4, incongruentRatio: .60, mixedRatio: .20, neutralRatio: .02, responseWindowMs: 3200, glow: false },
+    { level: 9, name: '调皮队列', tag: '进阶挑战', duration: 70, targetTrials: 24, teammateCount: 4, incongruentRatio: .65, mixedRatio: .25, neutralRatio: .02, responseWindowMs: 2800, glow: false },
+    { level: 10, name: '队长大师', tag: '进阶挑战', duration: 75, targetTrials: 26, teammateCount: 4, incongruentRatio: .70, mixedRatio: .25, neutralRatio: 0, responseWindowMs: 2500, glow: false }
+  ];
+
+  const practiceTrials = [
+    { captainDirection: 'left', teammateDirections: [], flankerMode: 'none', captainGlow: true, responseWindowMs: 8000 },
+    { captainDirection: 'right', teammateDirections: [], flankerMode: 'none', captainGlow: true, responseWindowMs: 8000 },
+    { captainDirection: 'left', teammateDirections: ['left','left'], flankerMode: 'congruent', captainGlow: true, responseWindowMs: 8000 },
+    { captainDirection: 'right', teammateDirections: ['right','right'], flankerMode: 'congruent', captainGlow: true, responseWindowMs: 8000 },
+    { captainDirection: 'left', teammateDirections: ['right','right'], flankerMode: 'incongruent', captainGlow: true, responseWindowMs: 9000 },
+    { captainDirection: 'right', teammateDirections: ['left','left'], flankerMode: 'incongruent', captainGlow: true, responseWindowMs: 9000 }
+  ];
+
+  const tutorialScreens = [
+    { title: '欢迎来到海底小鱼队', target: '目标：认识中间戴帽子的队长。', body: '今天你是领航员。先看中间的小鱼队长。', img: A.tutorial1, hint: '欢迎来到海底小鱼队！', hand: false },
+    { title: '队长朝左', target: '目标：队长朝左，就点左边贝壳。', body: '手指会先看队长，再去点左边贝壳。', img: A.tutorial2, hint: '队长朝左，点左边贝壳。', hand: 'left' },
+    { title: '看准一次，数量加一', target: '目标：每看准一次，小鱼队前进一步。', body: '刚才点对啦，星星数量加一。', img: A.tutorial3, hint: '只看队长的方向哦。', plus: true },
+    { title: '队友同方向', target: '目标：队友出现时，还是只看中间队长。', body: '队友和队长一样时，也要养成看中间的习惯。', img: A.tutorial4, hint: '点对应方向贝壳。', hand: 'right' },
+    { title: '进阶挑战：队友反方向', target: '目标：队友有点调皮，方向仍然听队长。', body: '旁边小伙伴可能不一样，先找戴帽子的队长。', img: A.tutorial5, hint: '看中间，不被带跑。', hand: 'left' },
+    { title: '准备试一次', target: '目标：完成低压练习后再正式训练。', body: '接下来先做几次不计分练习。', img: A.tutorial6, hint: '准备开始训练吧！', hand: false }
+  ];
+
+  const app = document.getElementById('app');
+  const params = new URLSearchParams(location.search);
+  const forcedLevel = clampInt(Number(params.get('level')) || 0, 0, 10);
+  const storedLevel = clampInt(Number(localStorage.getItem('fishCaptain.nextLevel')) || 1, 1, 10);
+  const storedLow = localStorage.getItem('fishCaptain.lowStim') === '1' || params.get('lowStim') === '1';
+
+  const state = {
+    view: 'home',
+    tutorialIndex: 0,
+    practiceIndex: 0,
+    practiceResults: [],
+    currentTrial: null,
+    accepting: false,
+    feedback: null,
+    selectedLevel: forcedLevel || storedLevel,
+    settings: {
+      lowStim: storedLow,
+      extendedTime: localStorage.getItem('fishCaptain.extendedTime') === '1',
+      reduceTeammates: localStorage.getItem('fishCaptain.reduceTeammates') === '1'
+    },
+    training: null,
+    result: readLastResult()
+  };
+
+  let trialTimer = null;
+  let nextTimer = null;
+  let tickTimer = null;
+
+  function clampInt(n, min, max) {
+    n = Math.round(Number(n));
+    if (!Number.isFinite(n)) n = min;
+    return Math.max(min, Math.min(max, n));
+  }
+  function cfg(level) { return levelConfigs[clampInt(level,1,10)-1]; }
+  function readLastResult() {
+    try { return JSON.parse(localStorage.getItem('fishCaptain.lastResult') || 'null'); }
+    catch { return null; }
+  }
+  function setView(view) {
+    clearTrialTimers();
+    state.view = view;
+    render();
+  }
+  function clearTrialTimers() {
+    if (trialTimer) clearTimeout(trialTimer);
+    if (nextTimer) clearTimeout(nextTimer);
+    trialTimer = null; nextTimer = null;
+  }
+  function clearAllTimers() {
+    clearTrialTimers();
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = null;
+  }
+  function fmtTime(ms) {
+    ms = Math.max(0, Math.ceil(ms / 1000));
+    const m = Math.floor(ms / 60);
+    const s = ms % 60;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  function percent(v) { return `${Math.round(v * 100)}%`; }
+  function avg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+  function median(arr) {
+    if (!arr.length) return 0;
+    const s = [...arr].sort((a,b)=>a-b);
+    const mid = Math.floor(s.length/2);
+    return s.length % 2 ? s[mid] : (s[mid-1]+s[mid])/2;
+  }
+  function maxStreak(results) {
+    let best = 0, cur = 0;
+    for (const r of results) {
+      if (r.kind === 'correct') { cur++; best = Math.max(best, cur); }
+      else cur = 0;
+    }
+    return best;
+  }
+  function dirText(d) { return d === 'left' ? '左' : '右'; }
+  function opposite(d) { return d === 'left' ? 'right' : 'left'; }
+  function coin() { return Math.random() < .5 ? 'left' : 'right'; }
+
+  function render() {
+    if (!app) return;
+    const low = state.settings.lowStim ? ' low' : '';
+    if (state.view === 'home') return renderHome();
+    if (state.view === 'detail') return renderDetail();
+    if (state.view === 'cover') return renderCover();
+    if (state.view === 'tutorial') return renderTutorial();
+    if (state.view === 'practice') return renderPractice();
+    if (state.view === 'ready') return renderReady();
+    if (state.view === 'training') return renderTraining();
+    if (state.view === 'paused') return renderPaused();
+    if (state.view === 'result') return renderResult();
+    app.innerHTML = `<div class="screen scene-screen${low}"></div>`;
+  }
+
+  function renderHome() {
+    const next = cfg(state.selectedLevel);
+    const last = state.result;
+    app.innerHTML = `
+      <section class="screen">
+        <div class="home-grid">
+          <div class="hero-card" role="img" aria-label="小鱼队长看方向封面">
+            <div class="hero-copy">
+              <h1>小鱼队长看方向</h1>
+              <p><strong>只看队长，不被带跑。</strong></p>
+              <div class="pill-row"><span class="pill">专注看中间</span><span class="pill">方向反应</span><span class="pill">中文可玩</span></div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="info-card">
+              <span class="small-label">当前推荐：第 ${state.selectedLevel} 级${state.selectedLevel >= 4 ? ' · 进阶挑战' : ' · 轻松开始'}</span>
+              <h2>首页</h2>
+              <p>进入后会先看场景内教学，再做低压练习，最后开始正式训练。</p>
+              ${last ? `<p>上轮正确率：<strong>${percent(last.accuracy)}</strong>，平均用时：<strong>${(last.avgRt/1000).toFixed(1)} 秒</strong></p>` : `<p>还没有本地记录。建议从第 1 级轻松开始。</p>`}
+            </div>
+            <div class="info-card">
+              <h3>怎么玩</h3>
+              <p>看中间戴帽子的队长小鱼。队长朝左点左边贝壳，队长朝右点右边贝壳。</p>
+              <h3>目标是什么</h3>
+              <p>目标是一直看中间队长的方向，不被旁边调皮队友带跑。</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn secondary" data-action="detail">查看说明</button>
+              <button class="btn primary" data-action="cover">开始</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderDetail() {
+    app.innerHTML = `
+      <section class="screen">
+        <div class="modal-like">
+          <div class="two-col">
+            <img class="detail-img" src="${A.detail}" alt="海底小鱼队说明图">
+            <div>
+              <span class="small-label">说明</span>
+              <h2>怎么玩</h2>
+              <div class="rule-box"><p><strong>第一步：</strong>先找中间戴帽子的队长小鱼。</p></div>
+              <div class="rule-box"><p><strong>第二步：</strong>队长朝左，点左边方向贝壳；队长朝右，点右边方向贝壳。</p></div>
+              <div class="rule-box"><p><strong>第三步：</strong>旁边队友有时会很调皮。请只听队长的方向。</p></div>
+              <h2>目标是什么</h2>
+              <p>帮助小鱼队按队长方向前进。正式训练中，目标卡会一直显示在上方。</p>
+              <p>第 1–3 级非常容易；第 4 级以后会显示“进阶挑战”。</p>
+              <div class="settings-line">
+                ${settingsButtons()}
+              </div>
+              <div class="btn-row">
+                <button class="btn ghost" data-action="home">返回首页</button>
+                <button class="btn primary" data-action="cover">进入封面页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function settingsButtons() {
+    return `
+      <button class="toggle ${state.settings.lowStim ? 'on' : ''}" data-action="toggle-low">低刺激模式：${state.settings.lowStim ? '开' : '关'}</button>
+      <button class="toggle ${state.settings.extendedTime ? 'on' : ''}" data-action="toggle-time">延长反应时间：${state.settings.extendedTime ? '开' : '关'}</button>
+      <button class="toggle ${state.settings.reduceTeammates ? 'on' : ''}" data-action="toggle-mates">减少队友数量：${state.settings.reduceTeammates ? '开' : '关'}</button>`;
+  }
+
+  function renderCover() {
+    const c = cfg(state.selectedLevel);
+    app.innerHTML = `
+      <section class="screen">
+        <div class="cover-layout">
+          <img class="cover-art" src="${A.cover}" alt="小鱼队长看方向封面">
+          <div class="info-card">
+            <span class="small-label">第 ${state.selectedLevel} 级 · ${state.selectedLevel >= 4 ? '进阶挑战' : '轻松开始'}</span>
+            <h1>小鱼队长看方向</h1>
+            <h2>怎么玩</h2>
+            <p>只看中间队长朝哪边。朝左点左边贝壳，朝右点右边贝壳。</p>
+            <h2>目标是什么</h2>
+            <p>目标是让小鱼队跟着队长走，不被旁边小伙伴带跑。</p>
+            <div class="rule-box"><p>本轮推荐：<strong>第 ${c.level} 级 ${c.name}</strong>。${c.level >= 4 ? '这是进阶挑战。' : '这一关很轻松。'}</p></div>
+            <div class="btn-row">
+              <button class="btn ghost" data-action="detail">说明</button>
+              <button class="btn secondary" data-action="practice">跳到低压练习</button>
+              <button class="btn primary" data-action="tutorial">开始教学</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function topHud(label, extra='') {
+    return `
+      <div class="top-hud">
+        <div class="hud-group">
+          ${state.view === 'training' ? '<button class="hud-btn" data-action="pause" aria-label="暂停">Ⅱ</button>' : ''}
+          <span class="hud-chip">${label}</span>
+          ${extra}
+        </div>
+        <div class="hud-group"><span class="hud-chip">⭐ ${state.training ? state.training.score : 0}</span></div>
+      </div>`;
+  }
+
+  function targetCard(title='目标：只看中间队长朝哪边。', sub='队长朝左点左贝壳，朝右点右贝壳。') {
+    return `
+      <div class="target-card" aria-live="polite">
+        <img src="${A.targetCard}" alt="目标卡图标">
+        <div class="target-text"><strong>${title}</strong><span>${sub}</span></div>
+      </div>`;
+  }
+
+  function renderTutorial() {
+    const s = tutorialScreens[state.tutorialIndex];
+    const handStyle = s.hand === 'left' ? 'left: 31%; bottom: 18%;' : 'right: 26%; bottom: 18%;';
+    app.innerHTML = `
+      <section class="screen scene-screen${state.settings.lowStim ? ' low' : ''}">
+        ${topHud(`教学 ${state.tutorialIndex+1}/6`)}
+        ${targetCard(s.target, '真实场景里一步一步试。')}
+        <div class="tutorial-layout">
+          <div class="tutorial-panel">
+            <img class="scene-img" src="${s.img}" alt="${s.title}">
+            <div class="tutorial-badge">${state.tutorialIndex+1}</div>
+            ${s.hand ? `<img class="demo-hand" style="${handStyle}" src="${A.hand}" alt="手势演示">` : ''}
+            ${s.plus ? `<div class="plus-one">+1</div>` : ''}
+            <div class="speech">${s.hint}</div>
+          </div>
+          <div class="bottom-caption">
+            <div><h3>${s.title}</h3><p>${s.body}</p></div>
+            <div class="btn-row">
+              ${state.tutorialIndex > 0 ? `<button class="btn ghost" data-action="tutorial-prev">上一屏</button>` : ''}
+              <button class="btn primary" data-action="tutorial-next">${state.tutorialIndex === 5 ? '进入低压练习' : '下一屏'}</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function startPractice() {
+    clearAllTimers();
+    state.view = 'practice';
+    state.practiceIndex = 0;
+    state.practiceResults = [];
+    state.feedback = null;
+    state.currentTrial = makePracticeTrial();
+    state.accepting = true;
+    render();
+  }
+  function makePracticeTrial() {
+    const base = practiceTrials[state.practiceIndex] || practiceTrials[practiceTrials.length-1];
+    return { ...base, id: `practice-${state.practiceIndex}`, startedAt: performance.now() };
+  }
+  function renderPractice() {
+    const t = state.currentTrial || makePracticeTrial();
+    app.innerHTML = `
+      <section class="screen scene-screen${state.settings.lowStim ? ' low' : ''}">
+        ${topHud(`低压练习 ${state.practiceIndex+1}/6`, `<span class="hud-chip">不计时</span>`)}
+        ${targetCard('目标：只看中间队长。', '点对应贝壳，练习不扣分。')}
+        <div class="scene-content">
+          ${formationHtml(t)}
+          ${shellButtonsHtml()}
+        </div>
+        ${feedbackHtml()}
+      </section>`;
+  }
+
+  function renderReady() {
+    app.innerHTML = `
+      <section class="screen scene-screen${state.settings.lowStim ? ' low' : ''}">
+        ${topHud('准备开始')}
+        ${targetCard('目标：只看中间队长朝哪边。', '正式训练会开始计时，目标卡一直在上方。')}
+        <div class="scene-content">
+          ${formationHtml({ captainDirection: 'right', teammateDirections: ['left','right'], flankerMode:'mixed', captainGlow:true })}
+          ${shellButtonsHtml(false)}
+        </div>
+        <div class="overlay">
+          <div class="dialog">
+            <img class="dialog-img" src="${A.ready}" alt="准备开始图">
+            <h2>准备开始训练吧！</h2>
+            <p>记住：只看中间队长，别被两边调皮队友带跑。</p>
+            <p><strong>队长朝左 → 点左边贝壳</strong><br><strong>队长朝右 → 点右边贝壳</strong></p>
+            <div class="btn-row">
+              <button class="btn secondary" data-action="tutorial">重新演示</button>
+              <button class="btn primary" data-action="start-training">进入训练</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function startTraining(level) {
+    clearAllTimers();
+    level = clampInt(level || state.selectedLevel || 1, 1, 10);
+    const c = cfg(level);
+    state.selectedLevel = level;
+    state.training = {
+      level,
+      config: c,
+      score: 0,
+      streak: 0,
+      bestStreak: 0,
+      results: [],
+      trialIndex: 0,
+      supportLevel: 0,
+      startedAt: Date.now(),
+      sessionStart: performance.now(),
+      sessionEnd: performance.now() + c.duration * 1000,
+      remainingMs: c.duration * 1000
+    };
+    state.view = 'training';
+    startTick();
+    beginNextTrial();
+  }
+
+  function startTick() {
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = setInterval(() => {
+      if (!state.training || state.view !== 'training') return;
+      state.training.remainingMs = Math.max(0, state.training.sessionEnd - performance.now());
+      if (state.training.remainingMs <= 0) finishTraining();
+      else render();
+    }, 500);
+  }
+
+  function beginNextTrial() {
+    clearTrialTimers();
+    if (!state.training) return;
+    if (state.training.trialIndex >= state.training.config.targetTrials) return finishTraining();
+    state.currentTrial = generateTrial();
+    state.accepting = true;
+    state.feedback = null;
+    trialTimer = setTimeout(() => answer(null), state.currentTrial.responseWindowMs);
+    render();
+  }
+
+  function generateTrial() {
+    const tr = state.training;
+    let c = { ...tr.config };
+    if (state.settings.extendedTime) c.responseWindowMs += 1000;
+    if (state.settings.reduceTeammates) c.teammateCount = Math.min(c.teammateCount, 2);
+    if (tr.supportLevel > 0) {
+      c.responseWindowMs += tr.supportLevel === 1 ? 700 : 1200;
+      c.incongruentRatio = Math.max(0, c.incongruentRatio - (tr.supportLevel === 1 ? .12 : .22));
+    }
+    const captainDirection = coin();
+    let mode = 'none';
+    const roll = Math.random();
+    if (c.teammateCount === 0) mode = 'none';
+    else if (roll < c.incongruentRatio) mode = 'incongruent';
+    else if (roll < c.incongruentRatio + c.mixedRatio) mode = 'mixed';
+    else if (roll < c.incongruentRatio + c.mixedRatio + c.neutralRatio) mode = 'neutral';
+    else mode = 'congruent';
+    return {
+      id: `trial-${tr.trialIndex}-${Date.now()}`,
+      level: tr.level,
+      captainDirection,
+      flankerMode: mode,
+      teammateDirections: buildTeammates(mode, captainDirection, c.teammateCount),
+      responseWindowMs: c.responseWindowMs,
+      captainGlow: c.glow || tr.supportLevel > 0 || tr.level <= 3,
+      difficultyParams:{teammateCount:c.teammateCount,incongruentRatio:c.incongruentRatio,mixedRatio:c.mixedRatio,neutralRatio:c.neutralRatio,responseWindowMs:c.responseWindowMs,supportLevel:tr.supportLevel},
+      startedAt: performance.now()
+    };
+  }
+
+  function buildTeammates(mode, captain, count) {
+    if (count <= 0 || mode === 'none') return [];
+    const opp = opposite(captain);
+    if (mode === 'congruent') return Array(count).fill(captain);
+    if (mode === 'incongruent') return Array(count).fill(opp);
+    if (mode === 'neutral') return Array(count).fill('neutral');
+    return Array.from({ length: count }, (_, i) => i % 2 === 0 ? opp : captain);
+  }
+
+  function renderTraining() {
+    const tr = state.training;
+    if (!tr) return renderReady();
+    const c = cfg(tr.level);
+    const label = `第 ${tr.level} 级 · ${c.name}`;
+    const challenge = tr.level >= 4 ? `<span class="hud-chip">进阶挑战</span>` : `<span class="hud-chip">轻松</span>`;
+    app.innerHTML = `
+      <section class="screen scene-screen${state.settings.lowStim ? ' low' : ''}">
+        <div class="top-hud">
+          <div class="hud-group">
+            <button class="hud-btn" data-action="pause" aria-label="暂停">Ⅱ</button>
+            <span class="hud-chip">${label}</span>${challenge}
+          </div>
+          <div class="hud-group">
+            <span class="hud-chip">⏱ ${fmtTime(tr.remainingMs)}</span>
+            <span class="hud-chip">⭐ ${tr.score}</span>
+          </div>
+        </div>
+        ${targetCard('目标：只看中间队长朝哪边。', '队长朝左点左贝壳，队长朝右点右贝壳。')}
+        <div class="scene-content">
+          ${formationHtml(state.currentTrial)}
+          ${shellButtonsHtml()}
+        </div>
+        ${feedbackHtml()}
+      </section>`;
+  }
+
+  function renderPaused() {
+    app.innerHTML = `
+      <section class="screen scene-screen${state.settings.lowStim ? ' low' : ''}">
+        ${topHud('暂停一下')}
+        ${targetCard('目标：只看中间队长朝哪边。', '准备好后继续。')}
+        <div class="overlay">
+          <div class="dialog">
+            <h2>暂停一下</h2>
+            <p>小鱼队在原地等你。继续时会从下一题开始。</p>
+            <div class="settings-line">${settingsButtons()}</div>
+            <div class="btn-row">
+              <button class="btn ghost" data-action="home">回到首页</button>
+              <button class="btn secondary" data-action="ready">重新准备</button>
+              <button class="btn primary" data-action="resume-training">继续训练</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function formationHtml(trial) {
+    trial = trial || { captainDirection:'right', teammateDirections:[], captainGlow:true };
+    const mates = trial.teammateDirections || [];
+    const half = Math.floor(mates.length / 2);
+    const left = mates.slice(0, half);
+    const right = mates.slice(half);
+    const leftHtml = left.length ? left.map((d,i)=>fishHtml(d, false, i)).join('') : emptySlots(trial, 'left');
+    const rightHtml = right.length ? right.map((d,i)=>fishHtml(d, false, i+2)).join('') : emptySlots(trial, 'right');
+    return `<div class="fish-lane" aria-label="小鱼队伍">
+      ${leftHtml}
+      <div class="fish-slot captain-slot">${trial.captainGlow ? '<div class="glow"></div>' : ''}<img class="fish-img captain" src="${trial.captainDirection === 'left' ? A.captainLeft : A.captainRight}" alt="中间小鱼队长朝${dirText(trial.captainDirection)}"></div>
+      ${rightHtml}
+    </div>`;
+  }
+  function emptySlots(trial, side) {
+    if ((trial.teammateDirections || []).length === 0) return `<div class="fish-slot empty" aria-hidden="true"></div>`;
+    return '';
+  }
+  function fishHtml(direction, isCaptain, idx) {
+    if (direction === 'neutral') {
+      const src = idx % 2 ? A.teammateGreenRight : A.teammateRight;
+      return `<div class="fish-slot"><img class="fish-img dim" src="${src}" alt="旁边队友休息"></div>`;
+    }
+    const green = idx % 2 === 0;
+    const src = green
+      ? (direction === 'left' ? A.teammateGreenLeft : A.teammateGreenRight)
+      : (direction === 'left' ? A.teammateLeft : A.teammateRight);
+    return `<div class="fish-slot"><img class="fish-img" src="${src}" alt="旁边队友朝${dirText(direction)}"></div>`;
+  }
+  function shellButtonsHtml(active=true) {
+    const disabled = active ? '' : 'disabled aria-disabled="true"';
+    return `<div class="shell-row">
+      <button class="shell-btn" ${disabled} data-answer="left" aria-label="点左边贝壳"><img src="${A.shellLeft}" alt="左边方向贝壳"></button>
+      <button class="shell-btn" ${disabled} data-answer="right" aria-label="点右边贝壳"><img src="${A.shellRight}" alt="右边方向贝壳"></button>
+    </div>`;
+  }
+  function feedbackHtml() {
+    if (!state.feedback) return '';
+    const src = state.feedback.kind === 'correct' ? A.success : A.hint;
+    return `<div class="feedback"><img src="${src}" alt="反馈"><div class="feedback-text">${state.feedback.text}</div></div>`;
+  }
+
+  function answer(dir) {
+    if (!state.accepting || !state.currentTrial) return;
+    if (state.view === 'practice') return answerPractice(dir);
+    if (state.view === 'training') return answerTraining(dir);
+  }
+
+  function answerPractice(dir) {
+    state.accepting = false;
+    const t = state.currentTrial;
+    const correct = dir === t.captainDirection;
+    state.practiceResults.push({ kind: correct ? 'correct' : (dir ? 'nonTarget' : 'timeout'), rtMs: performance.now() - t.startedAt });
+    state.feedback = correct
+      ? { kind: 'correct', text: '跟上队长啦！' }
+      : { kind: 'hint', text: dir ? '别急，先找戴帽子的队长。' : '慢慢来，看中间队长。' };
+    render();
+    nextTimer = setTimeout(() => {
+      state.practiceIndex++;
+      if (state.practiceIndex >= practiceTrials.length) {
+        state.feedback = null;
+        state.currentTrial = null;
+        state.accepting = false;
+        state.view = 'ready';
+        render();
+      } else {
+        state.feedback = null;
+        state.currentTrial = makePracticeTrial();
+        state.accepting = true;
+        render();
+      }
+    }, correct ? 520 : 760);
+  }
+
+  function answerTraining(dir) {
+    clearTrialTimers();
+    const tr = state.training;
+    const t = state.currentTrial;
+    state.accepting = false;
+    const rtMs = performance.now() - t.startedAt;
+    const correct = dir === t.captainDirection;
+    const kind = correct ? 'correct' : (dir ? 'nonTarget' : 'timeout');
+    const result = {
+      trialId:t.id,
+      gameId:'stroop',
+      domain:'attention',
+      taskFamily:'stroop',
+      mode:'training',
+      kind,
+      level:tr.level,
+      stimulus:{captainDirection:t.captainDirection, teammateDirections:t.teammateDirections,centralTarget:'captain-fish',flankers:t.teammateDirections},
+      condition:{flankerMode:t.flankerMode, congruency:t.flankerMode, responseWindowMs:t.responseWindowMs, supportLevel:tr.supportLevel, captainGlow:t.captainGlow},
+      correctAnswer:t.captainDirection,
+      response:dir,
+      correct,
+      rtMs,
+      flankerMode:t.flankerMode,
+      captainDirection:t.captainDirection,
+      errorType:correct ? null : (dir ? 'wrong_direction' : 'timeout'),
+      difficultyParams:t.difficultyParams || {}
+    };
+    tr.results.push(result);
+    if (correct) {
+      tr.streak += 1;
+      tr.bestStreak = Math.max(tr.bestStreak, tr.streak);
+      const speed = rtMs < 1800 ? 3 : 0;
+      const streakBonus = tr.streak >= 5 ? 5 : 0;
+      const levelBonus = tr.level >= 4 ? Math.min(5, tr.level - 3) : 0;
+      tr.score += 10 + speed + streakBonus + levelBonus;
+      state.feedback = { kind: 'correct', text: speed ? '看得又准又快！' : '方向看得很稳。' };
+    } else {
+      tr.streak = 0;
+      state.feedback = { kind: 'hint', text: dir ? '队友在旁边玩，方向听队长。' : '慢慢来，先看中间。' };
+    }
+    updateAdaptiveSupport();
+    render();
+    nextTimer = setTimeout(() => {
+      tr.trialIndex += 1;
+      beginNextTrial();
+    }, correct ? 520 : 760);
+  }
+
+  function updateAdaptiveSupport() {
+    const tr = state.training;
+    if (!tr) return;
+    const recent = tr.results.slice(-10);
+    if (recent.length < 6) return;
+    const acc = recent.filter(r=>r.kind === 'correct').length / recent.length;
+    const recent5 = tr.results.slice(-5);
+    const misses = recent5.filter(r=>r.kind !== 'correct').length;
+    const correctRts = recent.filter(r=>r.kind === 'correct').map(r=>r.rtMs);
+    const med = median(correctRts);
+    if (misses >= 3 || acc < .65) tr.supportLevel = Math.min(2, tr.supportLevel + 1);
+    else if (acc >= .88 && med > 0 && med < 2600) tr.supportLevel = Math.max(0, tr.supportLevel - 1);
+  }
+
+  function pauseTraining() {
+    if (!state.training) return;
+    state.training.remainingMs = Math.max(0, state.training.sessionEnd - performance.now());
+    clearAllTimers();
+    state.accepting = false;
+    state.view = 'paused';
+    render();
+  }
+  function resumeTraining() {
+    if (!state.training) return;
+    state.training.sessionEnd = performance.now() + state.training.remainingMs;
+    state.view = 'training';
+    startTick();
+    state.training.trialIndex += 1;
+    beginNextTrial();
+  }
+
+  function finishTraining() {
+    if (!state.training) return;
+    clearAllTimers();
+    const tr = state.training;
+    const results = tr.results;
+    const correct = results.filter(r => r.kind === 'correct');
+    const accuracy = results.length ? correct.length / results.length : 0;
+    const avgRt = avg(correct.map(r => r.rtMs));
+    const incong = results.filter(r => r.flankerMode === 'incongruent' || r.flankerMode === 'mixed');
+    const incongAcc = incong.length ? incong.filter(r => r.kind === 'correct').length / incong.length : null;
+    let rec = tr.level;
+    if (accuracy >= .9 && (avgRt === 0 || avgRt < 2600) && (incongAcc ?? accuracy) >= .82) rec = Math.min(10, tr.level + 1);
+    else if (accuracy < .65 || (avgRt > 4600 && tr.level > 1)) rec = Math.max(1, tr.level - 1);
+    else rec = tr.level;
+    const congruent = results.filter(r => r.flankerMode === 'congruent');
+    const mixed = results.filter(r => r.flankerMode === 'mixed');
+    const errorCounts = results.reduce((acc,r)=>{const k=r.errorType||'none';acc[k]=(acc[k]||0)+1;return acc;},{});
+    const payload = {
+      level: tr.level,
+      score: tr.score,
+      total: results.length,
+      correct: correct.length,
+      accuracy,
+      avgRt,
+      congruentTrials: congruent.length,
+      congruentAccuracy: congruent.length ? congruent.filter(r => r.kind === 'correct').length / congruent.length : null,
+      incongruentTrials: incong.length,
+      incongruentAccuracy: incongAcc,
+      mixedTrials: mixed.length,
+      errorCounts,
+      bestStreak: maxStreak(results),
+      recommendedLevel: rec,
+      endedAt: new Date().toISOString()
+    };
+    window.CognitiveGameRecorder?.record('stroop', {
+      domain:'attention',
+      taskFamily:'stroop',
+      mode:'training',
+      level:tr.level,
+      startedAt:new Date(tr.startedAt).toISOString(),
+      completedAt:payload.endedAt,
+      summary:payload,
+      trials:results,
+      adaptive:{recommendedLevel:rec, supportLevel:tr.supportLevel, settings:{...state.settings}}
+    });
+    localStorage.setItem('fishCaptain.lastResult', JSON.stringify(payload));
+    localStorage.setItem('fishCaptain.nextLevel', String(rec));
+    state.result = payload;
+    state.selectedLevel = rec;
+    state.currentTrial = null;
+    state.training = null;
+    state.feedback = null;
+    state.accepting = false;
+    state.view = 'result';
+    render();
+  }
+
+  function renderResult() {
+    const r = state.result || { level: state.selectedLevel, score:0, total:0, correct:0, accuracy:0, avgRt:0, bestStreak:0, recommendedLevel: state.selectedLevel };
+    const rec = cfg(r.recommendedLevel);
+    const played = cfg(r.level);
+    app.innerHTML = `
+      <section class="screen">
+        <div class="result-layout">
+          <img class="result-art" src="${A.result}" alt="结算徽章">
+          <div class="info-card">
+            <span class="small-label">完成本轮领航</span>
+            <h2>本轮表现</h2>
+            <p>本轮是第 ${r.level} 级：${played.name}${r.level >= 4 ? '（进阶挑战）' : '（轻松关）'}。</p>
+            <div class="stat-grid">
+              <div class="stat"><small>看准次数</small><b>${r.correct}/${r.total}</b></div>
+              <div class="stat"><small>正确率</small><b>${percent(r.accuracy)}</b></div>
+              <div class="stat"><small>平均用时</small><b>${r.avgRt ? (r.avgRt/1000).toFixed(1) : '—'} 秒</b></div>
+              <div class="stat"><small>最长连续看准</small><b>${r.bestStreak}</b></div>
+            </div>
+            <div class="recommend">
+              <h3>下轮推荐难度</h3>
+              <p><strong>第 ${r.recommendedLevel} 级：${rec.name}</strong>${r.recommendedLevel >= 4 ? '（进阶挑战）' : '（轻松开始）'}</p>
+              <p>${recommendText(r)}</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn ghost" data-action="home">回到首页</button>
+              <button class="btn secondary" data-action="tutorial">重新演示</button>
+              <button class="btn primary" data-action="ready">按推荐难度再玩</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+  function recommendText(r) {
+    if (r.recommendedLevel > r.level) return '表现很稳，可以试试更高一点的队友干扰。';
+    if (r.recommendedLevel < r.level) return '下轮先轻松复习，让看中间的节奏更稳定。';
+    return '下轮保持同级，再稳稳看队长。';
+  }
+
+  function toggleSetting(which) {
+    if (which === 'low') {
+      state.settings.lowStim = !state.settings.lowStim;
+      localStorage.setItem('fishCaptain.lowStim', state.settings.lowStim ? '1' : '0');
+    }
+    if (which === 'time') {
+      state.settings.extendedTime = !state.settings.extendedTime;
+      localStorage.setItem('fishCaptain.extendedTime', state.settings.extendedTime ? '1' : '0');
+    }
+    if (which === 'mates') {
+      state.settings.reduceTeammates = !state.settings.reduceTeammates;
+      localStorage.setItem('fishCaptain.reduceTeammates', state.settings.reduceTeammates ? '1' : '0');
+    }
+    render();
+  }
+
+  document.addEventListener('click', (e) => {
+    const answerBtn = e.target.closest('[data-answer]');
+    if (answerBtn) return answer(answerBtn.getAttribute('data-answer'));
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-action');
+    if (action === 'home') { clearAllTimers(); state.view = 'home'; return render(); }
+    if (action === 'detail') return setView('detail');
+    if (action === 'cover') return setView('cover');
+    if (action === 'tutorial') { clearAllTimers(); state.tutorialIndex = 0; return setView('tutorial'); }
+    if (action === 'tutorial-prev') { state.tutorialIndex = Math.max(0, state.tutorialIndex - 1); return render(); }
+    if (action === 'tutorial-next') {
+      if (state.tutorialIndex < 5) { state.tutorialIndex += 1; return render(); }
+      return startPractice();
+    }
+    if (action === 'practice') return startPractice();
+    if (action === 'ready') { clearAllTimers(); state.view = 'ready'; return render(); }
+    if (action === 'start-training') return startTraining(state.selectedLevel);
+    if (action === 'pause') return pauseTraining();
+    if (action === 'resume-training') return resumeTraining();
+    if (action === 'toggle-low') return toggleSetting('low');
+    if (action === 'toggle-time') return toggleSetting('time');
+    if (action === 'toggle-mates') return toggleSetting('mates');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { e.preventDefault(); answer('left'); }
+    if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { e.preventDefault(); answer('right'); }
+    if (e.key === 'Escape' && state.view === 'training') pauseTraining();
+    if (e.key === ' ' && state.view === 'tutorial') {
+      e.preventDefault();
+      if (state.tutorialIndex < 5) { state.tutorialIndex += 1; render(); }
+      else startPractice();
+    }
+  });
+
+  // Preload all local assets so 404 problems show immediately in the browser console.
+  Object.values(A).forEach(src => { const im = new Image(); im.src = src; });
+  render();
+})();
+</script>
+  <script src="../shared/unified.js"></script>
+</body>
+</html>

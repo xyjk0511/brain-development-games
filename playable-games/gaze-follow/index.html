@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>眼神找礼物｜Gaze Cueing</title>
+  <link rel="stylesheet" href="../shared/unified.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../shared/unified.js"></script>
+  <script src="../shared/domain-gap-game.js"></script>
+  <script>
+    CognitiveDomainGame.mount({
+      gameId: 'gaze-follow',
+      title: '眼神找礼物',
+      subtitle: '看小伙伴关注哪里，选出他正在看的礼物。',
+      domain: 'social-cognition',
+      domainLabel: '社会认知',
+      taskFamily: 'gaze-cueing',
+      primaryParadigm: 'Gaze Cueing / Joint Attention',
+      basis: '参考 Posner cueing、Friesen & Kingstone gaze cueing 以及共同注意任务；本版用原创礼物场景做儿童友好游戏化。',
+      instructions: '中间的小伙伴会用眼神方向提示左边或右边。根据方向选择他正在关注的礼物。',
+      mascot: '👀',
+      tone1: '#d9f2ff',
+      tone2: '#eee1ff',
+      accent: '#5874d8',
+      accent2: '#8fb5ff',
+      rounds: 10,
+      trials: [
+        { kind: 'gaze', prompt: '小伙伴正在看哪边的礼物？', left: '🎁', right: '🧸', arrow: '⬅️', correct: '左边', options: ['左边','右边','不确定'], condition: { cueDirection: 'left' } },
+        { kind: 'gaze', prompt: '小伙伴正在看哪边的礼物？', left: '🚗', right: '🎈', arrow: '➡️', correct: '右边', options: ['左边','右边','不确定'], condition: { cueDirection: 'right' } },
+        { kind: 'gaze', prompt: '眼神提示的是哪一边？', left: '🍰', right: '🍪', arrow: '⬅️', correct: '左边', options: ['左边','右边','不确定'], condition: { cueDirection: 'left' } },
+        { kind: 'gaze', prompt: '眼神提示的是哪一边？', left: '📘', right: '⚽', arrow: '➡️', correct: '右边', options: ['左边','右边','不确定'], condition: { cueDirection: 'right' } },
+        { kind: 'gaze', prompt: '小伙伴更可能想拿哪个方向的东西？', left: '🌸', right: '🍀', arrow: '⬅️', correct: '左边', options: ['左边','右边','不确定'], condition: { cueDirection: 'left' } },
+        { kind: 'gaze', prompt: '小伙伴更可能想拿哪个方向的东西？', left: '🎵', right: '🧩', arrow: '➡️', correct: '右边', options: ['左边','右边','不确定'], condition: { cueDirection: 'right' } },
+        { kind: 'gaze', prompt: '他正在关注哪一边？', left: '🍎', right: '🍌', arrow: '⬅️', correct: '左边', options: ['左边','右边','不确定'], condition: { cueDirection: 'left' } },
+        { kind: 'gaze', prompt: '他正在关注哪一边？', left: '🐟', right: '🐚', arrow: '➡️', correct: '右边', options: ['左边','右边','不确定'], condition: { cueDirection: 'right' } },
+        { kind: 'gaze', prompt: '顺着眼神找目标。', left: '⭐', right: '🌙', arrow: '⬅️', correct: '左边', options: ['左边','右边','不确定'], condition: { cueDirection: 'left' } },
+        { kind: 'gaze', prompt: '顺着眼神找目标。', left: '🍉', right: '🍓', arrow: '➡️', correct: '右边', options: ['左边','右边','不确定'], condition: { cueDirection: 'right' } }
+      ]
+    });
+  </script>
+</body>
+</html>

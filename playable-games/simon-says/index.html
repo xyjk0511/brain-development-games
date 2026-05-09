@@ -1,0 +1,1730 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>彩虹水母灯灯岛</title>
+  <style>
+    :root {
+      --cream: #fff8e9;
+      --cream-2: #fffdf6;
+      --sky: #bfe9ff;
+      --sky-2: #e7f7ff;
+      --mint: #bcefd6;
+      --mint-2: #e4fff1;
+      --yellow: #ffe59b;
+      --orange: #ffb58f;
+      --purple: #d9c8ff;
+      --coral: #ff8d8d;
+      --ink: #234052;
+      --muted: #61798a;
+      --line: rgba(35, 64, 82, 0.14);
+      --shadow: 0 18px 45px rgba(67, 114, 139, 0.18);
+      --soft-shadow: 0 8px 24px rgba(67, 114, 139, 0.14);
+      --radius-lg: 32px;
+      --radius-md: 22px;
+      --radius-sm: 16px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eaf8ff 0%, #fff8e9 100%);
+      overflow: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.72;
+    }
+    .app { width: 100vw; height: 100vh; overflow: hidden; }
+    .screen {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 620px;
+      overflow: hidden;
+    }
+
+    .cover-screen,
+    .scene-screen {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .cover-screen {
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 229, 155, 0.60), transparent 28%),
+        radial-gradient(circle at 80% 25%, rgba(217, 200, 255, 0.55), transparent 30%),
+        linear-gradient(180deg, rgba(199, 236, 255, 0.84), rgba(255, 248, 233, 0.90)),
+        url("assets/game-cover-poster.png");
+    }
+
+    .scene-screen {
+      padding: 18px;
+      background-image:
+        radial-gradient(circle at 50% 38%, rgba(255,255,255,0.42), transparent 28%),
+        linear-gradient(180deg, rgba(201,239,255,0.88), rgba(232,255,242,0.88) 56%, rgba(255,248,233,0.94)),
+        url("assets/scene-background.png");
+    }
+    .scene-screen.low-stim {
+      background-image:
+        linear-gradient(180deg, rgba(230,248,255,0.94), rgba(246,255,250,0.94)),
+        url("assets/low-stimulation-background.png");
+    }
+
+    .cover-panel,
+    .modal-card,
+    .result-card,
+    .lobby-card {
+      border: 1px solid rgba(255,255,255,0.8);
+      background: rgba(255, 253, 246, 0.88);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-lg);
+    }
+
+    .cover-panel {
+      width: min(760px, 92vw);
+      padding: 34px;
+      display: grid;
+      gap: 18px;
+      text-align: left;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(188,239,214,0.70);
+      font-weight: 800;
+      color: #2c6958;
+      font-size: 15px;
+    }
+    .title {
+      margin: 0;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: clamp(18px, 2.3vw, 25px);
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 680px;
+    }
+    .cover-info {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 2px;
+    }
+    .cover-info-card,
+    .adaptive-panel {
+      padding: 14px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(255,255,255,0.84);
+      box-shadow: 0 6px 18px rgba(67,114,139,0.10);
+      line-height: 1.55;
+      font-weight: 850;
+      color: var(--muted);
+    }
+    .cover-info-card strong,
+    .adaptive-panel strong {
+      display: block;
+      color: var(--ink);
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .btn {
+      min-height: 56px;
+      padding: 0 24px;
+      border-radius: 18px;
+      font-weight: 900;
+      font-size: 18px;
+      box-shadow: var(--soft-shadow);
+      transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+    .btn-primary { background: linear-gradient(180deg, #ffe9a8, #ffd67d); }
+    .btn-secondary { background: rgba(255,255,255,0.84); border: 2px solid rgba(87, 148, 179, 0.22); }
+    .btn-soft { background: linear-gradient(180deg, #dffbf0, #c5f0dd); }
+    .btn-dangerless { background: linear-gradient(180deg, #eadfff, #d9c8ff); }
+    .btn-small { min-height: 44px; padding: 0 16px; border-radius: 14px; font-size: 15px; }
+
+    .scene-layout {
+      position: relative;
+      width: min(1180px, calc(100vw - 36px));
+      height: calc(100vh - 36px);
+      min-height: 584px;
+      margin: 0 auto;
+    }
+
+    .top-hud {
+      position: absolute;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .hud-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      pointer-events: auto;
+    }
+    .hud-pill {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: rgba(255,253,246,0.86);
+      border: 1px solid rgba(255,255,255,0.82);
+      box-shadow: var(--soft-shadow);
+      font-weight: 900;
+    }
+    .hud-muted { color: var(--muted); font-weight: 800; }
+
+    .target-card {
+      position: absolute;
+      z-index: 18;
+      top: 68px;
+      left: 50%;
+      width: min(520px, 88vw);
+      transform: translateX(-50%);
+      padding: 16px 20px;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(255,253,246,0.91), rgba(255,248,233,0.88)),
+        url("assets/target-card-shell.png");
+      background-size: cover;
+      border: 1px solid rgba(255,255,255,0.86);
+      box-shadow: var(--soft-shadow);
+      text-align: center;
+    }
+    .target-main { font-size: clamp(18px, 2.2vw, 24px); font-weight: 950; margin: 0 0 6px; }
+    .target-sub { font-size: 15px; color: var(--muted); font-weight: 800; margin: 0; }
+    .dots { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(99, 145, 171, 0.18);
+      border: 2px solid rgba(255,255,255,0.85);
+      box-shadow: inset 0 0 0 2px rgba(35,64,82,0.05);
+    }
+    .dot.done { background: #ffe19c; }
+    .dot.now { background: #bcefd6; transform: scale(1.14); }
+
+    .play-field {
+      position: absolute;
+      left: 50%;
+      top: 55%;
+      width: min(820px, 92vw);
+      height: min(530px, 58vh);
+      min-height: 360px;
+      transform: translate(-50%, -50%);
+      border-radius: 48px;
+    }
+    .lighthouse {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(130px, 20vw, 230px);
+      height: clamp(170px, 28vw, 300px);
+      transform: translate(-50%, -48%);
+      border-radius: 46% 46% 26% 26%;
+      background:
+        radial-gradient(circle at 52% 10%, rgba(255,229,155,0.92), transparent 14%),
+        repeating-linear-gradient(180deg, rgba(255,253,246,0.92) 0 34px, rgba(191,233,255,0.86) 34px 54px);
+      border: 5px solid rgba(255,255,255,0.84);
+      box-shadow: 0 18px 44px rgba(67,114,139,0.18);
+      pointer-events: none;
+    }
+    .lighthouse::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -34px;
+      width: 88px;
+      height: 70px;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 18px 18px;
+      background: linear-gradient(180deg, #ffe9a8, #ffbe9d);
+      border: 5px solid rgba(255,255,255,0.9);
+      box-shadow: 0 0 40px rgba(255, 218, 125, 0.58);
+    }
+    .lighthouse.is-bright::after {
+      content: "";
+      position: absolute;
+      inset: -60px -95px auto -95px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,229,155,0.45), rgba(217,200,255,0.20) 45%, transparent 70%);
+      animation: pulseGlow 900ms ease both;
+    }
+
+    .turtle {
+      position: absolute;
+      z-index: 15;
+      left: 2%;
+      bottom: 2%;
+      width: clamp(126px, 17vw, 205px);
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 52% 45%, rgba(188,239,214,0.88) 0 34%, transparent 35%),
+        radial-gradient(circle at 47% 58%, rgba(255,229,155,0.70) 0 30%, transparent 31%);
+      filter: drop-shadow(0 14px 22px rgba(67,114,139,0.18));
+      pointer-events: none;
+    }
+    .turtle img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .turtle::after {
+      content: "小海龟";
+      position: absolute;
+      left: 50%;
+      bottom: -4px;
+      transform: translateX(-50%);
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,253,246,0.86);
+      font-size: 12px;
+      font-weight: 900;
+      color: #39606f;
+    }
+
+    .speech {
+      position: absolute;
+      z-index: 16;
+      left: clamp(145px, 18vw, 220px);
+      bottom: 34px;
+      max-width: min(520px, calc(100vw - 190px));
+      padding: 16px 18px;
+      border-radius: 24px 24px 24px 8px;
+      background: rgba(255,253,246,0.92);
+      box-shadow: var(--soft-shadow);
+      border: 1px solid rgba(255,255,255,0.86);
+      font-weight: 850;
+      line-height: 1.55;
+    }
+
+    .jelly-zone { position: absolute; inset: 0; }
+    .jelly {
+      position: absolute;
+      z-index: 12;
+      width: clamp(82px, 11vw, 118px);
+      height: clamp(90px, 12vw, 130px);
+      transform: translate(-50%, -50%);
+      background: transparent;
+      border-radius: 30px;
+      padding: 0;
+      transition: transform 150ms ease, filter 150ms ease, opacity 160ms ease;
+    }
+    .jelly:not(:disabled):hover { transform: translate(-50%, -52%) scale(1.04); }
+    .jelly.pos-0 { left: 15%; top: 58%; }
+    .jelly.pos-1 { left: 28%; top: 30%; }
+    .jelly.pos-2 { left: 50%; top: 18%; }
+    .jelly.pos-3 { left: 72%; top: 30%; }
+    .jelly.pos-4 { left: 85%; top: 58%; }
+    .jelly.pos-5 { left: 50%; top: 78%; }
+    .jelly.is-hidden { display: none; }
+    .jelly.is-muted { opacity: 0.42; }
+    .jelly.is-glowing { filter: drop-shadow(0 0 24px var(--jelly-color)) brightness(1.08); animation: jellyGlow 700ms ease both; }
+    .jelly.is-clickglow { filter: drop-shadow(0 0 18px var(--jelly-color)); }
+
+    .jelly-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+    .jelly-core {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 72%;
+      height: 62%;
+      transform: translateX(-50%);
+      border-radius: 52% 52% 44% 44%;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.74), transparent 18%),
+        linear-gradient(180deg, rgba(255,255,255,0.36), transparent 44%),
+        var(--jelly-color);
+      box-shadow: inset 0 -10px 0 rgba(35,64,82,0.06), 0 14px 22px rgba(67,114,139,0.12);
+      border: 3px solid rgba(255,255,255,0.74);
+    }
+    .jelly-core::before,
+    .jelly-core::after {
+      content: "";
+      position: absolute;
+      left: 18%;
+      top: 80%;
+      width: 12px;
+      height: 38px;
+      border-radius: 999px;
+      background: var(--jelly-color);
+      opacity: 0.70;
+      box-shadow: 24px 3px 0 var(--jelly-color), 48px 0 0 var(--jelly-color);
+    }
+    .jelly-core::after {
+      left: 32%;
+      height: 30px;
+      opacity: 0.42;
+      box-shadow: 28px 1px 0 var(--jelly-color);
+    }
+    .jelly-image {
+      position: absolute;
+      inset: -8px;
+      width: calc(100% + 16px);
+      height: calc(100% + 16px);
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .jelly-label {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      min-width: 38px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,253,246,0.92);
+      border: 1px solid rgba(255,255,255,0.86);
+      font-size: 14px;
+      font-weight: 950;
+      box-shadow: 0 5px 12px rgba(67,114,139,0.10);
+    }
+
+    .bottom-actions {
+      position: absolute;
+      z-index: 22;
+      right: 0;
+      bottom: calc(10px + var(--safe-bottom));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      max-width: min(680px, 100%);
+    }
+
+    .center-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hand {
+      position: absolute;
+      z-index: 30;
+      width: 76px;
+      height: 76px;
+      left: 14%;
+      top: 45%;
+      background: url("assets/tutorial-hand.png") center / contain no-repeat;
+      filter: drop-shadow(0 8px 16px rgba(67,114,139,0.18));
+      animation: handDemo 2.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .hand::after {
+      content: "点击";
+      position: absolute;
+      right: -14px;
+      top: -8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,253,246,0.92);
+      font-weight: 950;
+      font-size: 13px;
+    }
+
+    .feedback {
+      position: absolute;
+      z-index: 32;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: min(440px, 84vw);
+      padding: 18px 22px;
+      border-radius: 28px;
+      background: rgba(255,253,246,0.94);
+      border: 1px solid rgba(255,255,255,0.88);
+      box-shadow: var(--shadow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 950;
+      animation: popIn 220ms ease both;
+    }
+    .feedback.success { background: linear-gradient(180deg, rgba(228,255,241,0.96), rgba(255,253,246,0.95)); }
+    .feedback.hint { background: linear-gradient(180deg, rgba(234,223,255,0.96), rgba(255,253,246,0.95)); }
+    .feedback small { display: block; margin-top: 6px; font-size: 15px; color: var(--muted); font-weight: 850; }
+
+    .modal-layer {
+      position: absolute;
+      z-index: 60;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(70, 119, 143, 0.18);
+    }
+    .modal-card {
+      width: min(560px, 92vw);
+      padding: 26px;
+      text-align: center;
+    }
+    .modal-card h2 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 38px); letter-spacing: -0.03em; }
+    .modal-card p { margin: 0; color: var(--muted); line-height: 1.65; font-size: 18px; font-weight: 750; }
+
+    .result-screen {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(circle at 28% 18%, rgba(255,229,155,0.48), transparent 28%),
+        radial-gradient(circle at 72% 24%, rgba(217,200,255,0.42), transparent 30%),
+        linear-gradient(180deg, #dff5ff, #fff8e9);
+    }
+    .result-card {
+      width: min(820px, 94vw);
+      padding: 28px;
+      text-align: center;
+    }
+    .result-badge {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,229,155,0.9), rgba(188,239,214,0.72) 55%, rgba(191,233,255,0.54)),
+        url("assets/result-badge-lighthouse.png") center / contain no-repeat;
+      box-shadow: var(--soft-shadow);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 22px 0;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.64);
+      border: 1px solid rgba(255,255,255,0.84);
+    }
+    .stat strong { display: block; font-size: 28px; margin-bottom: 4px; }
+    .stat span { font-weight: 850; color: var(--muted); }
+    .recommendation {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(228,255,241,0.72);
+      border: 1px solid rgba(255,255,255,0.84);
+      font-size: 18px;
+      line-height: 1.6;
+      font-weight: 850;
+    }
+
+    .asset-note {
+      position: absolute;
+      z-index: 90;
+      left: 18px;
+      bottom: 18px;
+      max-width: 520px;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: rgba(255,253,246,0.78);
+      color: rgba(35,64,82,0.68);
+      font-size: 12px;
+      font-weight: 750;
+      pointer-events: none;
+    }
+
+    @keyframes jellyGlow {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      42% { transform: translate(-50%, -54%) scale(1.10); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0; transform: scale(0.86); }
+      50% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.12); }
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: translate(-50%, -46%) scale(0.94); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes handDemo {
+      0%, 100% { left: 14%; top: 45%; transform: rotate(-10deg) scale(1); }
+      32% { left: 14%; top: 45%; transform: rotate(-10deg) scale(0.92); }
+      52% { left: 72%; top: 20%; transform: rotate(8deg) scale(1); }
+      78% { left: 72%; top: 20%; transform: rotate(8deg) scale(0.92); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition: none !important; }
+    }
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .screen { min-height: 680px; overflow: hidden; }
+      .scene-layout { min-height: 644px; }
+      .top-hud { align-items: flex-start; }
+      .hud-group { gap: 6px; }
+      .hud-pill { min-height: 40px; padding: 0 10px; font-size: 13px; }
+      .target-card { top: 92px; padding: 13px 14px; }
+      .play-field { top: 56%; height: 390px; width: 96vw; }
+      .jelly { width: 78px; height: 90px; }
+      .jelly.pos-0 { left: 12%; top: 58%; }
+      .jelly.pos-1 { left: 25%; top: 30%; }
+      .jelly.pos-2 { left: 50%; top: 17%; }
+      .jelly.pos-3 { left: 75%; top: 30%; }
+      .jelly.pos-4 { left: 88%; top: 58%; }
+      .jelly.pos-5 { left: 50%; top: 82%; }
+      .turtle { width: 112px; }
+      .speech { left: 118px; right: 0; bottom: 16px; max-width: calc(100vw - 140px); font-size: 14px; padding: 12px; }
+      .bottom-actions { left: 0; right: 0; justify-content: center; }
+      .btn { min-height: 52px; font-size: 16px; padding: 0 18px; }
+      .cover-info { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .asset-note { display: none; }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/unified.css">
+</head>
+<body>
+  <main id="app" class="app" aria-live="polite"></main>
+
+  <script>
+    const ASSETS = {
+      cover: "assets/game-cover-poster.png",
+      tutorial1: "assets/tutorial-scene-1.png",
+      tutorial2: "assets/tutorial-scene-2.png",
+      scene: "assets/scene-background.png",
+      lowScene: "assets/low-stimulation-background.png",
+      turtle: "assets/main-character-turtle.png",
+      hand: "assets/tutorial-hand.png",
+      targetCard: "assets/target-card-shell.png",
+      successSticker: "assets/success-sticker-star-bubble.png",
+      hintSticker: "assets/gentle-hint-sticker-replay.png",
+      resultBadge: "assets/result-badge-lighthouse.png"
+    };
+
+    const COLORS = [
+      { id: "red", label: "红", name: "红水母", hex: "#ff8d8d", image: "assets/target-object-red.png" },
+      { id: "blue", label: "蓝", name: "蓝水母", hex: "#8ed4ff", image: "assets/target-object-blue.png" },
+      { id: "yellow", label: "黄", name: "黄水母", hex: "#ffe59b", image: "assets/target-object-yellow.png" },
+      { id: "purple", label: "紫", name: "紫水母", hex: "#d9c8ff", image: "assets/target-object-purple.png" },
+      { id: "green", label: "绿", name: "绿水母", hex: "#bcefd6", image: "assets/target-object-green.png" },
+      { id: "orange", label: "橙", name: "橙水母", hex: "#ffb58f", image: "assets/target-object-orange.png" }
+    ];
+
+    const COLOR_MAP = Object.fromEntries(COLORS.map(c => [c.id, c]));
+
+    const DIFFICULTIES = [
+      { level: 1, label: "轻松开始", min: 2, max: 2, pool: ["red", "blue", "yellow"], rounds: 6, timer: 90, glow: 900, gap: 450, replay: "unlimited", advanced: false, distractors: false },
+      { level: 2, label: "小小灯光", min: 2, max: 3, pool: ["red", "blue", "yellow", "purple"], rounds: 6, timer: 90, glow: 850, gap: 400, replay: "unlimited", advanced: false, distractors: false },
+      { level: 3, label: "彩虹接光", min: 3, max: 3, pool: ["red", "blue", "yellow", "purple"], rounds: 7, timer: 100, glow: 800, gap: 380, replay: 2, advanced: false, distractors: false },
+      { level: 4, label: "海底灯号", min: 3, max: 4, pool: ["red", "blue", "yellow", "purple", "green"], rounds: 8, timer: 110, glow: 760, gap: 340, replay: 2, advanced: false, distractors: true },
+      { level: 5, label: "灯塔旋律", min: 4, max: 4, pool: ["red", "blue", "yellow", "purple", "green"], rounds: 8, timer: 120, glow: 720, gap: 320, replay: 1, advanced: false, distractors: true },
+      { level: 6, label: "星泡泡节奏", min: 4, max: 5, pool: ["red", "blue", "yellow", "purple", "green"], rounds: 9, timer: 120, glow: 680, gap: 300, replay: 1, advanced: false, distractors: true },
+      { level: 7, label: "进阶挑战 · 长灯光", min: 5, max: 5, pool: ["red", "blue", "yellow", "purple", "green", "orange"], rounds: 9, timer: 130, glow: 640, gap: 280, replay: 1, advanced: true, distractors: true },
+      { level: 8, label: "进阶挑战 · 回声灯", min: 5, max: 6, pool: ["red", "blue", "yellow", "purple", "green", "orange"], rounds: 10, timer: 140, glow: 600, gap: 260, replay: 1, advanced: true, distractors: true },
+      { level: 9, label: "进阶挑战 · 彩虹航线", min: 6, max: 6, pool: ["red", "blue", "yellow", "purple", "green", "orange"], rounds: 10, timer: 150, glow: 560, gap: 240, replay: 1, advanced: true, distractors: true },
+      { level: 10, label: "进阶挑战 · 灯岛大师", min: 6, max: 7, pool: ["red", "blue", "yellow", "purple", "green", "orange"], rounds: 10, timer: 160, glow: 520, gap: 220, replay: 0, advanced: true, distractors: true }
+    ];
+
+    const TUTORIALS = [
+      {
+        title: "怎么玩：先看水母依次亮灯，再按同样顺序点击水母",
+        sub: "目标是什么：在时间内接上更多灯光，让彩虹灯塔亮起来。",
+        speech: "欢迎来到灯灯岛！玩法是先看亮灯顺序，再照着顺序点击小水母；目标是帮小海龟把彩虹灯塔点亮。",
+        active: [],
+        btn: "下一步"
+      },
+      {
+        title: "目标：先看亮起来的小水母",
+        sub: "第 1 / 1 盏",
+        speech: "看，第一盏是红水母。它亮起来时，先把它记在心里。",
+        active: ["red"],
+        dots: { total: 1, current: 1 },
+        btn: "我看到了"
+      },
+      {
+        title: "目标：记住 2 盏灯的顺序",
+        sub: "红水母，然后蓝水母。",
+        speech: "刚才是红水母，接着是蓝水母。顺序很重要。",
+        active: ["red", "blue"],
+        dots: { total: 2, current: 2 },
+        btn: "继续看看"
+      },
+      {
+        title: "目标：照刚才顺序点亮",
+        sub: "先点红水母，再点蓝水母。",
+        speech: "现在照着顺序点：先点红水母，再点蓝水母。每点对一盏，数量就会加一。",
+        active: ["red", "blue"],
+        hand: true,
+        dots: { total: 2, current: 1 },
+        btn: "轮到我试试"
+      },
+      {
+        title: "目标：每看到一盏，就记住它的位置",
+        sub: "目标卡会一直陪着你。",
+        speech: "正式训练里，目标卡会一直在上方。看到灯光后，再按同样顺序点亮。",
+        active: ["yellow", "purple", "green"],
+        dots: { total: 3, current: 2 },
+        btn: "进入低压练习"
+      },
+      {
+        title: "目标：先轻松练两轮",
+        sub: "练习没有倒计时，可以重新演示。",
+        speech: "我们先慢慢练两轮。需要的话，可以点“重新演示”。",
+        active: [],
+        btn: "开始低压练习"
+      }
+    ];
+
+    const state = {
+      screen: "cover",
+      lowStim: false,
+      tutorialIndex: 0,
+      practice: null,
+      training: null,
+      lastResult: null
+    };
+
+    const app = document.getElementById("app");
+    let sequenceTimers = [];
+    let ticker = null;
+
+    function clearSequenceTimers() {
+      sequenceTimers.forEach(id => clearTimeout(id));
+      sequenceTimers = [];
+    }
+
+    function schedule(fn, ms) {
+      const id = setTimeout(fn, ms);
+      sequenceTimers.push(id);
+      return id;
+    }
+
+    function clearTicker() {
+      if (ticker) clearInterval(ticker);
+      ticker = null;
+    }
+
+    function formatTime(seconds) {
+      const s = Math.max(0, seconds);
+      const m = Math.floor(s / 60).toString().padStart(2, "0");
+      const rest = (s % 60).toString().padStart(2, "0");
+      return `${m}:${rest}`;
+    }
+
+    function colorName(id) {
+      return COLOR_MAP[id]?.name || id;
+    }
+
+    function getConfig(level) {
+      const base = DIFFICULTIES[Math.max(1, Math.min(10, level)) - 1];
+      if (!state.lowStim) return { ...base };
+      return {
+        ...base,
+        glow: base.glow + 180,
+        gap: base.gap + 120,
+        distractors: false
+      };
+    }
+
+    const PERFORMANCE_KEY = "rainbow-jellyfish-recent-performance-v3";
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function percent(value) {
+      return `${Math.round(clamp(value, 0, 1) * 100)}%`;
+    }
+
+    function getStoredPerformance() {
+      try {
+        const raw = localStorage.getItem(PERFORMANCE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveStoredPerformance(record) {
+      try {
+        const recent = getStoredPerformance();
+        recent.push({ ...record, savedAt: new Date().toISOString() });
+        localStorage.setItem(PERFORMANCE_KEY, JSON.stringify(recent.slice(-10)));
+      } catch (error) {
+        // 本地存储不可用时不影响离线试玩。
+      }
+    }
+
+    function getRoundConfig(training) {
+      const cfg = getConfig(training.level);
+      const mode = training.adaptiveMode || "steady";
+      const requestedLength = Number.isFinite(training.nextSequenceLength)
+        ? clamp(training.nextSequenceLength, 2, 7)
+        : null;
+      const speedFactor = Number.isFinite(training.nextSpeedFactor)
+        ? training.nextSpeedFactor
+        : (mode === "up" ? 0.90 : mode === "down" ? 1.18 : 1);
+
+      cfg.adaptiveMode = mode;
+
+      if (mode === "up") {
+        const nextLength = requestedLength ?? clamp(Math.max(cfg.min, cfg.max) + 1, 2, 7);
+        cfg.min = nextLength;
+        cfg.max = nextLength;
+        cfg.glow = Math.max(460, Math.round(cfg.glow * speedFactor));
+        cfg.gap = Math.max(190, Math.round(cfg.gap * speedFactor));
+      } else if (mode === "down") {
+        const nextLength = requestedLength ?? clamp(Math.min(cfg.min, cfg.max) - 1, 2, 7);
+        cfg.min = nextLength;
+        cfg.max = nextLength;
+        cfg.glow = Math.round(cfg.glow * speedFactor);
+        cfg.gap = Math.round(cfg.gap * speedFactor);
+      } else if (requestedLength) {
+        cfg.min = requestedLength;
+        cfg.max = requestedLength;
+      }
+
+      if (state.lowStim) {
+        cfg.glow += 120;
+        cfg.gap += 80;
+      }
+
+      cfg.difficulty = {
+        mode,
+        sequenceLength: cfg.max,
+        glowMs: cfg.glow,
+        gapMs: cfg.gap,
+        speedFactor
+      };
+      return cfg;
+    }
+
+    function getCurrentAccuracy(training) {
+      return training.totalInputs > 0 ? training.correctInputs / training.totalInputs : 0;
+    }
+
+    function getLastRecommendedLevel() {
+      const recent = getStoredPerformance();
+      const last = recent.slice().reverse().find(item => item && Number.isFinite(item.nextLevel));
+      return last ? clamp(last.nextLevel, 1, 10) : 1;
+    }
+
+    function renderDots(total, current) {
+      if (!total) return "";
+      return `<div class="dots" aria-hidden="true">${Array.from({ length: total }).map((_, i) => {
+        const cls = i < current ? "done" : i === current ? "now" : "";
+        return `<span class="dot ${cls}"></span>`;
+      }).join("")}</div>`;
+    }
+
+    function renderTargetCard(main, sub, total = 0, current = 0) {
+      return `
+        <section class="target-card" aria-label="当前目标">
+          <p class="target-main">${main}</p>
+          <p class="target-sub">${sub}</p>
+          ${renderDots(total, current)}
+        </section>
+      `;
+    }
+
+    function renderHud() {
+      const t = state.training;
+      if (!t) return "";
+      const cfg = getRoundConfig(t);
+      return `
+        <header class="top-hud" aria-label="训练状态">
+          <div class="hud-group">
+            <button class="hud-pill" onclick="pauseTraining()" aria-label="暂停训练">⏸ 暂停</button>
+            <div class="hud-pill">第 ${t.level} 级 · ${cfg.label}</div>
+            <div class="hud-pill hud-muted">自动调节难度：${t.adaptiveHud || "观察中"}</div>
+            ${state.lowStim ? `<div class="hud-pill hud-muted">柔和模式</div>` : ""}
+          </div>
+          <div class="hud-group">
+            <div class="hud-pill">⏱ ${formatTime(t.time)}</div>
+            <div class="hud-pill">⭐ ${t.score}</div>
+          </div>
+        </header>
+      `;
+    }
+
+    function renderJellies(options = {}) {
+      const pool = options.pool || COLORS.map(c => c.id);
+      const active = options.active || [];
+      const clickGlow = options.clickGlow || null;
+      const disabled = options.disabled ? "disabled" : "";
+      return `
+        <div class="jelly-zone" role="group" aria-label="小水母操作区">
+          ${COLORS.map((c, i) => {
+            const inPool = pool.includes(c.id);
+            const glow = active.includes(c.id) ? "is-glowing" : "";
+            const cg = clickGlow === c.id ? "is-clickglow" : "";
+            const hidden = options.hideInactive && !inPool ? "is-hidden" : "";
+            const muted = !inPool ? "is-muted" : "";
+            const canClick = !options.disabled && inPool;
+            return `
+              <button
+                class="jelly pos-${i} ${glow} ${cg} ${hidden} ${muted}"
+                style="--jelly-color:${c.hex}"
+                ${canClick ? "" : "disabled"}
+                onclick="pressJelly('${c.id}')"
+                aria-label="${c.name}，第 ${i + 1} 个位置"
+              >
+                <span class="jelly-inner">
+                  <span class="jelly-core" aria-hidden="true"></span>
+                  <img class="jelly-image" src="${c.image}" alt="" onerror="this.remove()" />
+                  <span class="jelly-label">${c.label}</span>
+                </span>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderScene({ hud = "", target = "", active = [], pool = COLORS.map(c => c.id), disabled = true, speech = "", actions = "", feedback = "", hand = false, bright = false, clickGlow = null, hideInactive = false }) {
+      return `
+        <section class="screen scene-screen ${state.lowStim ? "low-stim" : ""}">
+          <div class="scene-layout">
+            ${hud}
+            ${target}
+            <div class="play-field">
+              <div class="lighthouse ${bright ? "is-bright" : ""}" aria-hidden="true"></div>
+              ${renderJellies({ active, pool, disabled, clickGlow, hideInactive })}
+              ${hand ? `<div class="hand" aria-hidden="true"></div>` : ""}
+            </div>
+            <div class="turtle" aria-hidden="true"><img src="assets/main-character-turtle.png" alt="" onerror="this.remove()" /></div>
+            ${speech ? `<div class="speech">${speech}</div>` : ""}
+            ${actions ? `<div class="bottom-actions">${actions}</div>` : ""}
+            ${feedback}
+          </div>
+
+        </section>
+      `;
+    }
+
+    function renderFeedback(type, text, sub = "") {
+      if (!type || !text) return "";
+      return `<div class="feedback ${type}">${text}${sub ? `<small>${sub}</small>` : ""}</div>`;
+    }
+
+    function renderCover() {
+      return `
+        <section class="screen cover-screen">
+          <div class="cover-panel">
+            <span class="eyebrow">颜色灯光小游戏</span>
+            <h1 class="title">彩虹水母灯灯岛</h1>
+            <p class="subtitle">看小水母亮出灯光旋律，再帮灯塔小海龟按同样顺序接上光。前面会先带你练一遍。</p>
+            <div class="cover-info" aria-label="玩法和目标">
+              <div class="cover-info-card"><strong>怎么玩</strong>先看小水母依次亮灯，再按同样顺序点击对应水母。</div>
+              <div class="cover-info-card"><strong>目标是什么</strong>在时间内接上更多灯光，让彩虹海底灯塔亮起来。</div>
+              <div class="cover-info-card"><strong>自动调节难度</strong>系统会保存最近表现；根据本轮表现，在结算给出下轮推荐难度。</div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" onclick="startTutorial()">跟着小海龟学习</button>
+              <button class="btn btn-secondary" onclick="toggleLowStim()">${state.lowStim ? "关闭柔和模式" : "开启柔和模式"}</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTutorial() {
+      const item = TUTORIALS[state.tutorialIndex];
+      const target = renderTargetCard(item.title, item.sub, item.dots?.total || 0, item.dots?.current || 0);
+      const actions = `
+        <button class="btn btn-secondary" onclick="state.tutorialIndex = Math.max(0, state.tutorialIndex - 1); render();" ${state.tutorialIndex === 0 ? "disabled" : ""}>上一步</button>
+        <button class="btn btn-primary" onclick="nextTutorial()">${item.btn}</button>
+      `;
+      return renderScene({
+        target,
+        active: item.active,
+        pool: ["red", "blue", "yellow", "purple", "green"],
+        disabled: true,
+        speech: item.speech,
+        actions,
+        hand: item.hand,
+        bright: state.tutorialIndex >= 3
+      });
+    }
+
+    function renderPractice() {
+      const p = state.practice;
+      const total = p.seq.length;
+      const targetText = p.stage === "show" ? "目标：看小水母亮灯" : "目标：按刚才顺序点亮";
+      const sub = p.stage === "input"
+        ? `已点 ${p.inputIndex} / ${total} · 练习没有倒计时`
+        : `第 ${Math.min(p.previewIndex + 1, total)} / ${total} 盏 · 可以重新演示`;
+      const target = renderTargetCard(targetText, sub, total, p.stage === "input" ? p.inputIndex : p.previewIndex);
+      const actions = `
+        <button class="btn btn-secondary" onclick="startPracticeReplay()">重新演示</button>
+        <button class="btn btn-primary" onclick="startPracticeReplay()" ${p.stage === "show" ? "disabled" : ""}>${p.stage === "input" ? "再看一遍" : "播放灯光"}</button>
+      `;
+      const feedback = p.feedback ? renderFeedback(p.feedback.type, p.feedback.text, p.feedback.sub) : "";
+      return renderScene({
+        target,
+        active: p.highlight ? [p.highlight] : [],
+        clickGlow: p.clickGlow,
+        pool: ["red", "blue", "yellow", "purple", "green"],
+        disabled: p.stage !== "input",
+        speech: p.message || "这次你来帮忙。需要的话，可以点“重新演示”。",
+        actions,
+        feedback,
+        bright: p.feedback?.type === "success"
+      });
+    }
+
+    function renderReadyModal() {
+      const target = renderTargetCard("目标：进入训练后，继续照顺序点亮水母", "正式训练 HUD 和目标卡会一直显示。", 3, 3);
+      const modal = `
+        <div class="modal-layer">
+          <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ready-title">
+            <h2 id="ready-title">准备开始训练吧！</h2>
+            <p>先看小水母亮灯，再按同样顺序点亮。前几级可以重新演示，不着急。</p>
+            <div class="adaptive-panel" style="margin-top:14px;text-align:left"><strong>自动调节难度</strong>系统会记录本轮表现；正确率 ≥80% 或连续正确时，下轮推荐难度会更长或稍快；正确率 ≤50% 时会更短或更慢。</div>
+            <div class="adaptive-panel" style="margin-top:10px;text-align:left"><strong>下轮推荐难度</strong>训练结束后会写入 localStorage，下次打开仍会记得最近表现。</div>
+            <div class="center-actions">
+              <button class="btn btn-secondary" onclick="replayTutorialDemo()">重新演示</button>
+              <button class="btn btn-primary" onclick="enterTraining()">进入训练</button>
+            </div>
+          </section>
+        </div>
+      `;
+      return renderScene({
+        target,
+        active: ["red", "blue", "yellow", "purple"],
+        pool: ["red", "blue", "yellow", "purple", "green"],
+        disabled: true,
+        speech: "你已经会接灯光啦。正式训练里，我会一直把目标放在这里。",
+        feedback: modal,
+        bright: true
+      });
+    }
+
+    function renderTraining() {
+      const t = state.training;
+      const cfg = getRoundConfig(t);
+      const total = t.seq.length || cfg.min;
+      let main = "目标：看小水母亮灯";
+      let sub = "播放时先观察，不需要点击。";
+      let dotsCurrent = t.previewIndex || 0;
+
+      if (t.stage === "input") {
+        main = cfg.advanced ? "进阶挑战：按刚才顺序点亮" : "目标：按刚才顺序点亮";
+        const replayText = cfg.replay === "unlimited" ? "可重新演示" : `还可重新演示 ${t.replayLeft} 次`;
+        sub = `已点 ${t.inputIndex} / ${total} · ${replayText}`;
+        dotsCurrent = t.inputIndex;
+      } else if (t.stage === "show") {
+        main = "目标：看小水母亮灯";
+        sub = `第 ${Math.min((t.previewIndex || 0) + 1, total)} / ${total} 盏`;
+      } else if (t.stage === "support") {
+        main = "目标：再看一遍灯光顺序";
+        sub = "慢慢来，先找第一盏。";
+        dotsCurrent = 0;
+      }
+
+      const canReplay = t.stage === "input" && (cfg.replay === "unlimited" || t.replayLeft > 0);
+      const target = renderTargetCard(main, sub, total, dotsCurrent);
+      const actions = `
+        <button class="btn btn-secondary" onclick="manualReplayTraining()" ${canReplay ? "" : "disabled"}>重新演示</button>
+        <button class="btn btn-dangerless" onclick="toggleLowStim()">${state.lowStim ? "关闭柔和模式" : "柔和模式"}</button>
+      `;
+      const feedback = t.feedback ? renderFeedback(t.feedback.type, t.feedback.text, t.feedback.sub) : "";
+      const pauseModal = t.paused ? `
+        <div class="modal-layer">
+          <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+            <h2 id="pause-title">先休息一下</h2>
+            <p>灯光顺序会留在这一轮。继续时可以重新演示本轮。</p>
+            <div class="center-actions">
+              <button class="btn btn-primary" onclick="resumeTraining()">继续训练</button>
+              <button class="btn btn-secondary" onclick="manualReplayTraining(); resumeTraining();">重新演示本轮</button>
+              <button class="btn btn-secondary" onclick="goCover()">返回封面</button>
+            </div>
+          </section>
+        </div>` : "";
+
+      return renderScene({
+        hud: renderHud(),
+        target,
+        active: t.highlight ? [t.highlight] : [],
+        clickGlow: t.clickGlow,
+        pool: cfg.pool,
+        disabled: t.stage !== "input" || t.paused,
+        hideInactive: true,
+        speech: t.message || `第 ${t.roundIndex + 1} / ${t.totalRounds} 轮，帮灯塔接上光。`,
+        actions,
+        feedback: feedback + pauseModal,
+        bright: t.feedback?.type === "success"
+      });
+    }
+
+    function renderResult() {
+      const r = state.lastResult;
+      return `
+        <section class="screen result-screen">
+          <div class="result-card">
+            <div class="result-badge" aria-hidden="true"></div>
+            <h1 class="title" style="font-size:clamp(32px,4vw,48px)">灯塔亮起来了！</h1>
+            <p class="subtitle" style="margin:0 auto">你帮小海龟接上了今天的彩虹灯光。</p>
+            <div class="stats-grid">
+              <div class="stat"><strong>${r.completedRounds}</strong><span>完成接光</span></div>
+              <div class="stat"><strong>${r.longest}</strong><span>最长灯光</span></div>
+              <div class="stat"><strong>${r.score}</strong><span>星星分数</span></div>
+            </div>
+            <div class="adaptive-panel"><strong>自动调节难度</strong>已根据本轮表现计算下轮推荐难度，并保存到本地 localStorage。</div>
+            <div class="adaptive-panel" style="margin-top:12px"><strong>本轮表现</strong>${r.performanceText}</div>
+            <div class="adaptive-panel" style="margin-top:12px"><strong>下轮推荐难度</strong>${r.nextDifficultyText}</div>
+            <div class="recommendation" style="margin-top:12px">${r.recommendation}</div>
+            <div class="center-actions">
+              <button class="btn btn-primary" onclick="enterTraining(${r.nextLevel})">继续推荐等级</button>
+              <button class="btn btn-secondary" onclick="startTutorial()">重新演示</button>
+              <button class="btn btn-secondary" onclick="goCover()">返回封面</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function render() {
+      if (state.screen === "cover") app.innerHTML = renderCover();
+      if (state.screen === "tutorial") app.innerHTML = renderTutorial();
+      if (state.screen === "practice") app.innerHTML = renderPractice();
+      if (state.screen === "ready") app.innerHTML = renderReadyModal();
+      if (state.screen === "training") app.innerHTML = renderTraining();
+      if (state.screen === "result") app.innerHTML = renderResult();
+    }
+
+    function startTutorial() {
+      clearTicker();
+      clearSequenceTimers();
+      state.screen = "tutorial";
+      state.tutorialIndex = 0;
+      render();
+    }
+
+    function nextTutorial() {
+      if (state.tutorialIndex < TUTORIALS.length - 1) {
+        state.tutorialIndex++;
+        render();
+      } else {
+        initPractice();
+      }
+    }
+
+    function replayTutorialDemo() {
+      clearSequenceTimers();
+      state.screen = "tutorial";
+      state.tutorialIndex = 3;
+      render();
+    }
+
+    function initPractice() {
+      clearTicker();
+      clearSequenceTimers();
+      state.screen = "practice";
+      state.practice = {
+        round: 0,
+        sequences: [["red", "blue"], ["yellow", "purple", "green"]],
+        seq: ["red", "blue"],
+        stage: "ready",
+        inputIndex: 0,
+        previewIndex: 0,
+        highlight: null,
+        clickGlow: null,
+        message: "这次你来帮忙。需要的话，可以点“重新演示”。",
+        feedback: null
+      };
+      render();
+    }
+
+    function startPracticeReplay() {
+      const p = state.practice;
+      clearSequenceTimers();
+      p.stage = "show";
+      p.inputIndex = 0;
+      p.previewIndex = 0;
+      p.highlight = null;
+      p.clickGlow = null;
+      p.feedback = null;
+      p.message = "请看小水母亮灯。";
+      render();
+      playSequence(p.seq, { glow: state.lowStim ? 980 : 820, gap: state.lowStim ? 520 : 360 }, (color, index) => {
+        p.highlight = color;
+        p.previewIndex = index;
+        render();
+      }, () => {
+        p.highlight = null;
+        p.stage = "input";
+        p.previewIndex = 0;
+        p.message = "现在按刚才顺序点亮小水母。";
+        render();
+      });
+    }
+
+    function handlePracticeInput(color) {
+      const p = state.practice;
+      if (!p || p.stage !== "input") return;
+      const expected = p.seq[p.inputIndex];
+      if (color === expected) {
+        p.clickGlow = color;
+        p.inputIndex++;
+        p.message = `已接上 ${p.inputIndex} / ${p.seq.length} 盏。`;
+        p.feedback = null;
+        render();
+        schedule(() => { p.clickGlow = null; render(); }, 180);
+        if (p.inputIndex >= p.seq.length) {
+          p.stage = "success";
+          p.feedback = { type: "success", text: "灯光接上啦！", sub: "星星泡泡亮起来了。" };
+          p.message = "这段灯光连得很好。";
+          render();
+          schedule(() => {
+            if (p.round >= p.sequences.length - 1) {
+              state.screen = "ready";
+              render();
+            } else {
+              p.round++;
+              p.seq = p.sequences[p.round];
+              p.stage = "ready";
+              p.inputIndex = 0;
+              p.previewIndex = 0;
+              p.feedback = null;
+              p.message = "再来一小段。可以先重新演示。";
+              render();
+            }
+          }, 900);
+        }
+      } else {
+        p.stage = "show";
+        p.inputIndex = 0;
+        p.feedback = { type: "hint", text: "这段灯光有点调皮", sub: "我们再看一次。" };
+        p.message = "没关系，小水母会重新亮一遍。";
+        render();
+        schedule(() => startPracticeReplay(), 950);
+      }
+    }
+
+    function playSequence(seq, speed, onStep, onDone) {
+      clearSequenceTimers();
+      let time = 120;
+      seq.forEach((color, index) => {
+        schedule(() => onStep(color, index), time);
+        schedule(() => onStep(null, index + 1), time + speed.glow);
+        time += speed.glow + speed.gap;
+      });
+      schedule(onDone, time + 80);
+    }
+
+    function enterTraining(startLevel = null) {
+      clearTicker();
+      clearSequenceTimers();
+      startLevel = startLevel == null ? getLastRecommendedLevel() : startLevel;
+      const cfg = getConfig(startLevel);
+      state.screen = "training";
+      state.training = {
+        startedAt: Date.now(),
+        level: startLevel,
+        totalRounds: cfg.rounds,
+        roundIndex: 0,
+        completedRounds: 0,
+        adaptiveMode: "steady",
+        adaptiveHud: "观察中",
+        adaptiveHistory: [],
+        nextSequenceLength: null,
+        nextSpeedFactor: 1,
+        roundPerformanceText: "本轮表现：观察中",
+        nextDifficultyText: "下轮推荐难度：先保持标准节奏",
+        difficulty: { mode: "steady", sequenceLength: cfg.min, glowMs: cfg.glow, gapMs: cfg.gap, speedFactor: 1 },
+        correctInputs: 0,
+        totalInputs: 0,
+        wrongInputs: 0,
+        maxStreak: 0,
+        lastRoundRate: 1,
+        currentRoundConfigLabel: "标准节奏",
+        roundCorrectInputs: 0,
+        roundTotalInputs: 0,
+        longest: 0,
+        score: 0,
+        time: cfg.timer,
+        stage: "idle",
+        seq: [],
+        roundInputSequence: [],
+        inputIndex: 0,
+        previewIndex: 0,
+        highlight: null,
+        clickGlow: null,
+        replayLeft: cfg.replay === "unlimited" ? Infinity : cfg.replay,
+        roundReplayUsed: 0,
+        roundSupport: 0,
+        stats: [],
+        streak: 0,
+        paused: false,
+        feedback: null,
+        message: "先看小水母亮灯，再按同样顺序点亮。"
+      };
+      startTicker();
+      startTrainingRound();
+    }
+
+    function startTicker() {
+      clearTicker();
+      ticker = setInterval(() => {
+        const t = state.training;
+        if (state.screen !== "training" || !t || t.paused) return;
+        t.time -= 1;
+        if (t.time <= 0) finishTraining();
+        else render();
+      }, 1000);
+    }
+
+    function startTrainingRound() {
+      const t = state.training;
+      if (!t) return;
+      const cfg = getRoundConfig(t);
+      if (t.roundIndex >= t.totalRounds) {
+        finishTraining();
+        return;
+      }
+      clearSequenceTimers();
+      t.seq = generateSequence(cfg, t.roundIndex);
+      t.roundInputSequence = [];
+      t.inputIndex = 0;
+      t.previewIndex = 0;
+      t.highlight = null;
+      t.clickGlow = null;
+      t.replayLeft = cfg.replay === "unlimited" ? Infinity : cfg.replay;
+      t.roundReplayUsed = 0;
+      t.roundSupport = 0;
+      t.roundCorrectInputs = 0;
+      t.roundTotalInputs = 0;
+      t.difficulty = cfg.difficulty;
+      t.currentRoundConfigLabel = t.adaptiveMode === "up" ? "本轮稍长/稍快" : (t.adaptiveMode === "down" ? "本轮更短/更慢" : "本轮标准节奏");
+      t.stage = "show";
+      t.feedback = null;
+      t.message = `第 ${t.roundIndex + 1} / ${t.totalRounds} 轮：请先看灯光顺序。自动调节难度：${t.adaptiveHud || "观察中"}`;
+      render();
+      schedule(() => playTrainingSequence(false), 450);
+    }
+
+    function playTrainingSequence(isManual) {
+      const t = state.training;
+      if (!t || t.paused) return;
+      const cfg = getRoundConfig(t);
+      if (isManual && cfg.replay !== "unlimited") {
+        if (t.replayLeft <= 0) return;
+        t.replayLeft -= 1;
+      }
+      if (isManual) t.roundReplayUsed += 1;
+      t.stage = "show";
+      t.inputIndex = 0;
+      t.previewIndex = 0;
+      t.highlight = null;
+      t.feedback = null;
+      t.message = "请看小水母亮灯。";
+      render();
+      playSequence(t.seq, { glow: cfg.glow, gap: cfg.gap }, (color, index) => {
+        if (!state.training || state.training.paused) return;
+        t.highlight = color;
+        t.previewIndex = index;
+        render();
+      }, () => {
+        if (!state.training || state.training.paused) return;
+        t.highlight = null;
+        t.stage = "input";
+        t.previewIndex = 0;
+        t.message = "现在按刚才顺序点亮小水母。";
+        render();
+      });
+    }
+
+    function manualReplayTraining() {
+      const t = state.training;
+      if (!t || t.paused) return;
+      const cfg = getRoundConfig(t);
+      if (cfg.replay === "unlimited" || t.replayLeft > 0) {
+        playTrainingSequence(true);
+      }
+    }
+
+    function handleTrainingInput(color) {
+      const t = state.training;
+      if (!t || t.stage !== "input" || t.paused) return;
+      const expected = t.seq[t.inputIndex];
+      t.roundInputSequence.push({ color, expected, index: t.inputIndex, correct: color === expected, elapsedMs: Date.now() - t.startedAt });
+      t.totalInputs += 1;
+      t.roundTotalInputs += 1;
+      if (color === expected) {
+        t.correctInputs += 1;
+        t.roundCorrectInputs += 1;
+        t.clickGlow = color;
+        t.inputIndex += 1;
+        t.score += 10;
+        t.feedback = null;
+        t.message = `已接上 ${t.inputIndex} / ${t.seq.length} 盏。`;
+        render();
+        schedule(() => { if (state.training) { t.clickGlow = null; render(); } }, 160);
+        if (t.inputIndex >= t.seq.length) {
+          completeTrainingRound();
+        }
+      } else {
+        t.wrongInputs += 1;
+        t.roundSupport += 1;
+        t.inputIndex = 0;
+        t.stage = "support";
+        t.feedback = { type: "hint", text: "这段灯光有点滑走了", sub: "我们再稳稳看一遍。" };
+        t.message = "没关系，先找第一盏。";
+        render();
+        const cfg = getRoundConfig(t);
+        if (t.level <= 3 || cfg.replay === "unlimited" || t.replayLeft > 0) {
+          schedule(() => playTrainingSequence(t.level > 3), 950);
+        } else {
+          schedule(() => {
+            if (!state.training) return;
+            t.stage = "input";
+            t.feedback = null;
+            t.message = "从第一盏开始，再试一次。";
+            render();
+          }, 950);
+        }
+      }
+    }
+
+    function completeTrainingRound() {
+      const t = state.training;
+      if (!t) return;
+      t.stage = "success";
+      t.completedRounds += 1;
+      t.longest = Math.max(t.longest, t.seq.length);
+      t.score += 20 + t.seq.length * 5;
+      const roundRate = t.roundTotalInputs > 0 ? t.roundCorrectInputs / t.roundTotalInputs : 1;
+      t.lastRoundRate = roundRate;
+      if (t.roundSupport === 0 && roundRate >= 0.8) {
+        t.streak += 1;
+      } else {
+        t.streak = 0;
+      }
+      t.maxStreak = Math.max(t.maxStreak, t.streak);
+      t.stats.push({ completed: true, sequence: [...t.seq], responseSequence: t.roundInputSequence.map(item => item.color), inputEvents: [...t.roundInputSequence], replayUsed: t.roundReplayUsed, support: t.roundSupport, length: t.seq.length, level: t.level, rate: roundRate, mode: t.adaptiveMode });
+      t.feedback = { type: "success", text: "灯光接上啦！", sub: "灯塔更亮了一点。" };
+      adaptDuringTraining();
+      t.message = `这段旋律连得很好。自动调节难度已更新：${t.adaptiveHud}。`;
+      render();
+      schedule(() => {
+        if (!state.training) return;
+        t.roundIndex += 1;
+        if (t.roundIndex >= t.totalRounds) finishTraining();
+        else startTrainingRound();
+      }, 900);
+    }
+
+    function adaptDuringTraining() {
+      const t = state.training;
+      if (!t) return;
+      const rate = t.lastRoundRate;
+      const currentLength = t.seq.length;
+      let mode = "steady";
+      let nextLength = currentLength;
+      let speedFactor = 1;
+      let actionText = "保持当前节奏";
+
+      if (t.streak >= 2 || rate >= 0.8) {
+        mode = "up";
+        nextLength = clamp(currentLength + 1, 2, 7);
+        speedFactor = 0.90;
+        actionText = `序列从 ${currentLength} 盏调整到约 ${nextLength} 盏，或速度稍快`;
+      } else if (rate <= 0.5) {
+        mode = "down";
+        nextLength = clamp(currentLength - 1, 2, 7);
+        speedFactor = 1.18;
+        actionText = `序列从 ${currentLength} 盏调整到约 ${nextLength} 盏，或速度更慢`;
+      }
+
+      t.adaptiveMode = mode;
+      t.nextSequenceLength = nextLength;
+      t.nextSpeedFactor = speedFactor;
+      t.roundPerformanceText = `本轮表现：正确率 ${percent(rate)} · 序列长度 ${currentLength} 盏 · 连续正确 ${t.streak} 轮`;
+      t.nextDifficultyText = `下轮推荐难度：${actionText}`;
+      t.adaptiveHud = `${t.roundPerformanceText}；${t.nextDifficultyText}`;
+
+      const roundRecord = {
+        type: "round",
+        round: t.roundIndex + 1,
+        level: t.level,
+        accuracy: rate,
+        sequenceLength: currentLength,
+        nextSequenceLength: nextLength,
+        nextSpeedFactor: speedFactor,
+        nextLevel: t.level,
+        streak: t.streak,
+        nextMode: mode,
+        difficulty: {
+          currentSequenceLength: currentLength,
+          nextSequenceLength: nextLength,
+          speedFactor,
+          mode
+        },
+        label: t.adaptiveHud
+      };
+      t.adaptiveHistory.push(roundRecord);
+      saveStoredPerformance(roundRecord);
+    }
+
+    function generateSequence(cfg, roundIndex) {
+      if (cfg.level === 1 && cfg.adaptiveMode === "steady" && roundIndex === 0) return ["red", "blue"];
+      if (cfg.level === 1 && cfg.adaptiveMode === "steady" && roundIndex === 1) return ["yellow", "red"];
+      const len = cfg.min === cfg.max ? cfg.min : (roundIndex % 2 === 0 ? cfg.min : cfg.max);
+      const seq = [];
+      let guard = 0;
+      while (seq.length < len && guard < 200) {
+        guard += 1;
+        const candidate = cfg.pool[Math.floor(Math.random() * cfg.pool.length)];
+        const last = seq[seq.length - 1];
+        const before = seq[seq.length - 2];
+        if (cfg.level <= 4 && candidate === last) continue;
+        if (candidate === last && candidate === before) continue;
+        seq.push(candidate);
+      }
+      return seq;
+    }
+
+    function finishTraining() {
+      const t = state.training;
+      if (!t) return;
+      clearTicker();
+      clearSequenceTimers();
+      const stats = t.stats;
+      const completionRate = t.completedRounds / Math.max(1, t.totalRounds);
+      const accuracy = getCurrentAccuracy(t);
+      const replayTotal = stats.reduce((sum, r) => sum + r.replayUsed, 0);
+      const supportTotal = stats.reduce((sum, r) => sum + r.support, 0);
+      let recommendation = "推荐下一步：继续当前等级，再接几段灯光。";
+      let nextLevel = t.level;
+      let nextMode = "steady";
+
+      if ((t.maxStreak >= 2 || accuracy >= 0.8) && supportTotal <= 2) {
+        nextLevel = Math.min(10, t.level + 1);
+        nextMode = "up";
+        recommendation = `推荐下一步：试试第 ${nextLevel} 级，小水母会给出更长或稍快的灯光旋律。`;
+      } else if (accuracy <= 0.5 || completionRate < 0.55 || supportTotal >= 4) {
+        nextLevel = Math.max(1, t.level - 1);
+        nextMode = "down";
+        recommendation = `推荐下一步：回到第 ${nextLevel} 级，灯光会更短或更慢，适合稳稳接光。`;
+      } else if (state.lowStim) {
+        recommendation = `推荐下一步：继续柔和模式第 ${nextLevel} 级，保持稳定节奏。`;
+      }
+
+      const nextCfg = getConfig(nextLevel);
+      const lastAdaptive = t.adaptiveHistory[t.adaptiveHistory.length - 1];
+      const lastSequenceLength = lastAdaptive?.sequenceLength || t.longest || nextCfg.min;
+      const recommendedSequenceLength = nextMode === "up"
+        ? clamp(lastSequenceLength + 1, 2, 7)
+        : nextMode === "down"
+          ? clamp(lastSequenceLength - 1, 2, 7)
+          : clamp(lastAdaptive?.nextSequenceLength || lastSequenceLength, 2, 7);
+      const performanceText = `本轮表现：正确率 ${percent(accuracy)} · 完成 ${t.completedRounds}/${t.totalRounds} 轮 · 最长序列 ${t.longest} 盏 · 连续正确最高 ${t.maxStreak} 轮 · 使用回放 ${replayTotal} 次`;
+      const nextDifficultyText = `下轮推荐难度：第 ${nextLevel} 级 · ${nextCfg.label} · 推荐序列 ${recommendedSequenceLength} 盏 · ${nextMode === "up" ? "序列更长或速度稍快" : nextMode === "down" ? "序列更短或速度更慢" : "保持当前节奏"}`;
+
+      const record = {
+        level: t.level,
+        completedRounds: t.completedRounds,
+        totalRounds: t.totalRounds,
+        accuracy,
+        completionRate,
+        maxStreak: t.maxStreak,
+        score: t.score,
+        longest: t.longest,
+        lastSequenceLength,
+        recommendedSequenceLength,
+        nextLevel,
+        nextMode,
+        nextDifficultyText,
+        performanceText,
+        difficulty: {
+          currentLevel: t.level,
+          nextLevel,
+          lastSequenceLength,
+          recommendedSequenceLength,
+          mode: nextMode
+        },
+        recommendation
+      };
+      saveStoredPerformance(record);
+      if (window.CognitiveGameRecorder) {
+        window.CognitiveGameRecorder.record("simon-says", {
+          domain: "memory",
+          taskFamily: "sequence-memory",
+          mode: "training",
+          level: t.level,
+          startedAt: new Date(t.startedAt || Date.now()).toISOString(),
+          completedAt: new Date().toISOString(),
+          summary: {
+            accuracy,
+            completionRate,
+            completedRounds: t.completedRounds,
+            totalRounds: t.totalRounds,
+            longest: t.longest,
+            maxStreak: t.maxStreak,
+            score: t.score,
+            replayCount: replayTotal,
+            nextLevel,
+            recommendedSequenceLength
+          },
+          trials: t.stats.map((trial, index) => ({
+            trialId: `simon-says-${Date.now()}-${index + 1}`,
+            gameId: "simon-says",
+            domain: "memory",
+            taskFamily: "sequence-memory",
+            mode: "training",
+            level: t.level,
+            sequenceLength: trial.length,
+            stimulus: { sequence: trial.sequence || [] },
+            condition: { sequenceLength: trial.length, replayUsed: trial.replayUsed, support: trial.support, adaptiveMode: trial.mode },
+            correctAnswer: trial.sequence || [],
+            response: trial.responseSequence || [],
+            correct: trial.completed,
+            rtMs: trial.inputEvents && trial.inputEvents.length ? trial.inputEvents[trial.inputEvents.length - 1].elapsedMs : null,
+            replayUsed: trial.replayUsed,
+            support: trial.support,
+            rate: trial.rate,
+            adaptiveMode: trial.mode,
+            errorType: trial.completed ? null : "sequence_error",
+            difficultyParams: {
+              level: trial.level,
+              sequenceLength: trial.length,
+              adaptiveMode: trial.mode
+            }
+          })),
+          adaptive: t.adaptiveHistory
+        });
+      }
+
+      state.lastResult = {
+        completedRounds: t.completedRounds,
+        longest: t.longest,
+        score: t.score,
+        nextLevel,
+        recommendation,
+        performanceText,
+        nextDifficultyText
+      };
+      state.training = null;
+      state.screen = "result";
+      render();
+    }
+
+    function pauseTraining() {
+      const t = state.training;
+      if (!t) return;
+      t.paused = true;
+      clearSequenceTimers();
+      render();
+    }
+
+    function resumeTraining() {
+      const t = state.training;
+      if (!t) return;
+      t.paused = false;
+      t.feedback = null;
+      if (t.stage === "show" || t.stage === "support") {
+        render();
+        playTrainingSequence(false);
+      } else {
+        render();
+      }
+    }
+
+    function pressJelly(color) {
+      if (state.screen === "practice") handlePracticeInput(color);
+      if (state.screen === "training") handleTrainingInput(color);
+    }
+
+    function toggleLowStim() {
+      state.lowStim = !state.lowStim;
+      render();
+    }
+
+    function goCover() {
+      clearTicker();
+      clearSequenceTimers();
+      state.training = null;
+      state.screen = "cover";
+      render();
+    }
+
+    window.startTutorial = startTutorial;
+    window.nextTutorial = nextTutorial;
+    window.replayTutorialDemo = replayTutorialDemo;
+    window.startPracticeReplay = startPracticeReplay;
+    window.enterTraining = enterTraining;
+    window.manualReplayTraining = manualReplayTraining;
+    window.pauseTraining = pauseTraining;
+    window.resumeTraining = resumeTraining;
+    window.pressJelly = pressJelly;
+    window.toggleLowStim = toggleLowStim;
+    window.goCover = goCover;
+    window.state = state;
+    window.render = render;
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.screen === "training") pauseTraining();
+      if (event.key === " " && state.screen === "training") {
+        event.preventDefault();
+        manualReplayTraining();
+      }
+      const n = Number(event.key);
+      if (n >= 1 && n <= 6) {
+        const color = COLORS[n - 1]?.id;
+        if (color) pressJelly(color);
+      }
+    });
+
+    render();
+  </script>
+  <script src="../shared/unified.js"></script>
+</body>
+</html>

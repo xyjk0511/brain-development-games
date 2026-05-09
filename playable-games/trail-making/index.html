@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>宝藏小路｜顺序连线训练</title>
+  <style>
+    :root {
+      --cream: #fff8e8;
+      --cream-2: #fff1c8;
+      --sky: #bdeeff;
+      --sky-2: #79d5f4;
+      --mint: #94dfb6;
+      --mint-dark: #3fa56d;
+      --yellow: #ffd76d;
+      --orange: #ff9a62;
+      --coral: #ff7c63;
+      --purple: #c9b7ff;
+      --ink: #31506a;
+      --ink-2: #526f83;
+      --white: #ffffff;
+      --shadow: 0 14px 34px rgba(34, 75, 102, .20);
+      --soft-shadow: 0 8px 20px rgba(34, 75, 102, .15);
+      --radius: 28px;
+      --safe: clamp(14px, 2.2vw, 28px);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Heiti SC", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: linear-gradient(180deg, #daf7ff, #fff7dd); color: var(--ink); }
+    button, input, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    button:focus-visible, [tabindex]:focus-visible { outline: 4px solid rgba(255, 124, 99, .78); outline-offset: 4px; }
+
+    #app { min-height: 100vh; }
+    .screen { min-height: 100vh; padding: var(--safe); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .screen::before { content: ""; position: absolute; inset: 0; background-image: var(--bg); background-size: cover; background-position: center; filter: saturate(.96); opacity: .92; transform: scale(1.012); }
+    .screen::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, rgba(255,255,255,.12), rgba(255,255,255,.42) 70%); pointer-events: none; }
+    .screen > * { position: relative; z-index: 1; }
+
+    .shell { width: min(1120px, 100%); margin: 0 auto; }
+    .card { background: rgba(255, 252, 240, .94); border: 2px solid rgba(255,255,255,.84); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .panel { background: rgba(255, 252, 240, .95); border-radius: var(--radius); box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,.86); }
+    .row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+    .spacer { flex: 1; }
+    .muted { color: var(--ink-2); }
+    .tag { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 7px 13px; background: rgba(148, 223, 182, .22); color: #227055; font-weight: 800; font-size: 15px; }
+    .tag.advanced { background: rgba(255, 124, 99, .18); color: #9c493e; }
+    .title { font-size: clamp(38px, 6vw, 72px); line-height: .98; margin: 0; color: #8a4c20; text-shadow: 0 4px 0 rgba(255,255,255,.8); letter-spacing: .03em; }
+    .subtitle { font-size: clamp(20px, 2.3vw, 28px); line-height: 1.45; margin: 14px 0 0; color: var(--ink); font-weight: 800; }
+    .bodyText { font-size: clamp(17px, 1.55vw, 21px); line-height: 1.68; margin: 0; }
+    .sectionTitle { font-size: clamp(24px, 3vw, 34px); color: #8a4c20; margin: 0 0 12px; }
+    .miniTitle { font-size: 22px; font-weight: 900; color: #8a4c20; margin: 0 0 8px; }
+
+    .btn { min-height: 58px; border-radius: 999px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 20px; color: #fff; background: linear-gradient(180deg, #80d05c, #39a94d); box-shadow: inset 0 -3px 0 rgba(0,0,0,.13), 0 8px 16px rgba(57,169,77,.22); border: 2px solid rgba(255,255,255,.72); white-space: nowrap; }
+    .btn.secondary { background: linear-gradient(180deg, #62c7ff, #2f8fd4); box-shadow: inset 0 -3px 0 rgba(0,0,0,.13), 0 8px 16px rgba(47,143,212,.22); }
+    .btn.warm { background: linear-gradient(180deg, #ffbd69, #f07842); box-shadow: inset 0 -3px 0 rgba(0,0,0,.13), 0 8px 16px rgba(240,120,66,.22); }
+    .btn.light { color: var(--ink); background: rgba(255,255,255,.88); box-shadow: var(--soft-shadow); }
+    .btn.small { min-height: 44px; padding: 0 16px; font-size: 16px; }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    .homeGrid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); gap: 24px; align-items: stretch; }
+    .homeCover { width: 100%; height: 100%; min-height: 420px; object-fit: cover; display: block; }
+    .homeInfo { padding: clamp(24px, 4vw, 42px); display: flex; flex-direction: column; gap: 18px; }
+    .infoList { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .infoItem { display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: start; padding: 12px; border-radius: 18px; background: rgba(255,255,255,.63); }
+    .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--yellow); box-shadow: inset 0 -3px 0 rgba(0,0,0,.08); }
+
+    .detailLayout { display: grid; grid-template-columns: 310px 1fr; gap: 24px; padding: clamp(20px, 3vw, 34px); max-height: calc(100vh - 2 * var(--safe)); overflow: auto; }
+    .detailImage { width: 100%; border-radius: 24px; box-shadow: var(--soft-shadow); }
+    .explainBox { padding: 16px 18px; border-radius: 20px; background: rgba(255,255,255,.67); border: 1px solid rgba(255,255,255,.8); }
+    .explainBox + .explainBox { margin-top: 12px; }
+    .numbered { margin: 8px 0 0; padding-left: 1.2em; line-height: 1.6; font-size: 18px; }
+
+    .coverHero { width: min(900px, 100%); padding: clamp(24px, 4vw, 46px); text-align: center; }
+    .coverHero .subtitle { margin-left: auto; margin-right: auto; max-width: 720px; }
+    .coverBoxes { margin: 24px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; max-width: 780px; }
+
+    .tutorialFrame { width: min(1120px, 100%); min-height: min(680px, calc(100vh - 2 * var(--safe))); display: grid; grid-template-rows: auto 1fr auto; gap: 14px; }
+    .topHud, .trainingHud { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 12px; border-radius: 24px; background: rgba(255,252,240,.92); border: 2px solid rgba(255,255,255,.82); box-shadow: var(--soft-shadow); }
+    .targetCard { min-height: 72px; display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-radius: 20px; background: rgba(255,255,255,.86); box-shadow: inset 0 0 0 2px rgba(255, 215, 109, .55); font-weight: 900; font-size: clamp(18px, 2vw, 25px); overflow: auto hidden; white-space: nowrap; }
+    .targetCard.full { width: 100%; }
+    .targetToken { display: inline-flex; align-items: center; justify-content: center; min-width: 46px; min-height: 42px; padding: 5px 11px; border-radius: 16px; background: #fff8dc; color: #8a4c20; border: 2px solid rgba(255, 174, 66, .45); box-shadow: 0 4px 8px rgba(138,76,32,.08); }
+    .targetToken.done { opacity: .46; text-decoration: line-through; }
+    .targetToken.current { background: #fff1a8; border-color: #ff9a62; box-shadow: 0 0 0 5px rgba(255, 154, 98, .22); }
+    .arrow { font-weight: 900; color: #9a7755; }
+
+    .sceneCard { position: relative; min-height: 440px; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid rgba(255,255,255,.88); background-size: cover; background-position: center; }
+    .sceneOverlay { position: absolute; inset: auto 20px 20px 20px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: end; }
+    .dialog { padding: 18px 20px; border-radius: 22px; background: rgba(255,252,240,.94); box-shadow: var(--soft-shadow); max-width: 640px; }
+    .dialog h2 { margin: 0 0 8px; font-size: clamp(24px, 3vw, 34px); color: #8a4c20; }
+    .dialog p { margin: 0; font-size: clamp(17px, 2vw, 22px); line-height: 1.5; font-weight: 700; }
+    .counterPill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: rgba(49,80,106,.82); color: white; font-weight: 900; margin-top: 10px; }
+    .tutorialHand { position: absolute; width: 78px; height: 78px; background: url('assets/hand.png') center / contain no-repeat; filter: drop-shadow(0 6px 8px rgba(0,0,0,.18)); animation: tapFloat 1.2s ease-in-out infinite; }
+    .hand-1 { left: 63%; top: 46%; }
+    .hand-2 { left: 48%; top: 42%; }
+    .hand-3 { left: 52%; top: 56%; }
+    .hand-4 { left: 72%; top: 52%; }
+    .hand-5 { left: 82%; top: 46%; }
+    .demoGlow { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: rgba(255, 215, 109, .38); border: 4px solid rgba(255, 154, 98, .6); animation: pulse 1.25s ease-in-out infinite; }
+    .glow-2 { left: 49%; top: 40%; }
+    .glow-3 { left: 46%; top: 42%; }
+    .glow-4 { left: 63%; top: 48%; }
+    .glow-5 { left: 76%; top: 48%; }
+
+    .gameShell { width: min(1120px, 100%); min-height: min(720px, calc(100vh - 2 * var(--safe))); display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; }
+    .trainingHud { min-height: 68px; }
+    .hudSide { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .hudPill { display: inline-flex; align-items: center; min-height: 42px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.82); color: var(--ink); font-weight: 900; box-shadow: inset 0 0 0 1px rgba(255,255,255,.9); }
+    .hudPill.warn { background: rgba(255, 215, 109, .55); color: #7b5524; }
+
+    .playBoard { position: relative; min-height: 440px; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid rgba(255,255,255,.88); background-size: cover; background-position: center; touch-action: manipulation; }
+    .playBoard::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.22)); pointer-events: none; }
+    .trailSvg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 2; }
+    .trailLine { stroke: #4aa884; stroke-width: 1.55; stroke-linecap: round; filter: drop-shadow(0 2px 2px rgba(255,255,255,.75)); }
+    .trailLinePreview { stroke: rgba(255, 215, 109, .78); stroke-width: 1.2; stroke-dasharray: 2.5 2.5; }
+    .trailNode { position: absolute; z-index: 5; transform: translate(-50%, -50%); width: var(--node-size, 78px); height: var(--node-size, 78px); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-weight: 1000; font-size: calc(var(--node-size, 78px) * .34); color: #724415; background: radial-gradient(circle at 36% 30%, #fff8b8, #ffd452 55%, #ffa742 100%); border: 3px solid rgba(255,255,255,.88); box-shadow: 0 8px 18px rgba(83,75,38,.22), inset 0 -4px 0 rgba(138,76,32,.13); user-select: none; }
+    .trailNode::before { content: ""; position: absolute; inset: -11px; background: url('assets/star-sign.png') center / contain no-repeat; opacity: .36; z-index: -1; filter: saturate(.95); }
+    .trailNode.current { animation: nodePulse 1.1s ease-in-out infinite; box-shadow: 0 0 0 8px rgba(255, 154, 98, .24), 0 9px 18px rgba(83,75,38,.22), inset 0 -4px 0 rgba(138,76,32,.13); }
+    .trailNode.done { background: radial-gradient(circle at 36% 30%, #dffff0, #9ee3b9 60%, #55bb82); color: #22664a; }
+    .trailNode.color-blue { background: radial-gradient(circle at 36% 30%, #eff8ff, #8bd8ff 60%, #4ea6de); color: #174f7b; }
+    .trailNode.color-yellow { background: radial-gradient(circle at 36% 30%, #fff8b8, #ffd452 60%, #ffa742); }
+    .trailNode.color-mint { background: radial-gradient(circle at 36% 30%, #effff6, #9ee3b9 60%, #52bb7e); color: #1d684a; }
+    .trailNode.color-coral { background: radial-gradient(circle at 36% 30%, #fff0ec, #ffa48a 60%, #f06d55); color: #74331e; }
+    .trailNode .smallText { display: block; font-size: .42em; line-height: 1.05; font-weight: 900; }
+    .distractor { position: absolute; z-index: 4; transform: translate(-50%, -50%); min-width: 60px; min-height: 54px; padding: 9px 12px; border-radius: 22px; background: rgba(255,255,255,.58); color: #7b6a58; border: 2px dashed rgba(123,106,88,.25); font-weight: 900; box-shadow: var(--soft-shadow); }
+    .distractor:focus-visible { outline-color: rgba(74,168,132,.75); }
+
+    .turtlePiece { position: absolute; z-index: 7; width: 82px; height: 82px; border-radius: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,.75); border: 3px solid rgba(255,255,255,.92); box-shadow: var(--soft-shadow); object-fit: cover; transition: left .48s ease, top .48s ease; }
+    .chestPiece { position: absolute; right: 4%; bottom: 5%; z-index: 3; width: 92px; height: 92px; border-radius: 24px; object-fit: cover; box-shadow: var(--soft-shadow); border: 3px solid rgba(255,255,255,.72); }
+    .floatingToast { position: absolute; z-index: 20; left: 50%; top: 18px; transform: translateX(-50%); padding: 12px 18px; border-radius: 999px; background: rgba(255,252,240,.96); color: #7b5524; font-weight: 900; box-shadow: var(--soft-shadow); border: 2px solid rgba(255,255,255,.86); animation: toastIn .25s ease; }
+    .hintRing { box-shadow: 0 0 0 9px rgba(255, 124, 99, .22), 0 0 0 18px rgba(255, 215, 109, .16), 0 9px 18px rgba(83,75,38,.22) !important; }
+
+    .bottomBar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 22px; background: rgba(255,252,240,.92); box-shadow: var(--soft-shadow); border: 2px solid rgba(255,255,255,.82); }
+    .readyModal { width: min(620px, 100%); padding: clamp(24px, 4vw, 40px); text-align: center; }
+    .overlayScreen { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: var(--safe); background: rgba(49,80,106,.34); backdrop-filter: blur(4px); }
+    .modalPanel { width: min(680px, 100%); padding: clamp(22px, 3vw, 34px); }
+
+    .resultLayout { width: min(1000px, 100%); display: grid; grid-template-columns: minmax(290px, .9fr) minmax(0, 1.1fr); gap: 22px; align-items: stretch; }
+    .resultImage { min-height: 500px; border-radius: 30px; background-size: cover; background-position: center; box-shadow: var(--shadow); border: 3px solid rgba(255,255,255,.88); }
+    .resultPanel { padding: clamp(24px, 3vw, 38px); }
+    .metricGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+    .metric { padding: 14px; border-radius: 20px; background: rgba(255,255,255,.72); box-shadow: inset 0 0 0 1px rgba(255,255,255,.76); }
+    .metric strong { display: block; font-size: 28px; color: #2e8a60; margin-top: 4px; }
+    .recommendBox { padding: 16px; border-radius: 20px; background: rgba(255, 215, 109, .28); border: 2px solid rgba(255,255,255,.72); }
+
+    .preload { position: absolute; width: 1px; height: 1px; overflow: hidden; left: -9999px; top: -9999px; }
+
+    @keyframes pulse { 0%, 100% { transform: scale(.98); opacity: .7; } 50% { transform: scale(1.08); opacity: 1; } }
+    @keyframes tapFloat { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(4px, 7px) scale(.95); } }
+    @keyframes nodePulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.06); } }
+    @keyframes toastIn { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+    .calm * { animation-duration: .001s !important; transition-duration: .001s !important; }
+    .largeMode .trailNode { --node-size: 92px !important; }
+    .largeMode .turtlePiece { width: 94px; height: 94px; }
+    .largeMode .btn { min-height: 66px; font-size: 22px; }
+
+    @media (max-width: 840px) {
+      .screen { align-items: flex-start; }
+      .homeGrid, .detailLayout, .resultLayout, .coverBoxes { grid-template-columns: 1fr; }
+      .homeCover { min-height: 260px; }
+      .detailLayout { max-height: none; }
+      .sceneCard, .playBoard { min-height: 390px; }
+      .sceneOverlay { grid-template-columns: 1fr; }
+      .trainingHud { align-items: flex-start; }
+      .targetCard { font-size: 18px; }
+      .metricGrid { grid-template-columns: 1fr; }
+      .title { font-size: 42px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="../shared/unified.css">
+</head>
+<body>
+  <div id="app"></div>
+  <div id="announcer" aria-live="polite" class="preload"></div>
+
+  <script>
+    const ASSETS = {
+      lobby: 'assets/lobby-cover.png',
+      detail: 'assets/detail-cover.png',
+      cover: 'assets/cover-poster.png',
+      tutorial1: 'assets/tutorial-1.png',
+      tutorial2: 'assets/tutorial-2.png',
+      tutorial3: 'assets/tutorial-3.png',
+      tutorial4: 'assets/tutorial-4.png',
+      tutorial5: 'assets/tutorial-5.png',
+      tutorial6: 'assets/tutorial-6.png',
+      practice: 'assets/practice-bg.png',
+      training: 'assets/training-bg.png',
+      training2: 'assets/training-bg-2.png',
+      result: 'assets/result-bg.png',
+      resultPanel: 'assets/result-panel.png',
+      turtle: 'assets/turtle.png',
+      turtleHappy: 'assets/turtle-happy.png',
+      chest: 'assets/chest.png',
+      starSign: 'assets/star-sign.png',
+      hand: 'assets/hand.png',
+      success: 'assets/success-sticker.png',
+      targetCard: 'assets/target-card.png',
+      lowStim: 'assets/low-stimulation-bg.png',
+      source: 'assets/gptimage2-source-collage.png'
+    };
+
+    const STORAGE_KEY = 'trail_making_treasure_v1';
+
+    const LEVELS = [
+      { level: 1, name: '海龟起步', kind: 'numbers', count: 3, distractors: 0, nodeSize: 88, hintDelay: 3500, timeLimit: 90, passChests: 1, advanced: false },
+      { level: 2, name: '星星小路', kind: 'numbers', count: 4, distractors: 0, nodeSize: 86, hintDelay: 4000, timeLimit: 100, passChests: 2, advanced: false },
+      { level: 3, name: '小岛寻宝', kind: 'numbers', count: 5, distractors: 1, nodeSize: 84, hintDelay: 5000, timeLimit: 120, passChests: 2, advanced: false },
+      { level: 4, name: '沙滩路线', kind: 'numbers', count: 6, distractors: 2, nodeSize: 78, hintDelay: 5500, timeLimit: 120, passChests: 3, advanced: false },
+      { level: 5, name: '礁石路线', kind: 'numbers', count: 8, distractors: 3, nodeSize: 74, hintDelay: 6000, timeLimit: 130, passChests: 3, advanced: false },
+      { level: 6, name: '进阶挑战 · 小鱼线索', kind: 'numberIcon', count: 5, distractors: 2, nodeSize: 74, hintDelay: 6500, timeLimit: 130, passChests: 3, advanced: true },
+      { level: 7, name: '进阶挑战 · 贝壳路线', kind: 'numberIcon', count: 6, distractors: 3, nodeSize: 70, hintDelay: 7000, timeLimit: 140, passChests: 3, advanced: true },
+      { level: 8, name: '进阶挑战 · 彩色星标', kind: 'color', count: 6, distractors: 4, nodeSize: 70, hintDelay: 7000, timeLimit: 140, passChests: 4, advanced: true },
+      { level: 9, name: '进阶挑战 · 双线藏宝', kind: 'numbers', count: 10, distractors: 5, nodeSize: 66, hintDelay: 8000, timeLimit: 150, passChests: 4, advanced: true },
+      { level: 10, name: '进阶挑战 · 宝藏大师', kind: 'mixed', count: 8, distractors: 6, nodeSize: 66, hintDelay: 8000, timeLimit: 150, passChests: 4, advanced: true }
+    ];
+
+    const PRACTICE = [
+      { title: '低压练习 1', sequence: tokenNumbers(3), distractors: 0, nodeSize: 92, message: '先连一条很短的小路，没有倒计时。' },
+      { title: '低压练习 2', sequence: tokenNumbers(4), distractors: 0, nodeSize: 90, message: '继续跟着目标卡，按顺序连接星星路标。' },
+      { title: '低压练习 3', sequence: [{label:'1'}, {label:'小鱼', icon:true}, {label:'2'}, {label:'贝壳', icon:true}], distractors: 1, nodeSize: 88, message: '这次会有小鱼和贝壳，目标卡会一直显示。' }
+    ];
+
+    const state = {
+      screen: 'home',
+      tutorialStep: 1,
+      settings: { calm: false, large: false },
+      recommendedLevel: loadStore().recommendedLevel || 1,
+      game: null,
+      practiceIndex: 0,
+      result: null,
+      toast: '',
+      hintNodeId: null,
+      timerId: null,
+      lastActionAt: Date.now(),
+      paused: false
+    };
+
+    function loadStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+      } catch (_) { return {}; }
+    }
+
+    function saveStore(patch) {
+      const prev = loadStore();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, ...patch }));
+    }
+
+    function levelConfig(level) {
+      return LEVELS[Math.max(1, Math.min(10, level)) - 1];
+    }
+
+    function tokenNumbers(n) {
+      return Array.from({ length: n }, (_, i) => ({ label: String(i + 1) }));
+    }
+
+    function sequenceForLevel(config) {
+      if (config.kind === 'numbers') return tokenNumbers(config.count);
+      if (config.kind === 'numberIcon') {
+        const base = [{label:'1'}, {label:'小鱼', icon:true}, {label:'2'}, {label:'贝壳', icon:true}, {label:'3'}];
+        if (config.count > 5) base.push({label:'海星', icon:true});
+        return base.slice(0, config.count);
+      }
+      if (config.kind === 'color') {
+        return Array.from({ length: config.count }, (_, i) => ({
+          label: String(i + 1),
+          prefix: i % 2 === 0 ? '黄星' : '蓝星',
+          color: i % 2 === 0 ? 'yellow' : 'blue'
+        }));
+      }
+      return [
+        {label:'1', prefix:'黄星', color:'yellow'},
+        {label:'小鱼', icon:true, color:'blue'},
+        {label:'2', prefix:'蓝星', color:'blue'},
+        {label:'贝壳', icon:true, color:'mint'},
+        {label:'3', prefix:'黄星', color:'yellow'},
+        {label:'海星', icon:true, color:'coral'},
+        {label:'4', prefix:'蓝星', color:'blue'},
+        {label:'珍珠', icon:true, color:'mint'}
+      ].slice(0, config.count);
+    }
+
+    function announce(text) {
+      document.getElementById('announcer').textContent = text;
+    }
+
+    function setToast(text, hintNodeId) {
+      state.toast = text;
+      state.hintNodeId = hintNodeId || null;
+      announce(text);
+      render();
+      window.clearTimeout(state.toastTimer);
+      state.toastTimer = window.setTimeout(() => {
+        state.toast = '';
+        state.hintNodeId = null;
+        render();
+      }, 1100);
+    }
+
+    function bgStyle(path) {
+      return `--bg: url('${path}')`;
+    }
+
+    function safeImage(path, alt, cls='') {
+      return `<img class="${cls}" src="${path}" alt="${alt}" loading="eager" />`;
+    }
+
+    function preloadImages() {
+      return `<div class="preload" aria-hidden="true">${Object.values(ASSETS).map(src => `<img src="${src}" alt="" />`).join('')}</div>`;
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      document.body.className = `${state.settings.calm ? 'calm' : ''} ${state.settings.large ? 'largeMode' : ''}`;
+      let html = '';
+      if (state.screen === 'home') html = renderHome();
+      if (state.screen === 'detail') html = renderDetail();
+      if (state.screen === 'cover') html = renderCover();
+      if (state.screen === 'tutorial') html = renderTutorial();
+      if (state.screen === 'practice') html = renderPractice();
+      if (state.screen === 'ready') html = renderReady();
+      if (state.screen === 'playing') html = renderGame();
+      if (state.screen === 'result') html = renderResult();
+      app.innerHTML = html + preloadImages();
+    }
+
+    function renderHome() {
+      const store = loadStore();
+      const recLevel = state.recommendedLevel || store.recommendedLevel || 1;
+      return `
+        <main class="screen" style="${bgStyle(ASSETS.cover)}">
+          <section class="shell card homeGrid" aria-label="宝藏小路首页">
+            ${safeImage(ASSETS.lobby, '宝藏小路大厅卡片图', 'homeCover')}
+            <div class="homeInfo">
+              <span class="tag">顺序寻宝</span>
+              <h1 class="title">宝藏小路</h1>
+              <p class="subtitle">按顺序连接星星路标，帮小海龟走到宝箱。</p>
+              <ul class="infoList">
+                <li class="infoItem"><span class="dot"></span><span><b>目标是什么：</b>看目标卡，按顺序找到每一个路标。</span></li>
+                <li class="infoItem"><span class="dot"></span><span><b>怎么玩：</b>点击当前要找的路标，小海龟会沿着路线前进。</span></li>
+                <li class="infoItem"><span class="dot"></span><span><b>推荐难度：</b>第 ${recLevel} 级 · ${levelConfig(recLevel).name}</span></li>
+              </ul>
+              <div class="row">
+                <button class="btn" onclick="Actions.goDetail()">查看说明</button>
+                <button class="btn secondary" onclick="Actions.goCover()">进入封面页</button>
+                <button class="btn light" onclick="Actions.toggleCalm()">低刺激模式：${state.settings.calm ? '开' : '关'}</button>
+              </div>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    function renderDetail() {
+      return `
+        <main class="screen" style="${bgStyle(ASSETS.lobby)}">
+          <section class="panel detailLayout" role="dialog" aria-label="游戏说明">
+            ${safeImage(ASSETS.detail, '游戏说明插图', 'detailImage')}
+            <div>
+              <div class="row" style="margin-bottom:14px">
+                <span class="tag">说明</span>
+                <span class="spacer"></span>
+                <button class="btn light small" onclick="Actions.goHome()">返回首页</button>
+              </div>
+              <h2 class="sectionTitle">宝藏小路</h2>
+              <div class="explainBox">
+                <h3 class="miniTitle">目标是什么</h3>
+                <p class="bodyText">目标是按照上方目标卡的顺序，把星星路标一个一个连起来，帮助小海龟走到宝箱。</p>
+              </div>
+              <div class="explainBox">
+                <h3 class="miniTitle">怎么玩</h3>
+                <ol class="numbered">
+                  <li>先看目标卡，例如：1 → 2 → 3。</li>
+                  <li>在地图上点击当前要找的路标。</li>
+                  <li>连完所有路标，小海龟就会打开宝箱。</li>
+                  <li>第 1 到第 3 级非常轻松；难内容会标为“进阶挑战”。</li>
+                </ol>
+              </div>
+              <div class="explainBox">
+                <h3 class="miniTitle">训练方式</h3>
+                <p class="bodyText">先看 6 屏真实场景演示，再做没有倒计时的低压练习，最后进入正式训练。目标卡会一直显示。</p>
+              </div>
+              <div class="row" style="margin-top:18px">
+                <button class="btn" onclick="Actions.startTutorial()">开始演示</button>
+                <button class="btn secondary" onclick="Actions.goCover()">看封面页</button>
+                <button class="btn light" onclick="Actions.toggleLarge()">大按钮模式：${state.settings.large ? '开' : '关'}</button>
+              </div>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    function renderCover() {
+      const rec = state.recommendedLevel || 1;
+      return `
+        <main class="screen" style="${bgStyle(ASSETS.cover)}">
+          <section class="panel coverHero">
+            <span class="tag">海岛藏宝图</span>
+            <h1 class="title" style="margin-top:14px">宝藏小路</h1>
+            <p class="subtitle">跟着星星路标，帮小海龟找到宝箱。</p>
+            <div class="coverBoxes">
+              <div class="explainBox"><h3 class="miniTitle">目标是什么</h3><p class="bodyText">按目标卡顺序连接路标。目标卡一直在屏幕上。</p></div>
+              <div class="explainBox"><h3 class="miniTitle">怎么玩</h3><p class="bodyText">点击当前路标。点对后，小海龟会向前走一步。</p></div>
+            </div>
+            <p class="bodyText muted">当前下轮推荐难度：第 ${rec} 级 · ${levelConfig(rec).name}</p>
+            <div class="row" style="justify-content:center;margin-top:20px">
+              <button class="btn" onclick="Actions.startTutorial()">开始教学</button>
+              <button class="btn light" onclick="Actions.goHome()">返回首页</button>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    const TUTORIAL = [
+      { title: '欢迎来到宝藏小路', text: '小海龟要沿着星星路标，慢慢走到宝箱。', bg: ASSETS.tutorial1, target: '今天的小任务', count: '', hand: '', glow: '' },
+      { title: '目标出现', text: '看这里，目标卡会一直告诉你下一步。', bg: ASSETS.tutorial2, target: '目标：1 → 2 → 3', count: '', hand: 'hand-1', glow: 'glow-2' },
+      { title: '点击第一个路标', text: '每找到下一个路标，就点一次。', bg: ASSETS.tutorial3, target: '目标：1 → 2 → 3', count: '已连接 1 / 3', hand: 'hand-2', glow: 'glow-3' },
+      { title: '继续连接', text: '跟着目标卡，一个一个连过去。', bg: ASSETS.tutorial4, target: '目标：1 → 2 → 3', count: '已连接 2 / 3', hand: 'hand-3', glow: 'glow-4' },
+      { title: '到达宝箱', text: '很好，小海龟找到宝箱啦！', bg: ASSETS.tutorial5, target: '目标：1 → 2 → 3', count: '已连接 3 / 3', hand: 'hand-4', glow: 'glow-5' },
+      { title: '准备小练习', text: '现在试一条很短的小路，没有倒计时。目标卡会一直在上面。', bg: ASSETS.tutorial6, target: '目标：1 → 2 → 3', count: '', hand: '', glow: '' }
+    ];
+
+    function renderTutorial() {
+      const step = state.tutorialStep;
+      const t = TUTORIAL[step - 1];
+      const targetHtml = step === 1 ? `<span>${t.target}</span>` : renderTargetTokens([{label:'1'}, {label:'2'}, {label:'3'}], Math.min(step - 2, 2), step >= 3 ? Math.min(step - 2, 3) : 0);
+      return `
+        <main class="screen" style="${bgStyle(t.bg)}">
+          <section class="tutorialFrame">
+            <div class="topHud">
+              <div class="hudSide"><span class="hudPill">教学 ${step} / 6</span><span class="hudPill warn">目标卡一直可见</span></div>
+              <button class="btn light small" onclick="Actions.goCover()">返回封面</button>
+            </div>
+            <div class="targetCard full" aria-label="教学目标卡">${targetHtml}</div>
+            <div class="sceneCard" style="background-image:url('${t.bg}')">
+              ${t.glow ? `<div class="demoGlow ${t.glow}"></div>` : ''}
+              ${t.hand ? `<div class="tutorialHand ${t.hand}" aria-hidden="true"></div>` : ''}
+              <div class="sceneOverlay">
+                <div class="dialog">
+                  <h2>${t.title}</h2>
+                  <p>${t.text}</p>
+                  ${t.count ? `<span class="counterPill">${t.count}</span>` : ''}
+                </div>
+                <div class="row" style="justify-content:flex-end">
+                  ${step === 6 ? `<button class="btn secondary" onclick="Actions.startTutorial()">重新演示</button><button class="btn" onclick="Actions.startPractice()">开始小练习</button>` : `<button class="btn" onclick="Actions.nextTutorial()">下一步</button>`}
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    function renderTargetTokens(sequence, currentIndex, doneCount) {
+      return `<span>目标：</span>` + sequence.map((t, i) => {
+        const cls = ['targetToken'];
+        if (i < doneCount) cls.push('done');
+        if (i === currentIndex && i >= doneCount) cls.push('current');
+        const label = t.prefix ? `${t.prefix} ${t.label}` : t.label;
+        return `<span class="${cls.join(' ')}">${label}</span>`;
+      }).join('<span class="arrow">→</span>');
+    }
+
+    function renderPractice() {
+      if (!state.game || state.game.mode !== 'practice') initPracticeGame(state.practiceIndex);
+      return renderGameShell(false);
+    }
+
+    function renderReady() {
+      const rec = state.recommendedLevel || 1;
+      return `
+        <main class="screen" style="${bgStyle(ASSETS.practice)}">
+          <section class="panel readyModal">
+            <span class="tag">低压练习完成</span>
+            <h1 class="sectionTitle" style="margin-top:14px">准备开始训练吧！</h1>
+            <p class="bodyText">接下来会有倒计时。请看上方目标卡，按顺序连接星星路标，帮小海龟找到更多宝箱。</p>
+            <p class="bodyText muted" style="margin-top:12px">下轮推荐难度：第 ${rec} 级 · ${levelConfig(rec).name}</p>
+            <div class="row" style="justify-content:center;margin-top:24px">
+              <button class="btn secondary" onclick="Actions.startTutorial()">重新演示</button>
+              <button class="btn" onclick="Actions.startFormal()">进入训练</button>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    function renderGame() {
+      return renderGameShell(true);
+    }
+
+    function renderGameShell(isFormal) {
+      const g = state.game;
+      const config = g.config;
+      const bg = state.settings.calm ? ASSETS.lowStim : (isFormal && g.rounds % 2 ? ASSETS.training2 : (isFormal ? ASSETS.training : ASSETS.practice));
+      return `
+        <main class="screen" style="${bgStyle(bg)}">
+          <section class="gameShell" aria-label="${isFormal ? '正式训练' : '低压练习'}">
+            <div class="trainingHud">
+              <div class="hudSide">
+                ${isFormal ? `<button class="btn light small" onclick="Actions.pauseGame()">暂停</button>` : `<button class="btn light small" onclick="Actions.startTutorial()">重新演示</button>`}
+                <span class="hudPill">${isFormal ? `第 ${config.level} 级 · ${config.name}` : PRACTICE[state.practiceIndex].title}</span>
+                ${config.advanced ? `<span class="tag advanced">进阶挑战</span>` : `<span class="tag">轻松路线</span>`}
+              </div>
+              <div class="hudSide">
+                ${isFormal ? `<span class="hudPill">剩余 ${formatTime(g.timeLeft)}</span>` : `<span class="hudPill warn">无倒计时</span>`}
+                <span class="hudPill">宝星 ${g.score}</span>
+                <span class="hudPill">宝箱 ${g.chests}</span>
+              </div>
+            </div>
+            <div class="targetCard full" aria-label="当前目标卡">${renderTargetTokens(g.sequence, g.currentIndex, g.currentIndex)}</div>
+            <div class="playBoard" style="background-image:url('${bg}')" aria-label="海岛藏宝图操作区">
+              ${state.toast ? `<div class="floatingToast">${state.toast}</div>` : ''}
+              ${renderLines(g)}
+              ${renderNodes(g)}
+              ${renderTurtle(g)}
+              ${safeImage(ASSETS.chest, '宝箱', 'chestPiece')}
+            </div>
+            <div class="bottomBar">
+              <span><b>怎么玩：</b>看目标卡，点击当前发光路标。点完所有路标就能打开宝箱。</span>
+              <span><b>目标：</b>${isFormal ? `完成 ${config.passChests} 个宝箱` : '完成这条小路'}</span>
+            </div>
+          </section>
+          ${state.paused ? renderPauseOverlay() : ''}
+        </main>`;
+    }
+
+    function renderPauseOverlay() {
+      return `
+        <div class="overlayScreen" role="dialog" aria-label="暂停">
+          <section class="panel modalPanel" style="text-align:center">
+            <h2 class="sectionTitle">训练已暂停</h2>
+            <p class="bodyText">目标卡会保留。准备好后继续帮助小海龟前进。</p>
+            <div class="row" style="justify-content:center;margin-top:22px">
+              <button class="btn" onclick="Actions.resumeGame()">继续训练</button>
+              <button class="btn secondary" onclick="Actions.startTutorial()">重新演示</button>
+              <button class="btn light" onclick="Actions.goHome()">回到首页</button>
+            </div>
+          </section>
+        </div>`;
+    }
+
+    function renderLines(g) {
+      const connected = g.connectedOrders.map(order => g.nodes.find(n => n.order === order)).filter(Boolean);
+      let lines = '';
+      for (let i = 1; i < connected.length; i++) {
+        const a = connected[i - 1], b = connected[i];
+        lines += `<line class="trailLine" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" />`;
+      }
+      if (connected.length === 1) {
+        const start = { x: Math.max(8, connected[0].x - 15), y: Math.min(84, connected[0].y + 12) };
+        const b = connected[0];
+        lines += `<line class="trailLine" x1="${start.x}" y1="${start.y}" x2="${b.x}" y2="${b.y}" />`;
+      }
+      if (connected.length > 0 && g.currentIndex < g.sequence.length) {
+        const a = connected[connected.length - 1];
+        const b = g.nodes.find(n => n.order === g.currentIndex);
+        if (b) lines += `<line class="trailLinePreview" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" />`;
+      }
+      return `<svg class="trailSvg" viewBox="0 0 100 100" preserveAspectRatio="none">${lines}</svg>`;
+    }
+
+    function renderNodes(g) {
+      const nodeSize = state.settings.large ? Math.max(92, g.config.nodeSize) : g.config.nodeSize;
+      const targets = g.nodes.map(n => {
+        const isDone = n.order < g.currentIndex;
+        const isCurrent = n.order === g.currentIndex;
+        const cls = ['trailNode'];
+        if (isDone) cls.push('done');
+        if (isCurrent) cls.push('current');
+        if (state.hintNodeId === n.id) cls.push('hintRing');
+        if (n.token.color) cls.push('color-' + n.token.color);
+        const label = n.token.prefix ? `<span><span class="smallText">${n.token.prefix}</span>${n.token.label}</span>` : n.token.label;
+        return `<button class="${cls.join(' ')}" style="left:${n.x}%;top:${n.y}%;--node-size:${nodeSize}px" aria-label="路标 ${n.token.prefix ? n.token.prefix + ' ' : ''}${n.token.label}" onclick="Actions.tapNode('${n.id}')">${label}</button>`;
+      }).join('');
+      const distractors = g.distractors.map(d => `<button class="distractor" style="left:${d.x}%;top:${d.y}%" onclick="Actions.tapDistractor()" aria-label="装饰物 ${d.label}">${d.label}</button>`).join('');
+      return targets + distractors;
+    }
+
+    function renderTurtle(g) {
+      const lastOrder = g.connectedOrders.length ? g.connectedOrders[g.connectedOrders.length - 1] : -1;
+      const current = g.nodes.find(n => n.order === lastOrder);
+      const first = g.nodes[0] || { x: 24, y: 62 };
+      const x = current ? current.x : Math.max(10, first.x - 14);
+      const y = current ? current.y : Math.min(82, first.y + 13);
+      const img = g.currentIndex >= g.sequence.length ? ASSETS.turtleHappy : ASSETS.turtle;
+      return `<img src="${img}" alt="小海龟" class="turtlePiece" style="left:${x}%;top:${y}%" />`;
+    }
+
+    function renderResult() {
+      const r = state.result;
+      const next = levelConfig(r.nextLevel);
+      return `
+        <main class="screen" style="${bgStyle(ASSETS.result)}">
+          <section class="resultLayout">
+            <div class="resultImage" style="background-image:url('${ASSETS.result}')" aria-label="宝箱结算插图"></div>
+            <div class="panel resultPanel">
+              <span class="tag">本轮完成</span>
+              <h1 class="sectionTitle" style="margin-top:14px">小海龟找到宝箱啦</h1>
+              <p class="bodyText">这段寻宝完成了。下面是本轮表现和下轮推荐难度。</p>
+              <h2 class="miniTitle" style="margin-top:18px">本轮表现</h2>
+              <div class="metricGrid">
+                <div class="metric">正确率<strong>${r.accuracyText}</strong></div>
+                <div class="metric">用时<strong>${r.elapsedText}</strong></div>
+                <div class="metric">宝箱<strong>${r.chests} 个</strong></div>
+                <div class="metric">宝星<strong>${r.score}</strong></div>
+              </div>
+              <div class="recommendBox">
+                <h2 class="miniTitle">下轮推荐难度</h2>
+                <p class="bodyText"><b>第 ${r.nextLevel} 级 · ${next.name}</b></p>
+                <p class="bodyText muted">${r.reason}</p>
+                ${next.advanced ? `<p class="bodyText"><span class="tag advanced">进阶挑战</span></p>` : `<p class="bodyText"><span class="tag">轻松路线</span></p>`}
+              </div>
+              <div class="row" style="margin-top:22px">
+                <button class="btn" onclick="Actions.startFormal()">按推荐再玩一轮</button>
+                <button class="btn secondary" onclick="Actions.startTutorial()">重新演示</button>
+                <button class="btn light" onclick="Actions.goHome()">返回首页</button>
+              </div>
+            </div>
+          </section>
+        </main>`;
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function makePositions(count, level) {
+      const layouts = {
+        3: [{x:26,y:62},{x:50,y:48},{x:73,y:58}],
+        4: [{x:20,y:62},{x:40,y:45},{x:61,y:58},{x:78,y:42}],
+        5: [{x:18,y:64},{x:36,y:48},{x:53,y:62},{x:68,y:42},{x:82,y:57}],
+        6: [{x:16,y:63},{x:31,y:47},{x:47,y:61},{x:60,y:41},{x:73,y:55},{x:85,y:38}],
+        8: [{x:14,y:65},{x:27,y:47},{x:40,y:62},{x:52,y:42},{x:64,y:58},{x:75,y:38},{x:84,y:55},{x:89,y:31}],
+        10:[{x:12,y:65},{x:22,y:46},{x:33,y:61},{x:43,y:39},{x:54,y:57},{x:63,y:35},{x:72,y:53},{x:80,y:32},{x:88,y:48},{x:92,y:28}]
+      };
+      const base = layouts[count] || layouts[6];
+      const jitter = level <= 3 ? 0 : Math.min(4, level * .45);
+      return base.slice(0, count).map((p, i) => ({
+        x: Math.max(10, Math.min(90, p.x + (Math.sin(Date.now()/700 + i) * jitter))),
+        y: Math.max(24, Math.min(76, p.y + (Math.cos(Date.now()/900 + i) * jitter)))
+      }));
+    }
+
+    function makeDistractors(count, level) {
+      const labels = ['椰子', '海星', '小云', '圆石', '贝叶', '漂流瓶'];
+      const base = [
+        {x:83,y:71}, {x:16,y:35}, {x:76,y:22}, {x:45,y:28}, {x:62,y:75}, {x:28,y:78}
+      ];
+      return base.slice(0, count).map((p, i) => ({
+        id: 'd' + i,
+        label: labels[i % labels.length],
+        x: Math.max(8, Math.min(92, p.x + Math.sin(Date.now()/1000 + i) * (level > 3 ? 3 : 0))),
+        y: Math.max(18, Math.min(82, p.y + Math.cos(Date.now()/1100 + i) * (level > 3 ? 3 : 0)))
+      }));
+    }
+
+    function createGame(mode, level, practiceIndex) {
+      let config, sequence;
+      if (mode === 'practice') {
+        const p = PRACTICE[practiceIndex];
+        config = { level: 0, name: p.title, kind: 'practice', count: p.sequence.length, distractors: p.distractors, nodeSize: p.nodeSize, timeLimit: 0, passChests: 1, advanced: false };
+        sequence = p.sequence;
+      } else {
+        config = levelConfig(level);
+        sequence = sequenceForLevel(config);
+      }
+      const positions = makePositions(sequence.length, Math.max(1, config.level));
+      const nodes = sequence.map((token, order) => ({
+        id: 'n' + order + '_' + Math.floor(Math.random() * 99999),
+        order,
+        token,
+        x: positions[order].x,
+        y: positions[order].y
+      }));
+      return {
+        mode,
+        level: config.level,
+        config,
+        sequence,
+        nodes,
+        distractors: makeDistractors(config.distractors || 0, Math.max(1, config.level)),
+        currentIndex: 0,
+        connectedOrders: [],
+        chests: 0,
+        score: 0,
+        totalTaps: 0,
+        correctSteps: 0,
+        misTaps: 0,
+        hints: 0,
+        rounds: 0,
+        trials: [],
+        events: [],
+        startTime: Date.now(),
+        currentMapStartedAt: Date.now(),
+        timeLeft: config.timeLimit || 0,
+        finished: false
+      };
+    }
+
+    function nextMapKeepStats(g) {
+      const next = createGame(g.mode, g.level, state.practiceIndex);
+      next.chests = g.chests;
+      next.score = g.score;
+      next.totalTaps = g.totalTaps;
+      next.correctSteps = g.correctSteps;
+      next.misTaps = g.misTaps;
+      next.hints = g.hints;
+      next.rounds = g.rounds + 1;
+      next.startTime = g.startTime;
+      next.timeLeft = g.timeLeft;
+      next.trials = g.trials;
+      next.events = g.events;
+      return next;
+    }
+
+    function initPracticeGame(index) {
+      state.practiceIndex = index;
+      state.game = createGame('practice', 0, index);
+      state.screen = 'practice';
+      state.paused = false;
+      state.toast = '';
+    }
+
+    function startTimer() {
+      clearTimer();
+      state.timerId = window.setInterval(() => {
+        if (!state.game || state.game.mode !== 'formal' || state.paused) return;
+        state.game.timeLeft -= 1;
+        if (state.game.timeLeft <= 0) finishFormal('时间到');
+        else render();
+      }, 1000);
+    }
+
+    function clearTimer() {
+      if (state.timerId) window.clearInterval(state.timerId);
+      state.timerId = null;
+    }
+
+    function recommendLevel(g) {
+      const elapsedSec = Math.max(1, Math.round((Date.now() - g.startTime) / 1000));
+      const accuracy = g.totalTaps ? g.correctSteps / g.totalTaps : 0;
+      const avgStep = g.correctSteps ? elapsedSec / g.correctSteps : 99;
+      let next = g.level;
+      let reason = '保持当前路线，继续积累宝星。';
+
+      const strong = accuracy >= 0.88 && g.chests >= g.config.passChests && avgStep <= (g.config.advanced ? 5.2 : 4.8);
+      const support = accuracy < 0.68 || g.misTaps >= Math.max(3, g.correctSteps * .35) || (g.chests < g.config.passChests && elapsedSec >= g.config.timeLimit * .75);
+
+      if (strong) {
+        next = Math.min(10, g.level + 1);
+        reason = '本轮连接很稳定，下轮可以试试更长一点的藏宝路线。';
+      } else if (support) {
+        next = Math.max(1, g.level - 1);
+        reason = '下轮给小海龟一条更轻松的小路，目标卡仍会一直显示。';
+      }
+
+      if (state.settings.calm && next > 7) {
+        next = 7;
+        reason = '低刺激模式下，下轮保持清爽路线，不自动进入最高强度。';
+      }
+      return { next, reason, elapsedSec, accuracy, avgStep };
+    }
+
+    function finishFormal(reasonFromTimer) {
+      if (!state.game || state.game.finished) return;
+      const g = state.game;
+      g.finished = true;
+      clearTimer();
+      const rec = recommendLevel(g);
+      const result = {
+        level: g.level,
+        nextLevel: rec.next,
+        reason: rec.reason,
+        chests: g.chests,
+        score: g.score,
+        correctSteps: g.correctSteps,
+        totalTaps: g.totalTaps,
+        misTaps: g.misTaps,
+        hints: g.hints,
+        elapsedSec: rec.elapsedSec,
+        elapsedText: `${rec.elapsedSec} 秒`,
+        accuracy: rec.accuracy,
+        accuracyText: `${Math.round(rec.accuracy * 100)}%`,
+        avgStep: rec.avgStep,
+        endedBy: reasonFromTimer || '完成目标'
+      };
+      state.result = result;
+      state.recommendedLevel = rec.next;
+      saveStore({
+        recommendedLevel: rec.next,
+        lastResult: result,
+        history: [result, ...((loadStore().history || []).slice(0, 7))]
+      });
+      window.CognitiveGameRecorder?.record('trail-making', {
+        domain:'executive',
+        taskFamily:'trail-making',
+        mode:'training',
+        level:g.level,
+        startedAt:new Date(g.startTime).toISOString(),
+        completedAt:new Date().toISOString(),
+        summary:result,
+        trials:g.trials,
+        events:g.events,
+        adaptive:{recommendedLevel:rec.next, reason:rec.reason, settings:{...state.settings}}
+      });
+      state.screen = 'result';
+      state.game = null;
+      render();
+    }
+
+    function completePracticeRoute() {
+      const nextIndex = state.practiceIndex + 1;
+      if (nextIndex >= PRACTICE.length) {
+        state.screen = 'ready';
+        state.game = null;
+        render();
+        return;
+      }
+      setToast('这一条连好啦，继续下一条小路');
+      window.setTimeout(() => {
+        initPracticeGame(nextIndex);
+        render();
+      }, 700);
+    }
+
+    window.Actions = {
+      goHome() {
+        clearTimer();
+        state.screen = 'home'; state.game = null; state.paused = false; render();
+      },
+      goDetail() { clearTimer(); state.screen = 'detail'; state.paused = false; render(); },
+      goCover() { clearTimer(); state.screen = 'cover'; state.paused = false; render(); },
+      startTutorial() { clearTimer(); state.screen = 'tutorial'; state.tutorialStep = 1; state.game = null; state.paused = false; render(); },
+      nextTutorial() { state.tutorialStep = Math.min(6, state.tutorialStep + 1); render(); },
+      startPractice() { clearTimer(); initPracticeGame(0); render(); announce('开始低压练习，目标卡会一直显示'); },
+      startFormal() {
+        clearTimer();
+        const level = state.recommendedLevel || loadStore().recommendedLevel || 1;
+        state.game = createGame('formal', level, 0);
+        state.screen = 'playing';
+        state.paused = false;
+        state.toast = '';
+        state.hintNodeId = null;
+        render();
+        startTimer();
+        announce(`进入正式训练，第 ${level} 级，目标卡会一直显示`);
+      },
+      pauseGame() {
+        if (!state.game || state.screen !== 'playing') return;
+        state.paused = true;
+        render();
+      },
+      resumeGame() {
+        state.paused = false;
+        render();
+      },
+      toggleCalm() { state.settings.calm = !state.settings.calm; saveStore({ settings: state.settings }); render(); },
+      toggleLarge() { state.settings.large = !state.settings.large; saveStore({ settings: state.settings }); render(); },
+      tapDistractor() {
+        const g = state.game;
+        if (!g || state.paused) return;
+        const now = Date.now();
+        g.totalTaps += 1;
+        g.misTaps += 1;
+        g.hints += 1;
+        const current = g.nodes.find(n => n.order === g.currentIndex);
+        g.events.push({
+          eventId:`trail-making-event-${now}-${g.events.length+1}`,
+          type:'distractor_tap',
+          targetOrder:g.currentIndex,
+          response:'distractor',
+          correct:false,
+          rtMs:now - g.currentMapStartedAt
+        });
+        setToast('先找发光的路标', current && current.id);
+      },
+      tapNode(id) {
+        const g = state.game;
+        if (!g || g.finished || state.paused) return;
+        const node = g.nodes.find(n => n.id === id);
+        if (!node) return;
+        const now = Date.now();
+        g.totalTaps += 1;
+        state.lastActionAt = now;
+        g.events.push({
+          eventId:`trail-making-event-${now}-${g.events.length+1}`,
+          type:'node_tap',
+          nodeId:id,
+          targetOrder:g.currentIndex,
+          responseOrder:node.order,
+          responseLabel:node.token.label,
+          correct:node.order === g.currentIndex,
+          rtMs:now - g.currentMapStartedAt
+        });
+        if (node.order !== g.currentIndex) {
+          g.misTaps += 1;
+          g.hints += 1;
+          const current = g.nodes.find(n => n.order === g.currentIndex);
+          setToast('下一颗星星在这里', current && current.id);
+          return;
+        }
+
+        g.correctSteps += 1;
+        g.score += 10;
+        g.connectedOrders.push(node.order);
+        g.currentIndex += 1;
+        setToast('连上啦');
+
+        if (g.currentIndex >= g.sequence.length) {
+          g.chests += 1;
+          g.score += 30;
+          g.trials.push({
+            trialId:`trail-making-${Date.now()}-${g.chests}`,
+            gameId:'trail-making',
+            domain:'executive',
+            taskFamily:'trail-making',
+            mode:g.mode,
+            level:g.level,
+            mapIndex:g.rounds,
+            stimulus:{sequence:g.sequence, nodes:g.nodes.map(n=>({order:n.order, token:n.token, x:n.x, y:n.y}))},
+            condition:{nodeCount:g.sequence.length, distractorCount:g.distractors.length, timeLimit:g.config.timeLimit, advanced:g.config.advanced},
+            correctAnswer:g.sequence.map((_, i)=>i),
+            response:g.connectedOrders.slice(),
+            correct:true,
+            rtMs:Date.now() - g.currentMapStartedAt,
+            errorCount:g.misTaps,
+            difficultyParams:{level:g.level, passChests:g.config.passChests, nodeSize:g.config.nodeSize}
+          });
+          if (g.mode === 'practice') {
+            window.setTimeout(completePracticeRoute, 700);
+            return;
+          }
+          if (g.chests >= g.config.passChests) {
+            window.setTimeout(() => finishFormal('完成目标'), 750);
+            return;
+          }
+          window.setTimeout(() => {
+            state.game = nextMapKeepStats(g);
+            setToast('小海龟找到一个宝箱，继续下一张藏宝图');
+            render();
+          }, 700);
+          return;
+        }
+        render();
+      }
+    };
+
+    (function boot() {
+      const store = loadStore();
+      if (store.settings) state.settings = { ...state.settings, ...store.settings };
+      state.recommendedLevel = store.recommendedLevel || 1;
+      render();
+    })();
+  </script>
+  <script src="../shared/unified.js"></script>
+</body>
+</html>
