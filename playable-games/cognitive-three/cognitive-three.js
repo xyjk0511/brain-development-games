@@ -70,8 +70,8 @@ const gameCopy = {
     rule: '训练目标：干扰抑制与规则切换。每轮先看左侧目标，再按提示选择右侧正确图形。',
   },
   'flash-shape': {
-    copy: '先记住上一张图形，下一张出现后判断两张图形是否相同。',
-    rule: '训练目标：即刻视觉记忆。先观察上一张图形，1 秒后判断当前图形与上一张是否相同。',
+    copy: '第二张和第一张比，第三张和第二张比；每次只和刚刚看过的上一张比较。',
+    rule: '新手教程：第 1 张只记住；第 2 张跟第 1 张比；第 3 张跟第 2 张比。后面每张都只和上一张比，不会同时显示两张。',
   },
   'eye-quick': {
     copy: '地鼠出现要快速点击，干扰物出现要忍住。',
@@ -288,6 +288,7 @@ function renderFlash() {
     previous: pickFlashIcon(0),
     current: null,
     expectedSame: false,
+    guided: true,
     timers: new Set(),
     clock: null,
   };
@@ -304,7 +305,8 @@ function renderFlashLevelIntro() {
   flashSession.previous = pickFlashIcon(flashSession.level + flashSession.failCount);
   flashSession.current = null;
   flashSession.canAnswer = false;
-  promptEl.textContent = '记住这张图形';
+  flashSession.guided = flashSession.level === 1 && flashSession.failCount === 0;
+  promptEl.textContent = flashSession.guided ? '新手教程 1/3：先记住第一张，不用作答' : '记住这张图形';
   feedback.textContent = `第 ${config.Level} 级 · ${flashTypeLabel[config.Type]} · ${config.Time} 秒`;
   updateFlashHud();
   const board = document.createElement('div');
@@ -315,7 +317,7 @@ function renderFlashLevelIntro() {
   card.className = 'flash-card flash-moving-card enter';
   card.append(flashBadge(flashSession.previous.index));
   const cardLabel = document.createElement('strong');
-  cardLabel.textContent = '引导：记住这张图形';
+  cardLabel.textContent = flashSession.guided ? '第 1 张：记住它' : '上一张';
   card.append(cardLabel);
 
   const actions = document.createElement('div');
@@ -359,8 +361,8 @@ function showNextFlashCard(card, cardLabel, sameButton, differentButton) {
   flashSession.expectedSame = trial.isSame;
   flashSession.canAnswer = true;
   startedAt = Date.now();
-  promptEl.textContent = '判断当前图形与上一张是否相同';
-  feedback.textContent = trial.isSame ? '本题按一致率生成：可能相同' : `本题干扰维度：${flashTypeLabel[config.Type]}`;
+  promptEl.textContent = flashGuidePrompt(trial.isSame);
+  feedback.textContent = flashGuideFeedback(trial.isSame);
   card.classList.remove('enter');
   card.classList.add('exit');
   queueFlashTimer(() => {
@@ -369,7 +371,7 @@ function showNextFlashCard(card, cardLabel, sameButton, differentButton) {
     card.classList.add('enter');
     card.innerHTML = '';
     card.append(flashBadge(flashSession.current.index));
-    cardLabel.textContent = '当前图形';
+    cardLabel.textContent = flashSession.guided && flashSession.trialIndex < 2 ? `第 ${flashSession.trialIndex + 2} 张：和上一张比` : '当前图形';
     card.append(cardLabel);
     sameButton.disabled = false;
     differentButton.disabled = false;
@@ -486,6 +488,14 @@ function renderFlashStatusIntoExisting() {
 }
 
 function makeFlashTrialFromConfig(config, previous, trialIndex) {
+  if (flashSession.guided && trialIndex === 0) {
+    return { isSame: true, current: previous };
+  }
+  if (flashSession.guided && trialIndex === 1) {
+    const candidates = flashCatalog.filter((icon) => icon.index !== previous.index && matchesFlashType(icon, previous, config.Type));
+    const pool = candidates.length ? candidates : flashCatalog.filter((icon) => icon.index !== previous.index);
+    return { isSame: false, current: pool[(config.Level * 5) % pool.length] };
+  }
   const shouldMatch = ((trialIndex * 37 + config.Level * 11 + flashSession.failCount * 5) % 100) < config.Rate;
   if (shouldMatch) {
     return { isSame: true, current: previous };
@@ -507,6 +517,23 @@ function matchesFlashType(icon, previous, type) {
 
 function pickFlashIcon(seed) {
   return flashCatalog[(seed * 9 + 3) % flashCatalog.length];
+}
+
+function flashGuidePrompt(isSame) {
+  if (flashSession.guided && flashSession.trialIndex === 0) {
+    return '新手教程 2/3：第 2 张和第 1 张一样，点“相同”';
+  }
+  if (flashSession.guided && flashSession.trialIndex === 1) {
+    return '新手教程 3/3：第 3 张和第 2 张不一样，点“不同”';
+  }
+  return '判断当前图形与上一张是否相同';
+}
+
+function flashGuideFeedback(isSame) {
+  if (flashSession.guided && flashSession.trialIndex < 2) {
+    return '只和刚刚上一张比，不和第一张一直比';
+  }
+  return isSame ? '本题按一致率生成：可能相同' : `本题干扰维度：${flashTypeLabel[currentFlashConfig().Type]}`;
 }
 
 function renderEye() {
