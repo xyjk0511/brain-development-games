@@ -10,7 +10,8 @@ const roundEl = document.querySelector('#round');
 const scoreEl = document.querySelector('#score');
 const streakEl = document.querySelector('#streak');
 const tabs = Array.from(document.querySelectorAll('[data-game]'));
-const assetBase = '../../training-assets/image2/';
+const assetBase = '../../training-assets/image2-split/';
+const eyeAssetBase = '../../training-assets/eye-quick/';
 
 const shapes = ['circle', 'square', 'triangle'];
 const shapeLabel = { circle: '圆形', square: '方形', triangle: '三角形' };
@@ -113,22 +114,32 @@ function flashBadge(index) {
 
 function eyeSprite(kind, helmetHits = 0) {
   const key = kind === 'normal'
-    ? 'mole_normal_idle'
+    ? 'mole_normal_idle.svg'
     : kind === 'helmet'
-      ? (helmetHits ? 'mole_helmet_cracked' : 'mole_helmet_idle')
+      ? (helmetHits ? 'mole_exposed_idle.svg' : 'mole_helmet_idle.svg')
       : kind === 'bomb'
-        ? 'bomb_fuse'
+        ? 'bomb_idle.svg'
         : kind === 'cat'
-          ? 'cat_guard_idle'
+          ? 'cat_guard_idle.svg'
           : kind === 'rabbit'
-            ? 'rabbit_decoy_idle'
-            : 'panda_decoy_idle';
-  return imageAsset(`eye/${key}.png`, key);
+            ? 'rabbit_decoy_idle.svg'
+            : 'panda_decoy_idle.svg';
+  return directImageAsset(`${eyeAssetBase}${key}`, key);
 }
 
 function imageAsset(path, label) {
   const image = document.createElement('img');
   image.src = `${assetBase}${path}`;
+  image.alt = label;
+  image.decoding = 'async';
+  image.loading = 'eager';
+  image.className = 'sprite-shadow';
+  return image;
+}
+
+function directImageAsset(src, label) {
+  const image = document.createElement('img');
+  image.src = src;
   image.alt = label;
   image.decoding = 'async';
   image.loading = 'eager';
